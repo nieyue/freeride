@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+	content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+	<title>签到页面</title>
+</head>
+<body>
+     <!--背景 -->
+     <input type="text" id="input" placeholder="输入微信url" value="https://mp.weixin.qq.com/s?__biz=MzUzNjg4NDMzMg==&mid=2247485537&idx=3&sn=5413e687ce6fe95854e8f0ec8c33b328&chksm=faee2d62cd99a47476462b58da96a842799d74e2081ff184342c6096c2bb566d71846edd5a52&mpshare=1&scene=1&srcid=0906NgczE8PJjZIfdrpTHc2K&pass_ticket=%2FMvXBG3hjpOECS0ELpaAO5OXIr3hgUxwM6DMduN%2B1HP5vlvlhJvmoVYfHaqYwspV#rd"/>
+     <button id="click">点击</button>
+	<div id="app">
+    </div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+function getContent(url){
+$.ajax({
+url:"http://nieyue.ngrok.xiaomiqiu.cn/tool/contentByUrl",
+type:"post",
+data:{
+selector:"#js_content",
+url:url
+},
+success:function(data){
+$("#app").html(data.data[0]);
+}
+})
+}
+$("#click").on("click",function(){
+getContent($("#input").val())
+})
+</script>
+
+</body>
+</html>
