@@ -40,10 +40,20 @@ public class Trip implements Serializable {
 	@ApiModelProperty(value="目的地")
 	private String endAddress;
 	/**
+	 * 途径地
+	 */
+	@ApiModelProperty(value="途径地")
+	private String middleAddress;
+	/**
 	 * 是否上门接送，1是，2否
 	 */
 	@ApiModelProperty(value="是否上门接送，1是，2否")
 	private Integer isDoor;
+	/**
+	 * 可带人数
+	 */
+	@ApiModelProperty(value="可带人数")
+	private Integer personNumber;
 	/**
 	 * 金额/人
 	 */

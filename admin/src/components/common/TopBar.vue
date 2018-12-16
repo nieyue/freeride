@@ -3,8 +3,8 @@
     <div class="topbar">
         <div class="topbar-left" :style="{width:topbarWidth}">
            <!-- <img src="/static/logo.png" style="width:76px;height:76px;"/> -->
-            <!-- <span class="topbar-left-title" style="font-size:2rem;line-height:6rem;margin-left:2rem;" >学籍管理系统</span> -->
-            <span class="topbar-left-title" style="font-size:2rem;line-height:6rem;margin-left:2rem;"  :style="{fontSize:titleFontSize,marginLeft:titleMarginLeft}" >赤兔顺风车系统</span>
+            <!-- <span class="topbar-left-title" style="font-size:2rem;line-height:6rem;margin-left:2rem;" >学籍管理</span> -->
+            <span class="topbar-left-title" style="font-size:2rem;line-height:6rem;margin-left:2rem;"  :style="{fontSize:titleFontSize,marginLeft:titleMarginLeft}" >赤兔顺风车</span>
 
         </div>
         <div style="display:inline-block;height:82px;vertical-align:top;line-height:82px;" v-show="account.accountId">
@@ -89,7 +89,7 @@
               onOk: () => {
                 this.axios({
                 method:"post",
-                url:'/account/loginout?accountId='+this.com.nieyue.business.getAccount().accountId,
+                url:'/account/loginout?accountId='+this.business.getAccount().accountId,
                 withCredentials: true
               }).
               then(res => {

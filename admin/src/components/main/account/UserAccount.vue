@@ -1,8 +1,9 @@
-<!-- 教师管理 -->
+<!--用户管理 -->
 <template>
     <div class="body-wrap">
     <div class="body-btn-wrap">
-      <Button type='primary'  @click='add'>增加教师</Button>
+      <Button type='primary'  @click='add'>增加用户</Button>
+      <Button type='info' style="margin:0 20px;" @click='exportAccount'>账户导出</Button>
       <div class="search-wrap">
           <!-- <Select v-model="params.roleId"  transfer class="search-wrap-input" >
             <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
@@ -16,20 +17,12 @@
     </div>
 		 <!--新增 -->
      <Modal v-model="addAccountModel"
-           title="新增教师管理"
+           title="新增用户管理"
            :closable="false"
            :mask-closable="false"
            width="1000px"
     >
       <Form ref="addAccount" :model="addAccount" :label-width="100"  label-position="right"  :rules="addAccountRules">
-          <FormItem prop="phone" label="联系电话(登录账户):">
-          <Input type="text" v-model="addAccount.phone" placeholder="联系电话(登录账户)">
-          </Input>
-        </FormItem>
-        <FormItem prop="password" label="密码:">
-          <Input type="password" v-model="addAccount.password" placeholder="密码">
-          </Input>
-        </FormItem>
          <FormItem prop="realname" label="姓名:">
           <Input type="text" v-model="addAccount.realname" placeholder="姓名">
           </Input>
@@ -39,29 +32,23 @@
               <Option v-for="item in sexList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <FormItem prop="nation" label="民族:">
-          <Input type="text" v-model="addAccount.nation" placeholder="民族">
+        <FormItem prop="phone" label="手机:">
+          <Input type="text" v-model="addAccount.phone" placeholder="手机">
           </Input>
         </FormItem>
-          <FormItem prop="identityCards" label="身份证:">
-          <Input type="text" v-model="addAccount.identityCards" placeholder="身份证">
+        <FormItem prop="password" label="密码:">
+          <Input type="password" v-model="addAccount.password" placeholder="密码">
           </Input>
         </FormItem>
-        
-        
+
         <!-- <FormItem prop="icon" label="图像(上传或者填写):">
-            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload> 
+            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload>
             <div>
               <Input type="text" v-model="addAccount.icon" placeholder="图像">
             </Input>
               <img :src="addAccount.icon"  style='width:30px;'alt="">
             </div>
         </FormItem> -->
-        <FormItem  label="出生年月日:">
-          <DatePicker type="date" v-model="addAccount.birthDate" placeholder="出生年月日" style="width: 300px"></DatePicker>
-          <!-- <DatePicker type="date" @on-change="getAddBirthDate" placeholder="出生年月日" style="width: 300px"></DatePicker> -->
-        </FormItem>
-        {{addAccount.birthDate}}
         <FormItem prop="status" label="状态:">
           <Select v-model="addAccount.status" transfer size="large" style="width:100px">
               <Option v-for="item in statusList" :value="item.id" :key="item.id">{{ item.value }}</Option>
@@ -84,20 +71,12 @@
     <!--新增end -->
 		 <!--修改 -->
      <Modal v-model="updateAccountModel"
-           title="修改教师管理"
+           title="修改用户管理"
            :closable="false"
            :mask-closable="false"
            width="1000px"
     >
       <Form ref="updateAccount" :model="updateAccount" :label-width="100" label-position="right"  :rules="updateAccountRules">
-          <FormItem prop="phone" label="联系电话:">
-          <Input type="text" v-model="updateAccount.phone" placeholder="联系电话">
-          </Input>
-        </FormItem>
-        <!-- <FormItem prop="password" label="密码:">
-          <Input type="password" v-model="updateAccount.password" placeholder="密码">
-          </Input>
-        </FormItem> -->
        <FormItem prop="realname" label="姓名:">
           <Input type="text" v-model="updateAccount.realname" placeholder="姓名">
           </Input>
@@ -107,33 +86,29 @@
               <Option v-for="item in sexList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <FormItem prop="nation" label="民族:">
-          <Input type="text" v-model="updateAccount.nation" placeholder="民族">
+        <FormItem prop="phone" label="手机:">
+          <Input type="text" v-model="updateAccount.phone" placeholder="手机">
           </Input>
         </FormItem>
-          <FormItem prop="identityCards" label="身份证:">
-          <Input type="text" v-model="updateAccount.identityCards" placeholder="身份证">
+        <!-- <FormItem prop="password" label="密码:">
+          <Input type="password" v-model="updateAccount.password" placeholder="密码">
           </Input>
-        </FormItem>
-        
-        
+        </FormItem> -->
+
         <!-- <FormItem prop="icon" label="图像(上传或者填写):">
-            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload> 
+            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload>
             <div>
               <Input type="text" v-model="addAccount.icon" placeholder="图像">
             </Input>
               <img :src="addAccount.icon"  style='width:30px;'alt="">
             </div>
         </FormItem> -->
-        <FormItem  label="出生年月日:">
-          <DatePicker type="date" v-model="updateAccount.birthDate" placeholder="出生年月日" style="width: 300px"></DatePicker>
-        </FormItem>
         <FormItem prop="status" label="状态:">
           <Select v-model="updateAccount.status" transfer size="large" style="width:100px">
               <Option v-for="item in statusList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <!-- <FormItem prop="roleId" label="角色:">
+       <!--  <FormItem prop="roleId" label="角色:">
           <Select v-model="updateAccount.roleId"  transfer size="large" style="width:100px">
               <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
           </Select>
@@ -157,7 +132,7 @@
 <script>
 import twocitylist from '@/components/service/twocitylist'
 export default {
-  name: 'Account',
+  name: 'StudentAccount',
   data () {
     return {
       routerPath:this.$route.path,
@@ -196,10 +171,6 @@ export default {
                     ]
                 },
 			addAccount:{
-        icon:'',
-        identityCardsHoldImg:'',
-        identityCardsFrontImg:'',
-        identityCardsBackImg:''
       },
 			//修改参数
 			updateAccountModel:false,
@@ -215,10 +186,16 @@ export default {
       //列表
 	    roleList: [],
         accountList: [],
-        
+
 	    accountColumns: [
         {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
           title: '序号',
+          //type: "index2",
            minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -232,17 +209,32 @@ export default {
           minWidth:100,
           align:'center'
         }, */
-         {
-        	title:'手机号（登录账户）',
-            key:'phone',
-            minWidth:100,
-          align:'center'
-        },
         {
         	title:'姓名',
             key:'realname',
             minWidth:100,
           align:'center'
+        },
+          {
+        	title:'手机(登录账户)',
+            key:'phone',
+            minWidth:100,
+          align:'center'
+        },
+         {
+        	title:'性别',
+            key:'sex',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+            let sexvalue="";
+            this.sexList.forEach(element => {
+              if(element.id==params.row.sex){
+                sexvalue=element.value;
+              }
+            });
+             return  h('span',sexvalue);
+          }
         },
       /*    {
         	title:'图像',
@@ -260,43 +252,7 @@ export default {
             })
           }
         }, */
-        {
-        	title:'性别',
-            key:'sex',
-            minWidth:100,
-          align:'center',
-          render: (h, params) => {
-            let sexvalue="";
-            this.sexList.forEach(element => {
-              if(element.id==params.row.sex){
-                sexvalue=element.value;
-              }
-            });
-             return  h('span',sexvalue);
-          }
-        },
-        {
-        	title:'民族',
-            key:'nation',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'身份证',
-            key:'identityCards',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'出生年月日',
-            key:'birthDate',
-            minWidth:100,
-          align:'center',
-          render: (h, params) => {
-            let birthDatevalue=params.row.birthDate?params.row.birthDate.substr(0,10):'';
-             return  h('span',birthDatevalue);
-          }
-        },
+
         {
         	title:'状态',
             key:'status',
@@ -362,11 +318,28 @@ export default {
                   }
                 }
               }, '删除');
-              var s=h("div","");
-    
-			s= h("div",[
-                  varhh11,
-                  varhh12
+            var varhh21=  h('Button', {
+                props: {
+                  type: 'info',
+                  size: 'small'
+                },
+                style: {
+                  margin: marginstyle
+                },
+                on: {
+                  click: () => {
+                   let  pp=JSON.stringify({
+                      currentPage:1,//当前页
+                      accountId:params.row.accountId
+                    });
+                    this.$router.push('/main/account/studentInfo/'+pp);
+                  }
+                }
+              }, '用户信息');
+			  let s= h("div",[
+                  varhh11
+                  ,varhh12
+                  //,varhh21
                 ]);
             return s;
           }
@@ -387,6 +360,7 @@ export default {
       this.params.pageNum = (this.params.currentPage-1)*this.params.pageSize+this.params.startNum;
       this.getList()
     },
+
   //获取列表
    getRoleList () {
 
@@ -403,13 +377,12 @@ export default {
        listUrl:'/role/list',
        data:'roleList',
        success:()=>{
-         
-        
+
         let rll=this.roleList.length;
         for(let i=0;i<rll;i++){
-            //如果当前管理员非教师
-              if(!this.business.getIsTeacherAdmin()
-              &&this.roleList[i].name!="教师"){
+            //如果当前管理员非用户
+              if(!this.business.getIsUserAdmin()
+              &&this.roleList[i].name!="用户"){
                 this.roleList.splice(i,1)
               rll--;
               i--;
@@ -443,14 +416,17 @@ export default {
   //增加
 	 add (params) {
       this.addAccountModel = true
-        //初始化
+         //初始化
         this.addAccount={
             icon:'',
+            totalCost:0,
+            alreadyPay:0,
+            arrears:0,
             sex:0,
             status:0,
             roleId:this.roleList[0].roleId
         };
-      
+
     },
 		//增加取消
 		 addCancel () {
@@ -470,7 +446,6 @@ export default {
      * p.loading loading
      * p.showModel 界面模型显示隐藏
      */
-    this.addAccount.birthDate=this.utils.getTime(this.addAccount.birthDate)
     this.axiosbusiness.add(this,{
       ref:'addAccount',
       url:'/account/add',
@@ -509,7 +484,6 @@ export default {
      * p.showModel 界面模型显示隐藏
      */
     delete this.updateAccount.role;
-    this.updateAccount.birthDate=this.utils.getTime(this.updateAccount.birthDate)
     this.axiosbusiness.update(this,{
       ref:'updateAccount',
       url:'/account/update',
@@ -517,7 +491,7 @@ export default {
       loading:'updateLoading',
       showModel:'updateAccountModel'
     })
- 
+
     },
     //删除
     delete(params){
@@ -534,6 +508,19 @@ export default {
       url:'/account/delete',
       requestObject:'deleteAccount'
     })
+    },
+    //账户导出
+    exportAccount(){
+      var als=this.$refs.table.getSelection();
+      if(als.length<=0){
+        this.$Message.error("最少选一个")
+        return;
+      }
+      this.$refs.table.exportCsv({
+          filename: '用户数据',
+          columns: this.accountColumns.filter((data, index) => index>=2),
+          data: als
+      });
     }
   },
    watch: {
@@ -545,8 +532,6 @@ export default {
     },
   created () {
     this.getRoleList();
-   
-      
   },
   mounted () {
 

@@ -12,8 +12,8 @@
            :mask-closable="false"
     >
      <Form ref="updateAccount" :model="updateAccount" :label-width="100" label-position="right"  :rules="updateAccountRules">
-          <FormItem prop="phone" label="联系电话:">
-          <Input type="text" v-model="updateAccount.phone" placeholder="联系电话">
+          <FormItem prop="phone" label="手机:">
+          <Input type="text" v-model="updateAccount.phone" placeholder="手机">
           </Input>
         </FormItem>
         <!-- <FormItem prop="password" label="密码:">
@@ -29,14 +29,6 @@
               <Option v-for="item in sexList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <FormItem prop="nation" label="民族:">
-          <Input type="text" v-model="updateAccount.nation" placeholder="民族">
-          </Input>
-        </FormItem>
-          <FormItem prop="identityCards" label="身份证:">
-          <Input type="text" v-model="updateAccount.identityCards" placeholder="身份证">
-          </Input>
-        </FormItem>
 
 
         <!-- <FormItem prop="icon" label="图像(上传或者填写):">
@@ -47,9 +39,6 @@
               <img :src="addAccount.icon"  style='width:30px;'alt="">
             </div>
         </FormItem> -->
-        <FormItem  label="出生年月日:">
-          <DatePicker type="date" v-model="updateAccount.birthDate" placeholder="出生年月日" style="width: 300px"></DatePicker>
-        </FormItem>
        <!--  <FormItem prop="status" label="状态:">
           <Select v-model="updateAccount.status" transfer size="large" style="width:100px">
               <Option v-for="item in statusList" :value="item.id" :key="item.id">{{ item.value }}</Option>
@@ -106,65 +95,17 @@
               <span v-text="updateAccount.realname"></span>
             </p>
             <p>
-              <span v-if="isStudentAccount">学号：</span>
-              <span v-text="updateAccount.sid"></span>
-            </p>
-            <p>
               <span>性别：</span>
               <span>{{updateAccount.sex==0?'未知':updateAccount.sex==1?'男性':'女性'}}</span>
             </p>
             <p>
-              <span>民族：</span>
-              <span v-text="updateAccount.nation"></span>
-            </p>
-            <p>
-              <span>身份证：</span>
-              <span v-text="updateAccount.identityCards"></span>
-            </p>
-            <p>
-              <span>联系电话：</span>
+              <span>手机：</span>
               <span v-text="updateAccount.phone"></span>
             </p>
             <!-- <p>
               <span>图像：</span>
               <img v-text="updateAccount.icon" style="width:100px;height:100px;"/>
             </p> -->
-            <p>
-              <span>出生年月日：</span>
-              <span >{{ updateAccount.birthDate?utils.getDate(updateAccount.birthDate):''}}</span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>报考证书名称：</span>
-              <span v-text="updateAccount.regCerName"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>报考专业：</span>
-              <span v-text="updateAccount.regMajor"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>层次：</span>
-              <span v-text="updateAccount.gradation"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>学制：</span>
-              <span v-text="updateAccount.educationalSystem"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>总费用：</span>
-              <span v-text="updateAccount.totalCost"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>已缴费：</span>
-              <span v-text="updateAccount.alreadyPay"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>欠费：</span>
-              <span v-text="updateAccount.arrears"></span>
-            </p>
-            <p v-if="isStudentAccount">
-              <span>预计取证时间：</span>
-              <span v-text="updateAccount.expectGetCerDate"></span>
-            </p>
             <p>
               <span>创建时间：</span>
               <span v-text="updateAccount.createDate"></span>
@@ -181,7 +122,7 @@ export default {
   name: 'SelfAccount',
   data () {
     return {
-      isSuperAdmin:this.com.nieyue.business.getIsSuperAdmin(),
+      isSuperAdmin:this.business.getIsSuperAdmin(),
         params:{
             startNum:1,//初始化个数
             currentPage:1,//当前页
@@ -207,7 +148,7 @@ export default {
 			updateLoading:false,
 			updateAccountRules: {
                 phone: [
-                    {required: true, message: '联系电话', trigger: 'blur'}
+                    {required: true, message: '手机', trigger: 'blur'}
                     ]
                 },
 			updateAccount:{ },
@@ -234,7 +175,7 @@ export default {
       console.log(params)
      //获取修改实体
        this.axiosbusiness.get(this,{
-         url:'/account/load?accountId='+this.com.nieyue.business.getAccount().accountId,
+         url:'/account/load?accountId='+this.business.getAccount().accountId,
          data:'updateAccount',
          success:()=>{}
          })
@@ -302,7 +243,7 @@ export default {
      * p.loading loading
      * p.showModel 界面模型显示隐藏
      */
-    this.updatePasswordAccount.accountId=this.com.nieyue.business.getAccount().accountId
+    this.updatePasswordAccount.accountId=this.business.getAccount().accountId
     if(this.updatePasswordAccount.password!=this.updatePasswordAccount.password2){
         this.$Message.error('两次密码不一致')
         return;
@@ -319,8 +260,7 @@ export default {
     },
   },
   created () {
-      this.updateAccount=this.com.nieyue.business.getAccount();
-      this.isStudentAccount=this.com.nieyue.business.getIsStudentAdmin()
+      this.updateAccount=this.business.getAccount();
   },
   mounted () {
 

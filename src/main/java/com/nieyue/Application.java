@@ -41,7 +41,7 @@ public class Application implements ApplicationListener<ApplicationReadyEvent> {
 								.version("1.0")
 								.build())
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.yayao.com.nieyue.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.nieyue.controller"))
 				.paths(PathSelectors.any())
 				.build();
 	}

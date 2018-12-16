@@ -18,32 +18,32 @@ export default {
         return isSuperAdmin;
     },
     /*
-    ** 判断是否教师，是就显示账户管理
+    ** 判断是否车主，是就显示账户管理
     **
     */
-    getIsTeacherAdmin(){
-        let isTeacherAdmin=false;
+    getIsCarAdmin(){
+        let isCarAdmin=false;
         if(sessionStorage.getItem("account")){
             let account=JSON.parse(sessionStorage.getItem("account"));
-            if(account.role.name=="教师"){
-                isTeacherAdmin=true;
+            if(account.role.name=="车主"){
+                isCarAdmin=true;
             }
         } 
-        return isTeacherAdmin;
+        return isCarAdmin;
     },
     /*
-    ** 判断是否学生，是就显示账户管理
+    ** 判断是否用户，是就显示账户管理
     **
     */
-    getIsStudentAdmin(){
-        let isStudentAdmin=false;
+    getIsUserAdmin(){
+        let isUserAdmin=false;
         if(sessionStorage.getItem("account")){
             let account=JSON.parse(sessionStorage.getItem("account"));
-            if(account.role.name=="学生"){
-                isStudentAdmin=true;
+            if(account.role.name=="用户"){
+                isUserAdmin=true;
             }
         } 
-        return isStudentAdmin;
+        return isUserAdmin;
     },
     /*
     ** 获取账户

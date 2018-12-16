@@ -1,12 +1,16 @@
 package com.nieyue.controller;
 
+import com.nieyue.bean.Account;
 import com.nieyue.bean.Trip;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.nieyue.exception.CommonRollbackException;
+import com.nieyue.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.nieyue.service.TripService;
 import com.nieyue.util.MyDom4jUtil;
@@ -29,9 +33,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/trip")
 public class TripController extends BaseController<Trip,Long> {
-	@Resource
+	@Autowired
 	private TripService tripService;
-	
+	@Autowired
+	private AccountService accountService;
+
 	/**
 	 * 行程分页浏览
 	 * @param orderName 商品排序数据库字段
@@ -81,6 +87,10 @@ public class TripController extends BaseController<Trip,Long> {
 	@ApiOperation(value = "行程增加", notes = "行程增加")
 	@RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> add(@ModelAttribute Trip trip, HttpSession session) {
+		Account account = accountService.load(trip.getAccountId());
+		if(account==null || account.getAuth()!=2){
+			throw new CommonRollbackException("账户没有认证");
+		}
 		trip.setUpdateDate(new Date());
 		StateResultList<List<Trip>> a = super.add(trip);
 		return a;

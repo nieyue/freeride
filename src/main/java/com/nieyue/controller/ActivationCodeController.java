@@ -3,10 +3,12 @@ package com.nieyue.controller;
 import com.nieyue.bean.ActivationCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.nieyue.business.OrderBusiness;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.nieyue.service.ActivationCodeService;
 import com.nieyue.util.MyDom4jUtil;
@@ -18,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -29,9 +33,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/activationCode")
 public class ActivationCodeController extends BaseController<ActivationCode,Long> {
-	@Resource
+	@Autowired
 	private ActivationCodeService activationCodeService;
-	
+	@Autowired
+	private OrderBusiness orderBusiness;
+
 	/**
 	 * 激活码分页浏览
 	 * @param orderName 商品排序数据库字段
@@ -63,7 +69,9 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 		//大于等于
-		wrapper.andNew().ge("create_date",createDate);
+		if(createDate!=null) {
+			wrapper.andNew().ge("create_date", createDate);
+		}
 		StateResultList<List<ActivationCode>> rl = super.list(pageNum, pageSize, orderName, orderWay,wrapper);
 			return rl;
 	}
@@ -88,6 +96,32 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		activationCode.setUpdateDate(new Date());
 		StateResultList<List<ActivationCode>> a = super.add(activationCode);
 		return a;
+	}
+	/**
+	 * 激活码批量增加
+	 * @return
+	 */
+	@ApiOperation(value = "激活码批量增加", notes = "激活码批量增加")
+	@RequestMapping(value = "/addBatch", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<ActivationCode>> addBatch(
+			@RequestParam(value="number")Integer number,
+			HttpSession session) {
+		StateResultList<List<ActivationCode>> sr = new StateResultList<>();
+		Lock lock = new ReentrantLock();
+		for (int i = 0; i < number; i++) {
+			try{
+				lock.lock();
+				ActivationCode ac=new ActivationCode();
+				ac.setCreateDate(new Date());
+				ac.setUpdateDate(new Date());
+				ac.setIsUsered(1);
+				ac.setCode(orderBusiness.generateShortUuid());
+				sr = super.add(ac);
+			}finally {
+				lock.unlock();
+			}
+		}
+		return sr;
 	}
 	/**
 	 * 激活码删除
@@ -124,7 +158,9 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 		//大于等于
-		wrapper.andNew().ge("create_date",createDate);
+		if(createDate!=null){
+			wrapper.andNew().ge("create_date",createDate);
+		}
 		StateResultList<List<Integer>> c = super.count(wrapper);
 		return c;
 	}
@@ -141,5 +177,5 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		 StateResultList<List<ActivationCode>> l = super.load(activationCodeId);
 		 return l;
 	}
-	
+
 }

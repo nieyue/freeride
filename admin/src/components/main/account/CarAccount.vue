@@ -1,10 +1,8 @@
-<!--学生管理 -->
+<!-- 车主管理 -->
 <template>
     <div class="body-wrap">
     <div class="body-btn-wrap">
-      <Button type='primary'  @click='add'>增加学生</Button>
-      <Button type='info' style="margin:0 20px;" @click='exportAccount'>账户导出</Button>
-      <Button type='error'  @click='deleteBatch'>批量删除</Button>
+      <Button type='primary'  @click='add'>增加车主</Button>
       <div class="search-wrap">
           <!-- <Select v-model="params.roleId"  transfer class="search-wrap-input" >
             <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
@@ -18,18 +16,22 @@
     </div>
 		 <!--新增 -->
      <Modal v-model="addAccountModel"
-           title="新增学生管理"
+           title="新增车主管理"
            :closable="false"
            :mask-closable="false"
            width="1000px"
     >
       <Form ref="addAccount" :model="addAccount" :label-width="100"  label-position="right"  :rules="addAccountRules">
-         <FormItem prop="realname" label="姓名:">
-          <Input type="text" v-model="addAccount.realname" placeholder="姓名">
+          <FormItem prop="phone" label="手机(登录账户):">
+          <Input type="text" v-model="addAccount.phone" placeholder="手机(登录账户)">
           </Input>
         </FormItem>
-         <FormItem prop="sid" label="学号:">
-          <Input type="text" v-model="addAccount.sid" placeholder="学号">
+        <FormItem prop="password" label="密码:">
+          <Input type="password" v-model="addAccount.password" placeholder="密码">
+          </Input>
+        </FormItem>
+         <FormItem prop="realname" label="姓名:">
+          <Input type="text" v-model="addAccount.realname" placeholder="姓名">
           </Input>
         </FormItem>
         <FormItem prop="sex" label="性别:">
@@ -37,69 +39,16 @@
               <Option v-for="item in sexList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <FormItem prop="nation" label="民族:">
-          <Input type="text" v-model="addAccount.nation" placeholder="民族">
-          </Input>
-        </FormItem>
-          <FormItem prop="identityCards" label="身份证:">
-          <Input type="text" v-model="addAccount.identityCards" placeholder="身份证">
-          </Input>
-        </FormItem>
-        <FormItem prop="phone" label="联系电话:">
-          <Input type="text" v-model="addAccount.phone" placeholder="联系电话">
-          </Input>
-        </FormItem>
-        <FormItem prop="password" label="密码:">
-          <Input type="password" v-model="addAccount.password" placeholder="密码">
-          </Input>
-        </FormItem>
-
+        
+        
         <!-- <FormItem prop="icon" label="图像(上传或者填写):">
-            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload>
+            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload> 
             <div>
               <Input type="text" v-model="addAccount.icon" placeholder="图像">
             </Input>
               <img :src="addAccount.icon"  style='width:30px;'alt="">
             </div>
         </FormItem> -->
-        <FormItem  label="出生年月日:">
-          <DatePicker type="date" v-model="addAccount.birthDate" placeholder="出生年月日" style="width: 300px"></DatePicker>
-        </FormItem>
-        <FormItem prop="regCerName" label="报考证书名称:">
-          <Input type="text" v-model="addAccount.regCerName" placeholder="报考证书名称">
-          </Input>
-        </FormItem>
-        <FormItem prop="regMajor" label="报考专业:">
-          <Input type="text" v-model="addAccount.regMajor" placeholder="报考专业">
-          </Input>
-        </FormItem>
-        <FormItem prop="gradation" label="层次:">
-          <Input type="text" v-model="addAccount.gradation" placeholder="层次">
-          </Input>
-        </FormItem>
-        <FormItem prop="educationalSystem" label="学制:">
-          <Input type="text" v-model="addAccount.educationalSystem" placeholder="学制">
-          </Input>
-        </FormItem>
-        <FormItem prop="totalCost" label="总费用:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="addAccount.totalCost" placeholder="总费用">
-          </InputNumber >
-        </FormItem>
-        <FormItem prop="alreadyPay" label="已缴费:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="addAccount.alreadyPay" placeholder="已缴费">
-          </InputNumber >
-        </FormItem>
-        <FormItem prop="arrears" label="欠费:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="addAccount.arrears" placeholder="欠费">
-          </InputNumber >
-        </FormItem>
-
-         <FormItem  label="预计取证时间:">
-          <DatePicker type="datetime"  v-model="addAccount.expectGetCerDate" placeholder="预计取证时间" style="width: 300px"></DatePicker>
-        </FormItem>
         <FormItem prop="status" label="状态:">
           <Select v-model="addAccount.status" transfer size="large" style="width:100px">
               <Option v-for="item in statusList" :value="item.id" :key="item.id">{{ item.value }}</Option>
@@ -122,18 +71,22 @@
     <!--新增end -->
 		 <!--修改 -->
      <Modal v-model="updateAccountModel"
-           title="修改学生管理"
+           title="修改车主管理"
            :closable="false"
            :mask-closable="false"
            width="1000px"
     >
       <Form ref="updateAccount" :model="updateAccount" :label-width="100" label-position="right"  :rules="updateAccountRules">
-       <FormItem prop="realname" label="姓名:">
-          <Input type="text" v-model="updateAccount.realname" placeholder="姓名">
+          <FormItem prop="phone" label="手机:">
+          <Input type="text" v-model="updateAccount.phone" placeholder="手机">
           </Input>
         </FormItem>
-         <FormItem prop="sid" label="学号:">
-          <Input type="text" v-model="updateAccount.sid" placeholder="学号">
+        <!-- <FormItem prop="password" label="密码:">
+          <Input type="password" v-model="updateAccount.password" placeholder="密码">
+          </Input>
+        </FormItem> -->
+       <FormItem prop="realname" label="姓名:">
+          <Input type="text" v-model="updateAccount.realname" placeholder="姓名">
           </Input>
         </FormItem>
         <FormItem prop="sex" label="性别:">
@@ -141,75 +94,22 @@
               <Option v-for="item in sexList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-        <FormItem prop="nation" label="民族:">
-          <Input type="text" v-model="updateAccount.nation" placeholder="民族">
-          </Input>
-        </FormItem>
-          <FormItem prop="identityCards" label="身份证:">
-          <Input type="text" v-model="updateAccount.identityCards" placeholder="身份证">
-          </Input>
-        </FormItem>
-        <FormItem prop="phone" label="联系电话:">
-          <Input type="text" v-model="updateAccount.phone" placeholder="联系电话">
-          </Input>
-        </FormItem>
-        <!-- <FormItem prop="password" label="密码:">
-          <Input type="password" v-model="updateAccount.password" placeholder="密码">
-          </Input>
-        </FormItem> -->
-
+        
+        
         <!-- <FormItem prop="icon" label="图像(上传或者填写):">
-            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload>
+            <my-upload :defaultUpload="addAccount.icon" @uploadList="getAddIcon"></my-upload> 
             <div>
               <Input type="text" v-model="addAccount.icon" placeholder="图像">
             </Input>
               <img :src="addAccount.icon"  style='width:30px;'alt="">
             </div>
         </FormItem> -->
-        <FormItem  label="出生年月日:">
-          <DatePicker type="date" v-model="updateAccount.birthDate" placeholder="出生年月日" style="width: 300px"></DatePicker>
-        </FormItem>
-        <FormItem prop="regCerName" label="报考证书名称:">
-          <Input type="text" v-model="updateAccount.regCerName" placeholder="报考证书名称">
-          </Input>
-        </FormItem>
-        <FormItem prop="regMajor" label="报考专业:">
-          <Input type="text" v-model="updateAccount.regMajor" placeholder="报考专业">
-          </Input>
-        </FormItem>
-        <FormItem prop="gradation" label="层次:">
-          <Input type="text" v-model="updateAccount.gradation" placeholder="层次">
-          </Input>
-        </FormItem>
-        <FormItem prop="educationalSystem" label="学制:">
-          <Input type="text" v-model="updateAccount.educationalSystem" placeholder="学制">
-          </Input>
-        </FormItem>
-        <FormItem prop="totalCost" label="总费用:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="updateAccount.totalCost" placeholder="总费用">
-          </InputNumber >
-        </FormItem>
-        <FormItem prop="alreadyPay" label="已缴费:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="updateAccount.alreadyPay" placeholder="已缴费">
-          </InputNumber >
-        </FormItem>
-        <FormItem prop="arrears" label="欠费:">
-          <InputNumber  :max="10000000000" :min="0" :step="0.01"  style="width:180px"
-          v-model="updateAccount.arrears" placeholder="欠费">
-          </InputNumber >
-        </FormItem>
-
-         <FormItem  label="预计取证时间:">
-          <DatePicker type="datetime"  v-model="addAccount.expectGetCerDate" placeholder="预计取证时间" style="width: 300px"></DatePicker>
-        </FormItem>
         <FormItem prop="status" label="状态:">
           <Select v-model="updateAccount.status" transfer size="large" style="width:100px">
               <Option v-for="item in statusList" :value="item.id" :key="item.id">{{ item.value }}</Option>
           </Select>
         </FormItem>
-       <!--  <FormItem prop="roleId" label="角色:">
+        <!-- <FormItem prop="roleId" label="角色:">
           <Select v-model="updateAccount.roleId"  transfer size="large" style="width:100px">
               <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
           </Select>
@@ -233,7 +133,7 @@
 <script>
 import twocitylist from '@/components/service/twocitylist'
 export default {
-  name: 'StudentAccount',
+  name: 'CarAccount',
   data () {
     return {
       routerPath:this.$route.path,
@@ -267,22 +167,20 @@ export default {
 			addAccountModel:false,
 			addLoading:false,
 			addAccountRules: {
-                sid: [
-                    {required: true, message: '学号为必填项', trigger: 'blur'}
-                    ],
                 phone: [
                     {required: true, message: '手机号为必填项', trigger: 'blur'}
                     ]
                 },
 			addAccount:{
+        icon:'',
+        identityCardsHoldImg:'',
+        identityCardsFrontImg:'',
+        identityCardsBackImg:''
       },
 			//修改参数
 			updateAccountModel:false,
 			updateLoading:false,
 			updateAccountRules: {
-                sid: [
-                    {required: true, message: '学号为必填项', trigger: 'blur'}
-                    ],
                 phone: [
                     {required: true, message: '手机号为必填项', trigger: 'blur'}
                     ]
@@ -293,16 +191,10 @@ export default {
       //列表
 	    roleList: [],
         accountList: [],
-
+        
 	    accountColumns: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
-        {
           title: '序号',
-          //type: "index2",
            minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -316,60 +208,17 @@ export default {
           minWidth:100,
           align:'center'
         }, */
+         {
+        	title:'手机号（登录账户）',
+            key:'phone',
+            minWidth:100,
+          align:'center'
+        },
         {
         	title:'姓名',
             key:'realname',
             minWidth:100,
           align:'center'
-        },
-        {
-        	title:'学号(登录账户)',
-            key:'sid',
-            minWidth:100,
-          align:'center'
-        },
-          {
-        	title:'联系电话(登录账户)',
-            key:'phone',
-            minWidth:100,
-          align:'center'
-        },
-         {
-        	title:'性别',
-            key:'sex',
-            minWidth:100,
-          align:'center',
-          render: (h, params) => {
-            let sexvalue="";
-            this.sexList.forEach(element => {
-              if(element.id==params.row.sex){
-                sexvalue=element.value;
-              }
-            });
-             return  h('span',sexvalue);
-          }
-        },
-        {
-        	title:'民族',
-            key:'nation',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'身份证',
-            key:'identityCards',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'出生年月日',
-            key:'birthDate',
-            minWidth:100,
-          align:'center',
-          render: (h, params) => {
-            let birthDatevalue=params.row.birthDate?params.row.birthDate.substr(0,10):'';
-             return  h('span',birthDatevalue);
-          }
         },
       /*    {
         	title:'图像',
@@ -387,56 +236,20 @@ export default {
             })
           }
         }, */
-
         {
-          title:'报考证书名称',
-          key:'regCerName',
+        	title:'性别',
+            key:'sex',
             minWidth:100,
-          align:'center'
-        },
-
-        {
-        	title:'报考专业',
-            key:'regMajor',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'层次',
-            key:'gradation',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'学制',
-            key:'educationalSystem',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'总费用',
-            key:'totalCost',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'已缴费',
-            key:'alreadyPay',
-            minWidth:100,
-          align:'center'
-        },
-        {
-        	title:'欠费',
-            key:'arrears',
-            minWidth:100,
-          align:'center'
-        },
-         {
-        	title:'预计取证时间',
-          key:'expectGetCerDate',
-           minWidth:100,
-          sortable: true,
-          align:'center'
+          align:'center',
+          render: (h, params) => {
+            let sexvalue="";
+            this.sexList.forEach(element => {
+              if(element.id==params.row.sex){
+                sexvalue=element.value;
+              }
+            });
+             return  h('span',sexvalue);
+          }
         },
         {
         	title:'状态',
@@ -506,6 +319,7 @@ export default {
             var varhh21=  h('Button', {
                 props: {
                   type: 'info',
+                  ghost:'',
                   size: 'small'
                 },
                 style: {
@@ -513,18 +327,25 @@ export default {
                 },
                 on: {
                   click: () => {
-                   let  pp=JSON.stringify({
+                      let  pp=JSON.stringify({
                       currentPage:1,//当前页
                       accountId:params.row.accountId
                     });
-                    this.$router.push('/main/account/studentInfo/'+pp);
+                    this.$router.push('/main/integral/'+pp);
                   }
                 }
-              }, '学生信息');
-			  let s= h("div",[
-                  varhh11
-                  ,varhh12
-                  ,varhh21
+              }, '积分');
+              var s=h("div","");
+    
+			s= h("div",[
+                  h("div",[
+                     varhh11,
+                  varhh12,
+                  ]),
+                  h("div",[
+                    varhh21,
+                  ]),
+                 
                 ]);
             return s;
           }
@@ -545,7 +366,6 @@ export default {
       this.params.pageNum = (this.params.currentPage-1)*this.params.pageSize+this.params.startNum;
       this.getList()
     },
-
   //获取列表
    getRoleList () {
 
@@ -562,12 +382,13 @@ export default {
        listUrl:'/role/list',
        data:'roleList',
        success:()=>{
-
+         
+        
         let rll=this.roleList.length;
         for(let i=0;i<rll;i++){
-            //如果当前管理员非学生
-              if(!this.com.nieyue.business.getIsStudentAdmin()
-              &&this.roleList[i].name!="学生"){
+            //如果当前管理员非车主
+              if(!this.business.getIsCarAdmin()
+              &&this.roleList[i].name!="车主"){
                 this.roleList.splice(i,1)
               rll--;
               i--;
@@ -601,17 +422,14 @@ export default {
   //增加
 	 add (params) {
       this.addAccountModel = true
-         //初始化
+        //初始化
         this.addAccount={
             icon:'',
-            totalCost:0,
-            alreadyPay:0,
-            arrears:0,
             sex:0,
             status:0,
             roleId:this.roleList[0].roleId
         };
-
+      
     },
 		//增加取消
 		 addCancel () {
@@ -631,8 +449,6 @@ export default {
      * p.loading loading
      * p.showModel 界面模型显示隐藏
      */
-    this.addAccount.birthDate=this.utils.getTime(this.addAccount.birthDate)
-    this.addAccount.expectGetCerDate=this.utils.getTime(this.addAccount.expectGetCerDate)
     this.axiosbusiness.add(this,{
       ref:'addAccount',
       url:'/account/add',
@@ -671,8 +487,6 @@ export default {
      * p.showModel 界面模型显示隐藏
      */
     delete this.updateAccount.role;
-    this.addAccount.birthDate=this.utils.getTime(this.addAccount.birthDate)
-    this.addAccount.expectGetCerDate=this.utils.getTime(this.addAccount.expectGetCerDate)
     this.axiosbusiness.update(this,{
       ref:'updateAccount',
       url:'/account/update',
@@ -680,7 +494,7 @@ export default {
       loading:'updateLoading',
       showModel:'updateAccountModel'
     })
-
+ 
     },
     //删除
     delete(params){
@@ -697,40 +511,6 @@ export default {
       url:'/account/delete',
       requestObject:'deleteAccount'
     })
-    },
-    //批量删除
-    deleteBatch(){
-      //获取删除对象数组
-      var als=this.$refs.table.getSelection();
-      var ais=[];
-      for (let i = 0; i < als.length; i++) {
-        var  a = als[i];
-        ais.push(a.accountId)
-      }
-      if(ais.length<=0){
-        this.$Message.error("最少选一个")
-        return;
-      }
-       this.deleteBatchAccount={
-          "accountIds":ais.toString()
-        };
-    this.axiosbusiness.delete(this,{
-      url:'/account/deleteBatch',
-      requestObject:'deleteBatchAccount'
-    })
-    },
-    //账户导出
-    exportAccount(){
-      var als=this.$refs.table.getSelection();
-      if(als.length<=0){
-        this.$Message.error("最少选一个")
-        return;
-      }
-      this.$refs.table.exportCsv({
-          filename: '学生数据',
-          columns: this.accountColumns.com.nieyue.filter((data, index) => index>=2),
-          data: als
-      });
     }
   },
    watch: {
@@ -742,6 +522,8 @@ export default {
     },
   created () {
     this.getRoleList();
+   
+      
   },
   mounted () {
 

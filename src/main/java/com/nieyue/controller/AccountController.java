@@ -119,9 +119,14 @@ public class AccountController extends BaseController<Account, Long>{
 	public @ResponseBody StateResultList<List<Account>> updateAccount(
 		@ModelAttribute Account account,
 			HttpSession session)  {
+		//判断是否存在
+		Account ac = accountService.load(account.getAccountId());
+		if(ac==null || ac.getAccountId()==null){
+			throw new AccountIsNotExistException();//账户不存在
+		}
 		//账户已经存在
 		if(accountService.loginAccount(account.getPhone(), null,account.getAccountId())!=null
-				||accountService.loginAccount(account.getEmail(), null,account.getAccountId())!=null
+			//||accountService.loginAccount(ac.getEmail(), null,null)!=null
 				){
 			throw new AccountIsExistException();//账户已经存在
 		}
@@ -129,21 +134,21 @@ public class AccountController extends BaseController<Account, Long>{
 		return u;
 	}
 	/**
-	 * 账户修改密码
+	 * 忘记密码
 	 * @param adminName 手机号/电子邮箱
 	 * @param password  新密码
 	 * @param validCode 短信验证码
 	 * @return
 	 * @throws VerifyCodeErrorException 
 	 */
-	@ApiOperation(value = "账户修改密码", notes = "账户修改密码")
+	@ApiOperation(value = "忘记密码", notes = "忘记密码")
 	@ApiImplicitParams({
 		  @ApiImplicitParam(name="adminName",value="手机号/电子邮箱",dataType="string", paramType = "query",required=true),
 		  @ApiImplicitParam(name="password",value="新密码",dataType="string", paramType = "query",required=true),
 		  @ApiImplicitParam(name="validCode",value="短信验证码",dataType="string", paramType = "query",required=true)
 		  })
-	@RequestMapping(value = "/updatePassword", method = {RequestMethod.GET,RequestMethod.POST})
-	public @ResponseBody StateResultList<List<Account>> updateAccountPassword(
+	@RequestMapping(value = "/forgetPassword", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Account>> forgetAccountPassword(
 			@RequestParam("adminName")String adminName,
 			@RequestParam("password")String password,
 			@RequestParam(value="validCode",required=false) String validCode,
@@ -161,6 +166,43 @@ public class AccountController extends BaseController<Account, Long>{
 		ac.setPassword(MyDESutil.getMD5(password));
 		StateResultList<List<Account>> u = super.update(ac);
 		return u;
+	}
+	/**
+	 * 账户修改密码
+	 * @param accountId 账户id
+	 * @param password  新密码
+	 * @param oldPassword 旧密码
+	 * @return
+	 */
+	@ApiOperation(value = "账户修改密码", notes = "账户修改密码")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query",required=true),
+			@ApiImplicitParam(name="password",value="新密码",dataType="string", paramType = "query",required=true),
+			@ApiImplicitParam(name="oldPassword",value="旧密码",dataType="string", paramType = "query",required=true)
+	})
+	@RequestMapping(value = "/updatePassword", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Account>> updateAccountPassword(
+			@RequestParam("accountId")Long accountId,
+			@RequestParam("password")String password,
+			@RequestParam(value="oldPassword") String oldPassword,
+			HttpSession session)  {
+		//判断是否存在
+		Account ac = accountService.load(accountId);
+		if(ac==null || ac.getAccountId()==null){
+			throw new AccountIsNotExistException();//账户不存在
+		}
+		if(oldPassword==null||!MyDESutil.getMD5(oldPassword).equals(ac.getPassword())){
+			throw new CommonRollbackException("旧密码错误");//旧密码错误
+		}
+		if(password==null||password.length()<6||password.length()>18){
+			throw new CommonRollbackException("密码长度6-18");//旧密码错误
+
+		}
+		ac.setPassword(MyDESutil.getMD5(password));
+		boolean a = accountService.update(ac);
+		List<Account> list = new ArrayList<Account>();
+		list.add(ac);
+		return ResultUtil.getSlefSRSuccessList(list);
 	}
 	/**
 	 * 账户修改用户信息
@@ -212,7 +254,7 @@ public class AccountController extends BaseController<Account, Long>{
 	public  @ResponseBody StateResultList<List<Account>> addAccount(@ModelAttribute Account account, HttpSession session) {
 		//账户已经存在
 		if(accountService.loginAccount(account.getPhone(), null,null)!=null
-				||accountService.loginAccount(account.getEmail(), null,null)!=null
+				//||accountService.loginAccount(account.getEmail(), null,null)!=null
 				){
 			throw new AccountIsExistException();//账户已经存在
 		}

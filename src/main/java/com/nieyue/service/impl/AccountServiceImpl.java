@@ -22,6 +22,8 @@ import com.nieyue.util.MyDom4jUtil;
 public class AccountServiceImpl extends BaseServiceImpl<Account,Long> implements AccountService{
 	@Autowired
 	RoleService roleService;
+	@Autowired
+	IntegralService integralService;
 	/**
 	 * 登录
 	 */
@@ -32,9 +34,11 @@ public class AccountServiceImpl extends BaseServiceImpl<Account,Long> implements
 	 	Map<String,Object> map=new HashMap<String,Object>();
 	 	map.put("phone", adminName);
 	 	map.put("password", password==null?null:MyDESutil.getMD5(password));
-	 	map.put("account_id", accountId);
 	 	wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
-	 	//email登录
+	 	if(accountId!=null){
+			wrapper.andNew().notIn("account_id",accountId);
+		}
+		//email登录
 	 	/*Map<String,Object> map2=new HashMap<String,Object>();
 	 	map2.put("email", adminName);
 	 	map2.put("password", password==null?null:MyDESutil.getMD5(password));
@@ -56,6 +60,22 @@ public class AccountServiceImpl extends BaseServiceImpl<Account,Long> implements
 	@Override
 	public boolean add(Account t) {
 		boolean b = super.add(t);
+		if(!b){
+			throw new CommonRollbackException();
+		}
+		//增加积分
+		Integral integral =new Integral();
+		integral.setAccountId(t.getAccountId());
+		integral.setBaseProfit(0.0);
+		integral.setIntegral(0.0);
+		integral.setRecharge(0.0);
+		integral.setConsume(0.0);
+		integral.setCreateDate(new Date());
+		integral.setUpdateDate(new Date());
+		b=integralService.add(integral);
+		if(!b){
+			throw new CommonRollbackException();
+		}
 		return b;
 	}
 	@Override

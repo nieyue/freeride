@@ -1,4 +1,4 @@
-package yayao.util;
+package com.nieyue.util;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -116,8 +116,10 @@ CREATE TABLE trip_tb(
 trip_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '行程id',
 start_address varchar(255) COMMENT '出发地',
 end_address varchar(255) COMMENT '目的地',
+middle_address varchar(255) COMMENT '途径地',
 start_date datetime COMMENT '出发时间',
 is_door tinyint(4) COMMENT '是否上门接送，1是，2否',
+person_number tinyint(4) COMMENT '可带人数',
 unit_price decimal(11,2) COMMENT '金额/人',
 create_date datetime COMMENT '创建时间',
 update_date datetime COMMENT '更新时间',
@@ -149,7 +151,9 @@ VALUES (1000,'超级管理员','超级管理员',now());
 INSERT IGNORE INTO role_tb (role_id,name,duty,update_date) 
 VALUES (1001,'普通管理员','普通管理员',now());
 INSERT IGNORE INTO role_tb (role_id,name,duty,update_date)
-VALUES (1002,'用户','用户',now());
+VALUES (1002,'车主','车主',now());
+INSERT IGNORE INTO role_tb (role_id,name,duty,update_date)
+VALUES (1003,'用户','用户',now());
 
 #初始化配置
 INSERT IGNORE INTO config_tb (config_id,platform_name,free_number,create_date,update_date)
@@ -158,3 +162,6 @@ VALUES (1000,'赤兔顺风车',3,now(),now());
 #设置初始管理员密码MD5加密123456
 INSERT IGNORE INTO account_tb (account_id,nickname,phone,email,password,create_date,login_date,role_id) 
 VALUES (1000,'聂跃','1000','1000@qq.com','11874bb6149dd45428da628c9766b252',now(),now(),1000);
+
+INSERT IGNORE INTO integral_tb (integral_id,integral,recharge,consume,base_profit,create_date,update_date,account_id)
+VALUES (1000,0,0,0,0,now(),now(),1000);

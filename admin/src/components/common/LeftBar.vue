@@ -2,32 +2,40 @@
 <template>
    <Sider >
             <Menu class="leftbar-wrap" :class="menuitemClasses" :active-name="menuActiveName"  @on-select="menuSelect" theme="light">
-                <MenuItem :name="menu.config.welcome">
-                    <Icon type="logo-twitter" />
-                    <span>欢迎页</span>
-                </MenuItem>
+                  <Submenu name="config">
+                    <template slot="title">
+                        <Icon type="ios-settings" />
+                        <span>配置管理</span>
+                    </template>
+                    <MenuItem :name="menu.config.welcome">
+                        <Icon type="logo-twitter" />
+                        <span>欢迎页</span>
+                    </MenuItem>
+                    <MenuItem :name="menu.config.config">
+                        <Icon type="md-medical" />
+                        <span>平台配置</span>
+                    </MenuItem>
+                    <MenuItem :name="menu.config.activationCode">
+                        <Icon type="md-medical" />
+                        <span>激活码</span>
+                    </MenuItem>
+                </Submenu>
                 <MenuItem name="/main/account/selfAccount">
                     <Icon type="ios-man" />
                     <span>个人信息</span>
                 </MenuItem>
-                 <Submenu name="studentAccount" v-if="isSuperAdmin||isTeacherAdmin" >
+                 <Submenu name="teacherAccount" >
                     <template slot="title">
                         <Icon type="md-person" />
-                        <span>学生管理</span>
+                        <span>账户管理</span>
                     </template>
-                    <MenuItem name="/main/account/studentAccount">
-                        <Icon type="ios-contact" />
-                        <span>学生</span>
-                    </MenuItem>
-                </Submenu>
-                 <Submenu name="teacherAccount" v-if="isSuperAdmin" >
-                    <template slot="title">
-                        <Icon type="md-person" />
-                        <span>教师管理</span>
-                    </template>
-                    <MenuItem name="/main/account/teacherAccount">
+                    <MenuItem name="/main/account/carAccount">
                         <Icon type="ios-body" />
-                        <span>教师</span>
+                        <span>车主</span>
+                    </MenuItem>
+                    <MenuItem name="/main/account/userAccount">
+                        <Icon type="ios-body" />
+                        <span>用户</span>
                     </MenuItem>
                 </Submenu>
                 <Submenu v-if="isSuperAdmin" name="managerAccount">
@@ -40,7 +48,7 @@
                         <span>管理员管理</span>
                     </MenuItem>
                 </Submenu>
-                <!-- <Submenu v-if="isSuperAdmin" name="rolePermission">
+                <Submenu v-if="isSuperAdmin" name="rolePermission">
                     <template slot="title">
                         <Icon type="ios-people" />
                         <span>角色权限管理</span>
@@ -53,8 +61,8 @@
                         <Icon type="md-sunny" />
                         <span>权限</span>
                     </MenuItem>
-                </Submenu> -->
-                <!-- <Submenu v-if="isSuperAdmin" name="system">
+                </Submenu>
+                <Submenu v-if="isSuperAdmin" name="system">
                     <template slot="title">
                         <Icon type="ios-people" />
                         <span>系统管理</span>
@@ -67,7 +75,7 @@
                         <Icon type="ios-man" />
                         <span>API接口管理(swagger)</span>
                     </MenuItem>
-                </Submenu> -->
+                </Submenu>
             </Menu>
         </Sider>
 </template>
@@ -109,6 +117,8 @@
              //配置
             config:{
                  welcome:"/main/welcome/"+pp,
+                 config:"/main/config/"+pp,
+                 activationCode:"/main/activationCode/"+pp
             },
             //角色权限
             rolePermission:{
@@ -122,17 +132,13 @@
     },
     created(){
        //判断是否超级管理员
-        this.isSuperAdmin=this.com.nieyue.business.getIsSuperAdmin()
-       //判断是否教师
-        this.isTeacherAdmin=this.com.nieyue.business.getIsTeacherAdmin()
-       //判断是否学生
-        this.isStudentAdmin=this.com.nieyue.business.getIsStudentAdmin()
+        this.isSuperAdmin=this.business.getIsSuperAdmin()
         this.pathParams={
           currentPage:1,//当前页
-          //accountId:this.com.nieyue.business.getAccount().accountId
+          //accountId:this.business.getAccount().accountId
         }
         this.initMenu();
-    //this.isSuperAdmin= this.com.nieyue.business.getIsSuperAdmin();
+    //this.isSuperAdmin= this.business.getIsSuperAdmin();
     //监听点击返回
     this.Hub.$on('routerChange', (msg) => { //Hub接收事件
         //this.msg = 'hehe';

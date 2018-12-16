@@ -113,8 +113,10 @@ import FooterBar from '@/components/common/FooterBar';
               if (res.data.code == 200) {
                 this.$Message.success(res.data.msg)
                 console.log(res.data.data[0])
-                sessionStorage.setItem("account",JSON.stringify(res.data.data[0]))
+               // sessionStorage.setItem("account",JSON.stringify(res.data.data[0]))
+                sessionStorage.setItem("account",JSON.stringify(res.data.data[0].account))
                 sessionStorage.setItem("role",JSON.stringify(res.data.data[0].role))
+                sessionStorage.setItem("rolePermissionList",JSON.stringify(res.data.data[0].rolePermissionList))
                 this.$router.push('/main/welcome/'+JSON.stringify(this.pathParams))
               
               } else {

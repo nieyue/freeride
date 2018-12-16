@@ -35,6 +35,11 @@ const router= new Router({
           component: resolve=>require(['@/components/main/config/Welcome'],resolve)
         },
         {
+          path: 'config/:pathParams',
+          name: '配置',
+          component: resolve=>require(['@/components/main/config/Config'],resolve)
+        },
+        {
           path: 'account/selfAccount',
           name: '个人信息',
           component: resolve=>require(['@/components/main/account/SelfAccount'],resolve),
@@ -45,21 +50,26 @@ const router= new Router({
           component: resolve=>require(['@/components/main/account/ManagerAccount'],resolve),
         },
         {
-          path: 'account/teacherAccount',
-          name: '教师',
-          component: resolve=>require(['@/components/main/account/TeacherAccount'],resolve),
+          path: 'account/carAccount',
+          name: '车主',
+          component: resolve=>require(['@/components/main/account/CarAccount'],resolve),
         },
         {
-          path: 'account/studentAccount',
-          name: '学生',
-          component: resolve=>require(['@/components/main/account/StudentAccount'],resolve),
+          path: 'account/userAccount',
+          name: '用户',
+          component: resolve=>require(['@/components/main/account/UserAccount'],resolve),
         },
         {
-          path: 'account/studentInfo/:pathParams',
-          name: '学生信息',
-          component: resolve=>require(['@/components/main/account/StudentInfo'],resolve),
+          path: 'integral/:pathParams',
+          name: '积分',
+          component: resolve=>require(['@/components/main/account/Integral'],resolve),
         },
-        /* {
+        {
+          path: 'activationCode/:pathParams',
+          name: '激活码',
+          component: resolve=>require(['@/components/main/account/ActivationCode'],resolve),
+        },
+         {
           path: 'role/:pathParams',
           name: '角色',
           component: resolve=>require(['@/components/main/rolePermission/Role'],resolve)
@@ -74,11 +84,12 @@ const router= new Router({
           name: '角色权限',
           component: resolve=>require(['@/components/main/rolePermission/RolePermission'],resolve)
         },
+       
         {
           path: 'system/druid',
           name: '数据库监控',
           component: resolve=>require(['@/components/main/system/Druid'],resolve)
-        }, */
+        },
         {
           path: 'system/swagger',
           name: 'API接口管理（swagger）',

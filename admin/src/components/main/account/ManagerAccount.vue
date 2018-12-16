@@ -4,9 +4,9 @@
     <div class="body-btn-wrap">
       <Button type='primary'  @click='add'>增加账户</Button>
       <div class="search-wrap">
-          <!-- <Select v-model="params.roleId"  transfer class="search-wrap-input" >
+       <Select v-model="params.roleId"  transfer class="search-wrap-input" >
             <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
-        </Select> -->
+        </Select> 
         <Select v-model="params.status" transfer class="search-wrap-input"  placeholder="状态，全部">
             <Option v-for="item in statusParamsList" :value="item.id" :key="item.id">{{ item.value }}</Option>
         </Select>
@@ -351,15 +351,6 @@ export default {
           if(this.roleList[i].name!='超级管理员'
           &&this.roleList[i].name!='普通管理员'){
            this.roleList.splice(i,1);
-            roleListLength--;
-            i--;
-          }
-          //路径为其他账户
-       }else {
-
-           if(this.roleList[i].name!='学生'
-           &&this.roleList[i].name!='教师'){
-               this.roleList.splice(i,1);
             roleListLength--;
             i--;
           }
