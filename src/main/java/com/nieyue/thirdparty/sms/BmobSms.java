@@ -25,7 +25,7 @@ public class BmobSms {
     public  Boolean sendSms(String recNum) throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("https://api2.bmob.cn/1/requestSmsCode");
-        httpPost.addHeader("X-Bmob-com.nieyue.Application-Id","0df5e167984a8f9cee07933a7b8c5c76");
+        httpPost.addHeader("X-Bmob-Application-Id","0df5e167984a8f9cee07933a7b8c5c76");
         httpPost.addHeader("X-Bmob-REST-API-Key","5279af777d6112a63d846cdc6cb5a433");
         httpPost.addHeader("Content-Type","application/json");
         JSONObject rjson=new JSONObject();
@@ -54,7 +54,7 @@ public class BmobSms {
 
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("https://api2.bmob.cn/1/verifySmsCode/"+code);
-        httpPost.addHeader("X-Bmob-com.nieyue.Application-Id","0df5e167984a8f9cee07933a7b8c5c76");
+        httpPost.addHeader("X-Bmob-Application-Id","0df5e167984a8f9cee07933a7b8c5c76");
         httpPost.addHeader("X-Bmob-REST-API-Key","5279af777d6112a63d846cdc6cb5a433");
         httpPost.addHeader("Content-Type","application/json");
         JSONObject rjson=new JSONObject();
@@ -72,4 +72,8 @@ public class BmobSms {
 
     }
 
+    public static void main(String[] args) throws IOException {
+        boolean b=new BmobSms().sendSms("15111336587");
+        System.out.println(b);
+    }
 }

@@ -11663,4 +11663,34 @@ for (var i = 0; i < treeCitys.length; i++) {
          }
      }
      return areas;
+}  //根据市查出省
+ function getProvinceByCity(city){
+      var province=null;
+     var treeCitys=getThreeCity();
+     o:for (var i = 0; i < treeCitys.length; i++) {
+            var sheng=treeCitys[i].label;
+            if(sheng==city||sheng==city.substr(0,city.indexOf('市'))){
+                province=sheng;
+                break o;
+            }
+             var shis=treeCitys[i].children;
+             for (var j = 0; j < shis.length; j++) {
+                 if(shis[j].label==city||sheng==city.substr(0,city.indexOf('市'))){
+                    province=sheng;
+                    break o;
+
+                 }
+                 var qus=shis[j].children;
+                 if(!qus){
+                 continue;
+                 }
+                 for (var z = 0; z < qus.length; z++) {
+                     if(qus[z].label==city||sheng==city.substr(0,city.indexOf('市'))){
+                     province=sheng;
+                     break o;
+                     }
+                 }
+             }
+     }
+     return province;
 }

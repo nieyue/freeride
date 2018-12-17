@@ -122,6 +122,7 @@ $("#getValidCode").on("click",function(){
                         business.myLoadingToast("注册成功")
                         sessionStorage.setItem("account",JSON.stringify(data.data[0].account))
                         sessionStorage.setItem("role",JSON.stringify(data.data[0].role))
+                        location.href='user.html';
                     }
                 })
             }

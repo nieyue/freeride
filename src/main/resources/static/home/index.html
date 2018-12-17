@@ -12,9 +12,11 @@
             padding:5px;
         }
         .address-name{
+            text-align:center;
+            display:inline-block;
+            width:20%;
             background-color:#fff;
-            padding:5px 15px;
-            border:1px solid #ececec;
+            padding:2%;
         }
         .address-name:hover{
             background-color:#ccc;
@@ -30,84 +32,9 @@
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
       <div >
-          <div>
-              <div  class="address-P">A</div>
-              <div  class="address-name">安徽省</div>
-              <!-- <div class="address-name">澳门</div> -->
-          </div>
-          <div>
-              <div class="address-P">B</div>
-              <div class="address-name">北京市</div>
-          </div> 
-          <div>
-              <div class="address-P">C</div>
-              <div class="address-name">重庆</div>
-          </div> 
-          <div>
-              <div class="address-P">F</div>
-              <div class="address-name">福建省</div>
-          </div>
-          <div>
-              <div class="address-P">G</div>
-              <div class="address-name">甘肃省</div>
-              <div class="address-name">广东省</div>
-              <div class="address-name">广西壮族</div>
-              <div class="address-name">贵州省</div>
-          </div>
-          <div>
-              <div class="address-P">H</div>
-              <div class="address-name">海南省</div>
-              <div class="address-name">河北省</div>
-              <div class="address-name">黑龙江省</div>
-              <div class="address-name">河南省</div>
-              <div class="address-name">湖北省</div>
-              <div class="address-name">湖南省</div>
-          </div>
-          <div>
-              <div class="address-P">J</div>
-              <div class="address-name">江苏省</div>
-              <div class="address-name">江西省</div>
-              <div class="address-name">吉林省</div>
-          </div>
-          <div>
-              <div class="address-P">L</div>
-              <div class="address-name">辽宁省</div>
-          </div>
-          <div>
-              <div class="address-P">N</div>
-              <div class="address-name">内蒙古</div>
-              <div class="address-name">宁夏</div>
-          </div>
-          <div>
-              <div class="address-P">Q</div>
-              <div class="address-name">青海省</div>
-          </div>
-          <div>
-              <div class="address-P">S</div>
-              <div class="address-name">陕西省</div>
-              <div class="address-name">山东省</div>
-              <div class="address-name">上海市</div>
-              <div class="address-name">山西省</div>
-              <div class="address-name">四川省</div>
-          </div>
-          <div>
-              <div class="address-P">T</div>
-              <div class="address-name">天津市</div>
-              <!--<div class="address-name">台湾省</div>-->
-          </div>
-          <div>
-              <div class="address-P">X</div>
-              <div class="address-name">新疆</div>
-              <div class="address-name">西藏</div>
-              <!--<div class="address-name">香港</div>-->
-          </div>
-          <div>
-              <div class="address-P">Y</div>
-              <div class="address-name">云南省</div>
-          </div>
-          <div>
-              <div class="address-P">Z</div>
-              <div class="address-name">浙江省</div>
+          <div id="citys">
+              <!--<div  class="address-P">A</div>
+              <div  class="address-name">安徽省</div>-->
           </div>
       </div>
       
@@ -138,11 +65,35 @@
 <!-- 固定栏 end-->
 <script src="resources/js/jquery2.1.js"></script>
 <script src="resources/js/base.js"></script>
+<script src="resources/js/address.js"></script>
+<script src="resources/js/city.js"></script>
 <script>
     //点击省跳转市
   $(".address-name").on("click",function(){
       location.href="index2.html?startProvince="+$(this).text().trim();
   })
+
+    console.log(citys)
+     var sss=[];
+    for(var i=0;i<citys.length;i++){
+    var city=citys[i];
+    var html2=''
+
+    for(var j=0;j<city.cityList.length;j++){
+            var pbc=getProvinceByCity(city.cityList[j]);
+        if(pbc&&pbc!='澳门'&&pbc!='香港'&&pbc!='台湾省'){
+       // sss.push(city.cityList[j])
+         html2+='<span class="address-name">'+city.cityList[j]+'</span>';
+         //console.log(getProvinceByCity(city.cityList[j]) +" "+city.cityList[j])
+
+        }
+    }
+    var html='<div  class="address-P">'+city.code+'</div>'
+              +'<div style="margin:auto;" >'+html2+'</div>';
+    $("#citys").append(html)
+
+    }
+
 
 </script>
 </body>
