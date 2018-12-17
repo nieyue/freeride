@@ -23,8 +23,9 @@
 </head>
 <body>
 <div class="nav-wrap">
+    <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
     <span>
-        选择当前省
+        选择目的省
     </span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
@@ -139,10 +140,15 @@
 <script src="resources/js/jquery2.1.js"></script>
 <script src="resources/js/base.js"></script>
 <script>
-    //点击省跳转市
-  $(".address-name").on("click",function(){
-      location.href="index2.html?startProvince="+$(this).text().trim();
-  })
+    if(!business.getQueryString("startArea")){
+        location.href="index.html"
+    }
+    //点击区跳转目的省
+    $(".address-name").on("click",function(){
+        location.href="indexd2.html?startProvince="+business.getQueryString("startProvince")+"&startCity="+business.getQueryString("startCity")+"&startArea="+business.getQueryString("startArea")+"&endProvince="+$(this).text().trim();
+    })
+
+
 
 </script>
 </body>

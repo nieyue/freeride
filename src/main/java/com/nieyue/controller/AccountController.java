@@ -508,6 +508,7 @@ public class AccountController extends BaseController<Account, Long>{
 		if(Pattern.matches(MyValidator.REGEX_PHONE,adminName)){
 			try {
 				//SendSmsResponse res = aliyunSms.sendSms(userValidCode.toString(),adminName, templateCode);
+				//Boolean res=true;
 				Boolean res = bmobSms.sendSms(adminName);
 				if(res){
 					return ResultUtil.getSlefSRSuccessList(null);
@@ -549,14 +550,14 @@ public class AccountController extends BaseController<Account, Long>{
 	@ApiOperation(value = "web用户注册", notes = "web用户注册")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name="adminName",value="手机号/邮箱号",dataType="string", paramType = "query",required=true),
-			@ApiImplicitParam(name="verificationCode",value="图片验证码",dataType="string", paramType = "query",required=true),
+			@ApiImplicitParam(name="verificationCode",value="图片验证码",dataType="string", paramType = "query"),
 			@ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="validCode",value="手机号/邮箱号验证码",dataType="string", paramType = "query")
 	})
 	@RequestMapping(value = "/webregister", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Map<String,Object>>> webRegisterAccount(
 			@RequestParam("adminName") String adminName,
-			@RequestParam("verificationCode") String verificationCode,
+			@RequestParam(value="verificationCode",required = false) String verificationCode,
 			@RequestParam("password") String password,
 			@RequestParam("validCode") String validCode,
 			HttpServletRequest request,

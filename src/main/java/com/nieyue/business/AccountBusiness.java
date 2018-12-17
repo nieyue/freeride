@@ -124,9 +124,11 @@ public class AccountBusiness {
 			HttpSession session
 			){
 		//1代验证码
-		String ran= (String) session.getAttribute("verificationCode");
-		if(ran==null||!ran.equals(verificationCode)){
-			throw new VerifyCodeErrorException();
+		if(verificationCode!=null) {
+			String ran = (String) session.getAttribute("verificationCode");
+			if (ran == null || !ran.equals(verificationCode)) {
+				throw new VerifyCodeErrorException();
+			}
 		}
 
 		//角色类型
@@ -205,14 +207,17 @@ public class AccountBusiness {
 			throw new CommonRollbackException("缺失账号");//异常
 		}
 		//1代图片验证码
-		String ran= (String) session.getAttribute("verificationCode");
-		if(ran==null||!ran.equals(verificationCode)){
-			throw new VerifyCodeErrorException();//验证码
+		if(verificationCode!=null){
+			String ran= (String) session.getAttribute("verificationCode");
+			if(ran==null||!ran.equals(verificationCode)){
+				throw new VerifyCodeErrorException();//验证码
+			}
 		}
 		//手机/邮箱验证码
 		if(adminName!=null){
 			//String vc = (String) session.getAttribute("validCode");
 			try {
+				//Boolean vc = true;
 				Boolean vc = bmobSms.verifySms(adminName, validCode);
 				if(!vc){
 					throw new VerifyCodeErrorException();//验证码错误

@@ -11585,38 +11585,41 @@ function getValueByLabel(province,city,area){
     return cityData;
   }
 //初始化省市区
-  function initShengShiQu(shengelement,shielement,quelement){
+  function initProvinceCityArea(provinceelement,cityelement,areaelement){
     var treeCitys=getThreeCity();
 var sheng='';
 var shi='';
 var qu='';
+    console.log(treeCitys)
 for (var i = 0; i < treeCitys.length; i++) {
-    //console.log(treeCitys[i].label)
-    $("#"+shengelement).append('<option value="'+treeCitys[i].label+'">'+treeCitys[i].label+"</option>")
+    if(treeCitys[i].label=='台湾省'||treeCitys[i].label=='香港'||treeCitys[i].label=='澳门'||treeCitys[i].label=='海外'){
+        continue;
+    }
+    $(provinceelement).append('<option value="'+treeCitys[i].label+'">'+treeCitys[i].label+"</option>")
 };
-$("#"+shengelement).change(function(){
+$(provinceelement).change(function(){
     for (var i = 0; i < treeCitys.length; i++) {
-        if(treeCitys[i].label==$("#"+shengelement).val()){
-            var shengs=treeCitys[i].children;
-            $("#"+shielement).html('<option value="请选择市">请选择市</option>');
-            for (var j = 0; j < shengs.length; j++) {
-                $("#"+shielement).append('<option value="'+shengs[j].label+'">'+shengs[j].label+"</option>")
+        if(treeCitys[i].label==$(provinceelement).val()){
+            var shis=treeCitys[i].children;
+            $(cityelement).html('<option value="0">请选择市</option>');
+            for (var j = 0; j < shis.length; j++) {
+                $(cityelement).append('<option value="'+shis[j].label+'">'+shis[j].label+"</option>")
 
             }
         }
     }
 })
-$("#"+shielement).change(function(){
+$(cityelement).change(function(){
 for (var i = 0; i < treeCitys.length; i++) {
-        if(treeCitys[i].label==$("#"+shengelement).val()){
+        if(treeCitys[i].label==$(provinceelement).val()){
             sheng=treeCitys[i].label;
-            var shengs=treeCitys[i].children;
-            for (var j = 0; j < shengs.length; j++) {
-                if(shengs[j].label==$("#"+shielement).val()){
-                var shis=shengs[j].children;
-                    $("#"+quelement).html('<option value="请选择区">请选择区</option>');
-                    for (var z = 0; z < shis.length; z++) {
-                        $("#"+quelement).append('<option value="'+shis[z].label+'">'+shis[z].label+"</option>")
+            var shis=treeCitys[i].children;
+            for (var j = 0; j < shis.length; j++) {
+                if(shis[j].label==$(cityelement).val()){
+                var qus=shis[j].children;
+                    $(areaelement).html('<option value="0">请选择区</option>');
+                    for (var z = 0; z < qus.length; z++) {
+                        $(areaelement).append('<option value="'+qus[z].label+'">'+qus[z].label+"</option>")
                     }
                 }
 
@@ -11625,3 +11628,39 @@ for (var i = 0; i < treeCitys.length; i++) {
     }
 })
   }
+  //根据省查出市
+ function getCityByProvince(province){
+      var citys=[];
+     var treeCitys=getThreeCity();
+     for (var i = 0; i < treeCitys.length; i++) {
+         if(treeCitys[i].label==province){
+             var shis=treeCitys[i].children;
+             for (var j = 0; j < shis.length; j++) {
+                 citys.push(shis[j].label);
+             }
+         }
+     }
+     console.log(citys)
+     return citys;
+}
+  //根据省和市查出区
+ function getAreaByProvinceAndCity(province,city){
+      var areas=[];
+     var treeCitys=getThreeCity();
+     for (var i = 0; i < treeCitys.length; i++) {
+         if(treeCitys[i].label==province){
+            var sheng=treeCitys[i].label;
+             var shis=treeCitys[i].children;
+             for (var j = 0; j < shis.length; j++) {
+                 if(shis[j].label==city){
+                     var qus=shis[j].children;
+                     for (var z = 0; z < qus.length; z++) {
+                         areas.push(qus[z].label)
+                     }
+                 }
+
+             }
+         }
+     }
+     return areas;
+}

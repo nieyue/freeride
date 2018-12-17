@@ -1,6 +1,7 @@
 package com.nieyue.controller;
 
 import com.nieyue.bean.Account;
+import com.nieyue.bean.Role;
 import com.nieyue.bean.Trip;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -47,6 +48,7 @@ public class TripController extends BaseController<Trip,Long> {
 	@ApiOperation(value = "行程列表", notes = "行程分页浏览")
 	@ApiImplicitParams({
 	  @ApiImplicitParam(name="isDoor",value="是否上门接送，1是，2否",dataType="int", paramType = "query"),
+	  @ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
 	  @ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query"),
 	  @ApiImplicitParam(name="pageNum",value="页头数位",dataType="int", paramType = "query",defaultValue="1"),
 	  @ApiImplicitParam(name="pageSize",value="每页数目",dataType="int", paramType = "query",defaultValue="10"),
@@ -56,6 +58,7 @@ public class TripController extends BaseController<Trip,Long> {
 	@RequestMapping(value = "/list", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> list(
 			@RequestParam(value="isDoor",required=false)Integer isDoor,
+			@RequestParam(value="createDate",required=false)Date createDate,
 			@RequestParam(value="accountId",required=false)Long accountId,
 			@RequestParam(value="pageNum",defaultValue="1",required=false)int pageNum,
 			@RequestParam(value="pageSize",defaultValue="10",required=false) int pageSize,
@@ -66,6 +69,10 @@ public class TripController extends BaseController<Trip,Long> {
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
+		//大于等于
+		if(createDate!=null) {
+			wrapper.andNew().ge("create_date", createDate);
+		}
 		StateResultList<List<Trip>> rl = super.list(pageNum, pageSize, orderName, orderWay,wrapper);
 			return rl;
 	}
@@ -88,7 +95,9 @@ public class TripController extends BaseController<Trip,Long> {
 	@RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> add(@ModelAttribute Trip trip, HttpSession session) {
 		Account account = accountService.load(trip.getAccountId());
-		if(account==null || account.getAuth()!=2){
+		Role role = (Role)session.getAttribute("role");
+		if((role.getName().indexOf("管理")<=-1)
+				&&(account==null || account.getAuth()!=2)){
 			throw new CommonRollbackException("账户没有认证");
 		}
 		trip.setUpdateDate(new Date());
@@ -115,11 +124,13 @@ public class TripController extends BaseController<Trip,Long> {
 	@ApiOperation(value = "行程数量", notes = "行程数量查询")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name="isDoor",value="是否上门接送，1是，2否",dataType="int", paramType = "query"),
+			@ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
 			@ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query"),
 	})
 	@RequestMapping(value = "/count", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Integer>> count(
 			@RequestParam(value="isDoor",required=false)Integer isDoor,
+			@RequestParam(value="createDate",required=false)Date createDate,
 			@RequestParam(value="accountId",required=false)Long accountId,
 			HttpSession session)  {
 		Wrapper<Trip> wrapper=new EntityWrapper<>();
@@ -127,6 +138,10 @@ public class TripController extends BaseController<Trip,Long> {
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
+		//大于等于
+		if(createDate!=null) {
+			wrapper.andNew().ge("create_date", createDate);
+		}
 		StateResultList<List<Integer>> c = super.count(wrapper);
 		return c;
 	}
