@@ -1,22 +1,25 @@
 package com.nieyue.controller;
 
-import com.nieyue.bean.Account;
-import com.nieyue.business.AccountBusiness;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.nieyue.bean.Account;
+import com.nieyue.bean.Role;
+import com.nieyue.business.AccountBusiness;
+import com.nieyue.business.OrderBusiness;
 import com.nieyue.exception.*;
+import com.nieyue.mail.SendMailDemo;
+import com.nieyue.service.AccountService;
+import com.nieyue.service.RoleService;
+import com.nieyue.thirdparty.sms.BmobSms;
+import com.nieyue.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import com.nieyue.mail.SendMailDemo;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.nieyue.service.AccountService;
-import com.nieyue.thirdparty.sms.BmobSms;
-import com.nieyue.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,6 +41,10 @@ public class AccountController extends BaseController<Account, Long>{
 	private AccountService accountService;
 	@Autowired
 	private AccountBusiness accountBusiness;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private OrderBusiness orderBusiness;
 	@Autowired
 	private BmobSms bmobSms;
 
@@ -131,6 +138,35 @@ public class AccountController extends BaseController<Account, Long>{
 			throw new AccountIsExistException();//账户已经存在
 		}
 		StateResultList<List<Account>> u = super.update(account);
+		return u;
+	}
+	/**
+	 * 更新邀请码
+	 * @return
+	 */
+	@ApiOperation(value = "更新邀请码", notes = "更新邀请码")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="accountId",value="更新账户ID",dataType="long", paramType = "query",required=true),
+			@ApiImplicitParam(name="targetAccountId",value="被更新人账户ID",dataType="long", paramType = "query",required=true),
+	})
+	@RequestMapping(value = "/updateInviteCode", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Account>> updateInviteCode(
+			@RequestParam("accountId")Long accountId,
+			@RequestParam("targetAccountId") Long targetAccountId,
+			HttpSession session)  {
+		//判断是否存在
+		Account ac = accountService.load(targetAccountId);
+		if(ac==null || ac.getAccountId()==null){
+			throw new AccountIsNotExistException();//账户不存在
+		}
+		//账户已经存在
+		if(accountService.loginAccount(ac.getPhone(), null,ac.getAccountId())!=null
+			//||accountService.loginAccount(ac.getEmail(), null,null)!=null
+				){
+			throw new AccountIsExistException();//账户已经存在
+		}
+		ac.setInviteCode(orderBusiness.generateShortUuid());
+		StateResultList<List<Account>> u = super.update(ac);
 		return u;
 	}
 	/**
@@ -259,6 +295,8 @@ public class AccountController extends BaseController<Account, Long>{
 			throw new AccountIsExistException();//账户已经存在
 		}
 		account.setPassword(MyDESutil.getMD5(account.getPassword()));
+		//增加邀请码
+		account.setInviteCode(orderBusiness.generateShortUuid());
 		account.setCreateDate(new Date());
 		account.setLoginDate(new Date());
 		StateResultList<List<Account>> a = super.add(account);
@@ -272,6 +310,7 @@ public class AccountController extends BaseController<Account, Long>{
 	@ApiImplicitParams({
 			@ApiImplicitParam(name="accountId",value="账户ID",dataType="long", paramType = "query",required=true),
 			@ApiImplicitParam(name="realname",value="真实姓名",dataType="string", paramType = "query",required=true),
+			@ApiImplicitParam(name="address",value="收货地址",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="drivingLicenseFrontImg",value="驾照正面",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="drivingLicenseBackImg",value="驾照反面",dataType="string", paramType = "query",required=true),
@@ -282,6 +321,7 @@ public class AccountController extends BaseController<Account, Long>{
 	public @ResponseBody StateResultList<List<Account>> authAccount(
 			@RequestParam("accountId") Long accountId,
 			@RequestParam("realname") String realname,
+			@RequestParam("address") String address,
 			@RequestParam("inviteCode") String inviteCode,
 			@RequestParam("drivingLicenseFrontImg") String drivingLicenseFrontImg,
 			@RequestParam("drivingLicenseBackImg") String drivingLicenseBackImg,
@@ -303,7 +343,7 @@ public class AccountController extends BaseController<Account, Long>{
 		if(account!=null &&!account.equals("")&& account.getAuth().equals(0)){
 			account.setAuth(1);//审核中
 			account.setRealname(realname);
-			account.setInviteCode(inviteCode);
+			account.setAddress(address);
 			account.setIdentityCardsFrontImg(identityCardsFrontImg);
 			account.setIdentityCardsBackImg(identityCardsBackImg);
 			account.setDrivingLicenseFrontImg(drivingLicenseFrontImg);
@@ -324,6 +364,37 @@ public class AccountController extends BaseController<Account, Long>{
 			}
 			return ResultUtil.getSlefSRFailList(list);
 		}
+	}
+	/**
+	 * 认证审核
+	 * @return
+	 */
+	@ApiOperation(value = "认证审核", notes = "认证审核")
+	@ApiImplicitParams({
+		  @ApiImplicitParam(name="accountId",value="审核人账户ID",dataType="long", paramType = "query",required=true),
+		  @ApiImplicitParam(name="targetAccountId",value="被审核人账户ID",dataType="long", paramType = "query",required=true),
+		  @ApiImplicitParam(name="auth",value="认证，0没认证(驳回)，1审核中，2已认证（审核成功）",dataType="int", paramType = "query",required=true)
+		 	  })
+	@RequestMapping(value = "/authExamine", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Account>> authExamine(
+			@RequestParam("accountId") Long accountId,
+			@RequestParam("targetAccountId") Long targetAccountId,
+			@RequestParam("auth") Integer auth,
+			HttpSession session)  {
+		Account targetAccount = accountService.load(targetAccountId);
+		targetAccount.setAuth(auth);
+		if(auth==2){
+			List<Role> roleList = roleService.list(1, Integer.MAX_VALUE, "role_id","asc",null);
+			for (Role role : roleList) {
+				if(role!=null  ){
+					if(role.getName().equals("车主")){
+						targetAccount.setRoleId(role.getRoleId());
+					}
+				}
+			}
+		}
+		StateResultList<List<Account>> d = super.update(targetAccount);
+		return d;
 	}
 	/**
 	 * 账户删除

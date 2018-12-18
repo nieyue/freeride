@@ -15,8 +15,8 @@ import MyWangeditor from '@/components/common/MyWangeditor'
 import MyPhone from '@/components/common/MyPhone'
 
 Vue.config.productionTip = false
-//axios.defaults.baseURL="http://192.168.7.111:8080";
-axios.defaults.baseURL="http://localhost:8080";
+axios.defaults.baseURL="http://111.231.121.28:8080";
+//axios.defaults.baseURL="http://localhost:8080";
 //axios.defaults.baseURL="http://nieyue.ngrok.xiaomiqiu.cn";
 //axios.defaults.baseURL="http://testserver.niejuehong.com";
 axios.defaults.headers["Content-Type"]="application/x-www-form-urlencoded";

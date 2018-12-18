@@ -177,5 +177,18 @@ public class BaseController<T,ID> {
 				throw new NotAnymoreException();//没有更多
 			}
 	}
-	
+	/**
+	 * 分页浏览
+	 * @return
+	 */
+	public  StateResultList<List<T>> simplelist(
+			Wrapper<T> wrapper)  {
+			List<T> list = baseService.simplelist(wrapper);
+			if(list!=null&&list.size()>0){
+				return ResultUtil.getSlefSRSuccessList(list);
+			}else{
+				throw new NotAnymoreException();//没有更多
+			}
+	}
+
 }

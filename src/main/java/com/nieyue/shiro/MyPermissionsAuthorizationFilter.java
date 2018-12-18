@@ -69,8 +69,6 @@ public class MyPermissionsAuthorizationFilter extends PermissionsAuthorizationFi
                  * 表示当前账户只能操作自身id下的权限。
                 */
                 if(rp.getPermission().getRoute().equals(perms[i]) && rp.getRegion().equals(2) && !account.getAccountId().toString().equals( request.getParameter("accountId"))){
-                   // System.out.println(account.getAccountId());
-                    //System.err.println(request.getParameter("accountId"));
                     isPermitted = false;
                     break;
                     }

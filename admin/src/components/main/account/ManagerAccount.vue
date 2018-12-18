@@ -95,7 +95,7 @@
     <!--修改end -->
       <Table border :columns='accountColumns' :data='accountList' ref='table' size="small"></Table>
         <div style='display: inline-block;float: right; margin-top:10px;'>
-        <Page style='margin-right:10px;' :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'  @on-change='selectPage' show-elevator ></Page>
+        <Page style='margin-right:10px;'  @on-page-size-change="onPageSizeChange" show-sizer :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'  @on-change='selectPage' show-elevator ></Page>
       </div>
     </div>
 </template>
@@ -171,6 +171,26 @@ export default {
           minWidth:100,
             key:'phone',
           align:'center'
+        },
+         {
+        	title:'邀请码',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+             return  h('span',[params.row.inviteCode,
+             h('Button', {
+                        props: {
+                          type: 'primary',
+                          size: 'small'
+                        },
+                        on: {
+                          click: () => {
+                            this.updateInviteCode(params.row);
+                          }
+                        }
+                      }, '更新')
+             ]);
+          }
         },
         {
           title:'姓名',
@@ -327,6 +347,11 @@ export default {
       this.params.pageNum = (this.params.currentPage-1)*this.params.pageSize+this.params.startNum;
       this.getList()
     },
+    //切换每页条数时的回调，返回切换后的每页条数
+    onPageSizeChange(a){
+      this.params.pageSize=a;
+      this.selectPage(1)
+    },
   //获取列表
    getRoleList () {
      /**
@@ -482,6 +507,29 @@ export default {
       requestObject:'loginoutAccount'
     })
   },
+  //更新邀请码
+    updateInviteCode(params){
+      let p="?accountId="+this.business.getAccount().accountId;
+        p+="&targetAccountId="+params.accountId;
+      
+
+       this.$Modal.confirm({
+            title: '更新邀请码',
+            content: "确认更新邀请码吗？",
+            onOk: () => {
+              this.axiosbusiness.get(this,{
+                url:'/account/updateInviteCode'+p,
+                success:(d)=>{
+                   this.$Message.success('更新成功');
+                   params.inviteCode=d.data.data[0].inviteCode
+                }
+              });
+         },
+      onCancel: () => {
+         this.$Message.info('取消');
+      }
+       });
+    },
   //启用禁用
   changeStatus(updateAccount){
     this.updateAccount=updateAccount

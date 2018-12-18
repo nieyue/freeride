@@ -1,5 +1,6 @@
 package com.nieyue.bean;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import io.swagger.annotations.ApiModel;
@@ -79,5 +80,11 @@ public class Trip implements Serializable {
 	 */
 	@ApiModelProperty(value="账户id外键")
 	private Long accountId;
+	/**
+	 * 账户
+	 */
+	@ApiModelProperty(value="账户")
+	@TableField(exist = false)
+	private Account account;
 
 }

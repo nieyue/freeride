@@ -3,11 +3,15 @@
     <div class="body-wrap">
     <div class="body-btn-wrap">
       <Button type='primary'  @click='add'>增加车主</Button>
+      <Button type='info' style="margin:0 20px;" @click='exportAccount'>账户导出</Button>
       <div class="search-wrap">
           <!-- <Select v-model="params.roleId"  transfer class="search-wrap-input" >
             <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
         </Select> -->
         <Input v-model="params.realname" class="search-wrap-input" placeholder="姓名"></Input>
+        <Select v-model="params.auth" transfer class="search-wrap-input"  placeholder="认证，全部">
+            <Option v-for="item in authParamsList" :value="item.id" :key="item.id">{{ item.value }}</Option>
+        </Select>
         <Select v-model="params.status" transfer class="search-wrap-input"  placeholder="状态，全部">
             <Option v-for="item in statusParamsList" :value="item.id" :key="item.id">{{ item.value }}</Option>
         </Select>
@@ -126,7 +130,7 @@
     <!--修改end -->
       <Table border :columns='accountColumns' :data='accountList' ref='table' size="small"></Table>
         <div style='display: inline-block;float: right; margin-top:10px;'>
-        <Page style='margin-right:10px;' :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'  @on-change='selectPage' show-elevator ></Page>
+        <Page style='margin-right:10px;'  @on-page-size-change="onPageSizeChange" show-sizer :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'  @on-change='selectPage' show-elevator ></Page>
       </div>
     </div>
 </template>
@@ -151,6 +155,13 @@ export default {
           {id:1,value:'封禁'},
           {id:2,value:'异常'}
           ],
+          //认证，0没认证，1审核中，2已认证
+        authParamsList:[
+          {id:'',value:'全部'},
+           {id:0,value:'没认证'},
+          {id:1,value:'审核中'},
+          {id:2,value:'已认证'}
+          ],
         //性别
         sexList:[
         {id:0,value:'未知'},
@@ -162,6 +173,12 @@ export default {
         {id:0,value:'正常'},
         {id:1,value:'封禁'},
         {id:2,value:'异常'}
+        ],
+        //认证，0没认证，1审核中，2已认证
+      authList:[
+        {id:0,value:'没认证'},
+        {id:1,value:'审核中'},
+        {id:2,value:'已认证'}
         ],
 			//增加参数
 			addAccountModel:false,
@@ -194,7 +211,13 @@ export default {
         
 	    accountColumns: [
         {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
           title: '序号',
+          //type: "index2",
            minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -202,55 +225,149 @@ export default {
             +(this.params.currentPage-1)*this.params.pageSize+this.params.startNum);
           }
         },
-       /*  {
+         {
           title: '账户id',
           key: 'accountId',
           minWidth:100,
           align:'center'
-        }, */
+        }, 
          {
-        	title:'手机号（登录账户）',
-            key:'phone',
-            minWidth:100,
+          title: '上级id',
+          key: 'masterId',
+          minWidth:100,
           align:'center'
-        },
+        }, 
         {
         	title:'姓名',
             key:'realname',
             minWidth:100,
           align:'center'
         },
-      /*    {
-        	title:'图像',
-            key:'icon',
+          {
+        	title:'手机(登录账户)',
+            key:'phone',
+            minWidth:100,
+          align:'center'
+        },
+       {
+        	title:'邀请码',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+             return  h('span',[params.row.inviteCode,
+             h('Button', {
+                        props: {
+                          type: 'primary',
+                          size: 'small'
+                        },
+                        on: {
+                          click: () => {
+                            this.updateInviteCode(params.row);
+                          }
+                        }
+                      }, '更新')
+             ]);
+          }
+        },
+         {
+        	title:'收货地址',
+            key:'address',
+            minWidth:100,
+          align:'center'
+        },
+         
+        
+        {
+        	title:'认证',
+            key:'auth',
+             minWidth:100,
+          align:'center',
+          render: (h, params) => {
+            let authvalue="";
+            this.authList.forEach(element => {
+              if(element.id==params.row.auth){
+                authvalue=element.value;
+              }
+            });
+            if(params.row.auth==1){
+              return  h('div',[
+                        authvalue,
+                      h('Button', {
+                        props: {
+                          type: 'primary',
+                          size: 'small'
+                        },
+                        on: {
+                          click: () => {
+                            this.authExamine(params.row);
+                          }
+                        }
+                      }, '审核')]);
+            }
+             return  h('span',authvalue);
+          }
+        },
+       {
+        	title:'身份证正面',
             minWidth:100,
           align:'center',
           render: (h, params) => {
             return h('img', {
               attrs: {
-                src: params.row.icon
+                src: params.row.identityCardsFrontImg
               },
               style: {
-                width: '45px'
+                width: '80px'
               }
             })
           }
-        }, */
-        {
-        	title:'性别',
-            key:'sex',
+        }, 
+       {
+        	title:'身份证反面',
             minWidth:100,
           align:'center',
           render: (h, params) => {
-            let sexvalue="";
-            this.sexList.forEach(element => {
-              if(element.id==params.row.sex){
-                sexvalue=element.value;
+            return h('img', {
+              attrs: {
+                src: params.row.identityCardsBackImg
+              },
+              style: {
+                width: '80px'
               }
-            });
-             return  h('span',sexvalue);
+            })
           }
-        },
+        }, 
+       {
+        	title:'驾照正面',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+            return h('img', {
+              attrs: {
+                src: params.row.drivingLicenseFrontImg
+              },
+              style: {
+                width: '80px'
+              }
+            })
+          }
+        }, 
+       {
+        	title:'驾照反面',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+            return h('img', {
+              attrs: {
+                src: params.row.drivingLicenseBackImg
+              },
+              style: {
+                width: '80px'
+              }
+            })
+          }
+        }, 
+
         {
         	title:'状态',
             key:'status',
@@ -264,6 +381,21 @@ export default {
               }
             });
              return  h('span',statusvalue);
+          }
+        },
+        {
+        	title:'性别',
+            key:'sex',
+            minWidth:100,
+          align:'center',
+          render: (h, params) => {
+            let sexvalue="";
+            this.sexList.forEach(element => {
+              if(element.id==params.row.sex){
+                sexvalue=element.value;
+              }
+            });
+             return  h('span',sexvalue);
           }
         },
         {
@@ -365,6 +497,11 @@ export default {
       this.params.currentPage=currentPage;
       this.params.pageNum = (this.params.currentPage-1)*this.params.pageSize+this.params.startNum;
       this.getList()
+    },
+    //切换每页条数时的回调，返回切换后的每页条数
+    onPageSizeChange(a){
+      this.params.pageSize=a;
+      this.selectPage(1)
     },
   //获取列表
    getRoleList () {
@@ -511,6 +648,77 @@ export default {
       url:'/account/delete',
       requestObject:'deleteAccount'
     })
+    },
+    //审核
+    authExamine(params){
+      let p="?accountId="+this.business.getAccount().accountId;
+        p+="&targetAccountId="+params.accountId;
+      
+
+       this.$Modal.confirm({
+            title: '审核认证',
+            content: "审核通过吗？",
+            okText:'审核通过',
+            onOk: () => {
+              //通过
+              p+="&auth=2";
+              this.axiosbusiness.get(this,{
+                url:'/account/authExamine'+p,
+                success:()=>{
+                   this.$Message.success('审核通过');
+                   this.Hub.$emit('routerChange',"/main/account/carAccount");
+                }
+              });
+         },
+         cancelText:'驳回',
+      onCancel: () => {
+        //驳回
+        p+="&auth=0";
+       this.axiosbusiness.get(this,{
+                url:'/account/authExamine'+p,
+                success:()=>{
+                  this.$Message.info('驳回成功');
+                  params.auth=0
+                }
+              });
+      }
+       });
+    },
+    //更新邀请码
+    updateInviteCode(params){
+      let p="?accountId="+this.business.getAccount().accountId;
+        p+="&targetAccountId="+params.accountId;
+      
+
+       this.$Modal.confirm({
+            title: '更新邀请码',
+            content: "确认更新邀请码吗？",
+            onOk: () => {
+              this.axiosbusiness.get(this,{
+                url:'/account/updateInviteCode'+p,
+                success:(d)=>{
+                   this.$Message.success('更新成功');
+                   params.inviteCode=d.data.data[0].inviteCode
+                }
+              });
+         },
+      onCancel: () => {
+         this.$Message.info('取消');
+      }
+       });
+    },
+    //账户导出
+    exportAccount(){
+      var als=this.$refs.table.getSelection();
+      if(als.length<=0){
+        this.$Message.error("最少选一个")
+        return;
+      }
+      this.$refs.table.exportCsv({
+          filename: '用户数据',
+          columns: this.accountColumns.filter((data, index) => index>=2),
+          data: als
+      });
     }
   },
    watch: {

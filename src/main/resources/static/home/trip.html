@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>发布</title>
-	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="resources/css/font-awesome.min.css" rel="stylesheet">
 	<link href="resources/css/datetime.css" rel="stylesheet">
 	<link rel="stylesheet" href="resources/css/base.css">
 </head>
@@ -55,7 +55,7 @@
 		</div>
 		<div style="margin:15px 0;">
 			<span>&#12288;价格：</span>
-			<input type="number" id="unitPrice" value="0"/>元/人
+			<input type="number" id="unitPrice" value="1"/>元/人
 		</div>
 		<div style="margin:15px 0;">
 			<span>上门接送：</span>
@@ -98,29 +98,45 @@
  <script src="resources/js/datetime.js"></script>
  <script src="resources/js/base.js"></script>
  <script>
+	 //如果不是车主不显示
+     var role=JSON.parse(sessionStorage.getItem("role"));
+     if(role.name!='车主'){
+         business.myLoadingToast("车主认证后开通",function(){
+             business.gonav('auth',true);
+		 })
+	 }
 	 //初始化地址
      initProvinceCityArea("#province","#city","#area");
      initProvinceCityArea("#province2","#city2","#area2");
-//日期
-$('#startDate').mdater();
-//时间
-mobiletime({
-trigger:'#startTime',
-callback:function(indexArr,data){
-//console.log(indexArr)
-//console.log(data)
-var xiaoshi=indexArr[0]+1;
- xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
-var fen=indexArr[1]+1;
- fen=fen>=10?fen:"0"+fen;
-var miao=indexArr[2]+1;
- miao=miao>=10?miao:"0"+miao;
-$("#startTime").val(xiaoshi+":"+fen+":"+miao)
-}
-})
+	//日期
+	$('#startDate').mdater();
+	//时间
+	mobiletime({
+	trigger:'#startTime',
+	callback:function(indexArr,data){
+	//console.log(indexArr)
+	//console.log(data)
+	var xiaoshi=indexArr[0]+1;
+	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
+	var fen=indexArr[1]+1;
+	 fen=fen>=10?fen:"0"+fen;
+	var miao=indexArr[2]+1;
+	 miao=miao>=10?miao:"0"+miao;
+	$("#startTime").val(xiaoshi+":"+fen+":"+miao)
+	}
+	})
 
      //增加行程
      $("#tripSubmit").on("click",function(){
+         if(!sessionStorage.getItem("account")){
+             business.myLoadingToast("请登陆");
+             setTimeout(function(){
+                 business.gologin();
+			 },500)
+             return;
+		 }
+         var accountId=JSON.parse(sessionStorage.getItem("account")).accountId;
+
          if($("#province").val()=='0'
 		 ||$("#city").val()=='0'
 		 ||$("#area").val()=='0'
@@ -147,20 +163,29 @@ $("#startTime").val(xiaoshi+":"+fen+":"+miao)
          }
          var isDoor=$("#isDoor option:selected").val();
          var startDate=$('#startDate').val()+" "+$("#startTime").val();
-		 //var accountId=JSON.parse(sessionStorage.getItem("account")).accountId;
-		 //var accountId=JSON.parse(sessionStorage.getItem("account")).accountId;
+
          business.ajax({
              url:'/trip/add',
              data:{
-                 pageNum:pageNum,
-                 pageSize:pageSize,
+                 startAddress:startAddress,
+                 endAddress:endAddress,
+                 middleAddress:middleAddress,
+                 unitPrice:unitPrice,
+                 personNumber:personNumber,
+                 isDoor:isDoor,
+                 startDate:startDate,
+				 accountId:accountId
+
              },
              success:function(data){
-                 tripList.concat(data);
+                 business.myLoadingToast(data.msg)
                  console.log(data)
+                 setTimeout(function(){
+                     business.gonav('trip',true);
+                 },500)
              },
              fail:function(data){
-                 isBottom=true;
+                 business.myLoadingToast(data.msg)
              }
          })
      })

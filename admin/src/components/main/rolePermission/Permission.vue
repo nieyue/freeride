@@ -89,7 +89,7 @@
     <!--修改end -->
       <Table border  :columns='permissionColumns' :data='permissionList' ref='table' size="small"></Table>
         <div style='display: inline-block;float: right; margin-top:10px;'>
-        <Page style='margin-right:10px;' :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'   @on-change='selectPage' show-elevator ></Page>
+        <Page style='margin-right:10px;'show-sizer @on-page-size-change="onPageSizeChange" :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'   @on-change='selectPage' show-elevator ></Page>
       </div>
     </div>
     
@@ -287,6 +287,11 @@ export default {
       //查询
     search(){
       this.getList()
+    },
+    //切换每页条数时的回调，返回切换后的每页条数
+    onPageSizeChange(a){
+      this.params.pageSize=a;
+      this.selectPage(1)
     },
     //分页点击
     selectPage (currentPage) {

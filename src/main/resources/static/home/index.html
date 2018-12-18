@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>赤兔顺风车</title>
+    <link href="resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/base.css">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         .address-P{
             background-color:#ececec;
@@ -26,15 +26,13 @@
 <body>
 <div class="nav-wrap">
     <span>
-        选择当前省
+        选择当前城市
     </span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
       <div >
           <div id="citys">
-              <!--<div  class="address-P">A</div>
-              <div  class="address-name">安徽省</div>-->
           </div>
       </div>
       
@@ -69,12 +67,11 @@
 <script src="resources/js/city.js"></script>
 <script>
     //点击省跳转市
-  $(".address-name").on("click",function(){
-      location.href="index2.html?startProvince="+$(this).text().trim();
+  $(document).on("click",".address-name",function(){
+      console.log($(this).text().trim())
+      location.href="indexd.html?startCity="+$(this).text().trim();
   })
 
-    console.log(citys)
-     var sss=[];
     for(var i=0;i<citys.length;i++){
     var city=citys[i];
     var html2=''
@@ -82,16 +79,13 @@
     for(var j=0;j<city.cityList.length;j++){
             var pbc=getProvinceByCity(city.cityList[j]);
         if(pbc&&pbc!='澳门'&&pbc!='香港'&&pbc!='台湾省'){
-       // sss.push(city.cityList[j])
          html2+='<span class="address-name">'+city.cityList[j]+'</span>';
          //console.log(getProvinceByCity(city.cityList[j]) +" "+city.cityList[j])
-
         }
     }
     var html='<div  class="address-P">'+city.code+'</div>'
               +'<div style="margin:auto;" >'+html2+'</div>';
     $("#citys").append(html)
-
     }
 
 

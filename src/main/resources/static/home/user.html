@@ -4,11 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>我的</title>
+    <link href="resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/base.css">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .address-name{
+            background-color:#fff;
+            padding:5px 15px;
+            height: 30px;
+            line-height: 30px;
+            border:1px solid #ececec;
+            position: relative;
+            left: 0;
+            top:0;
+        }
+        .address-name:hover{
+            background-color:#ccc;
+        }
+
+    </style>
 </head>
 <body>
-    
+<div class="nav-wrap">
+    <span>
+        我的
+    </span>
+</div>
+    <div>
+        <div style="margin-top:38px;height: 200px;background-color: #fff;text-align: center;">
+            <div  style="padding-top:50px;">
+                <i class="fa fa-user-circle " style="font-size:55px;"></i>
+            </div>
+            <div style="margin-top:5px;">
+                <span id="phone"></span>
+            </div>
+        </div>
+        <div >
+            <div class="address-name" id="auth">
+                <span>车主认证</span>
+                <span style="float: right">>></span>
+            </div>
+            <div class="address-name" id="integral">
+                <span>我的积分</span>
+                <span style="float: right">>></span>
+            </div>
+            <div class="address-name" id="welfare">
+                <span>我的福利</span>
+                <span style="float: right">>></span>
+            </div>
+            <div class="address-name" id="contact">
+                <span>联系我们</span>
+                <span style="float: right">>></span>
+            </div>
+        </div>
+
+
+    </div>
 
 <!-- 固定栏-->
 <div class="mer-footer">
@@ -36,8 +86,44 @@
 <script src="resources/js/jquery2.1.js"></script>
 <script src="resources/js/base.js"></script>
 <script>
+    //初始化
+    var account=JSON.parse(sessionStorage.getItem("account"));
+    $("#phone").text(account.phone)
 
-
+    //车主认证
+    $("#auth").click(function(){
+        //认证，0没认证，1审核中，2已认证
+        if(account.auth==1){
+            business.myLoadingToast("审核中")
+        }else if(account.auth==2){
+            business.myLoadingToast("已认证")
+        }else{
+            business.gonav("auth",true);
+        }
+    })
+    //我的积分
+    $("#integral").click(function(){
+        business.gonav("integral",true);
+    })
+    //我的福利
+    $("#welfare").click(function(){
+        business.ajax({
+            url:'/activationCode/list',
+            data:{
+                accountId:JSON.parse(sessionStorage.getItem("account")).accountId,
+            },
+            success:function(data){
+                business.myLoadingToast('已激活')
+            },
+            fail:function(data){
+                business.gonav("welfare",true);
+            }
+        })
+    })
+    //联系我们
+    $("#contact").click(function(){
+        business.gonav("contact",false);
+    })
 </script>
 </body>
 </html>

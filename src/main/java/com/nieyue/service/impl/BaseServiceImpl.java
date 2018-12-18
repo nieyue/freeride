@@ -99,6 +99,17 @@ public  class BaseServiceImpl<T,ID> implements BaseService<T,ID>{
 		List<T> list = baseDao.selectPage(rowBounds, wrapper);
 		return list;
 	}
+	@Override
+	public List<T> simplelist(
+			Wrapper<T> wrapper) {
+		RowBounds rowBounds=new RowBounds(0,Integer.MAX_VALUE);
+		//排序
+		if(wrapper==null){
+			wrapper=new EntityWrapper<T>();
+		}
+		List<T> list = baseDao.selectPage(rowBounds, wrapper);
+		return list;
+	}
 
 	
 

@@ -249,7 +249,9 @@ public class AccountBusiness {
 		List<Role> roleList = roleService.list(1, Integer.MAX_VALUE, "role_id","asc",null);
 		for (Role role : roleList) {
 			if(role!=null  ){
-					account.setRoleId(role.getRoleId());
+					if(role.getName().equals("用户")){
+						account.setRoleId(role.getRoleId());
+					}
 			}
 		}
 		account.setInviteCode(orderBusiness.generateShortUuid());

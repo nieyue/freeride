@@ -7,7 +7,7 @@
 		 
       <Table border  :columns='tripColumns' :data='tripList' ref='table' size="small"></Table>
         <div style='display: inline-block;float: right; margin-top:10px;'>
-        <Page style='margin-right:10px;' :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'   @on-change='selectPage' show-elevator ></Page>
+        <Page style='margin-right:10px;'  @on-page-size-change="onPageSizeChange" show-sizer :current="params.currentPage" :total='params.total' :pageSize='params.pageSize' ref='page' :show-total='true'   @on-change='selectPage' show-elevator ></Page>
       </div>
     </div>
     
@@ -183,6 +183,11 @@ export default {
      })
       this.$router.push(this.$route.path.substr(0,this.$route.path.indexOf(this.$route.params.pathParams))+pp);
       this.getList()
+    },
+    //切换每页条数时的回调，返回切换后的每页条数
+    onPageSizeChange(a){
+      this.params.pageSize=a;
+      this.selectPage(1)
     },
   //获取列表
    getList () {

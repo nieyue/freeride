@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>我的福利</title>
+    <link rel="stylesheet" href="resources/css/base.css">
+    <style>
+        html,body{
+            height: 100%;
+        }
+        .address-name{
+            color:#fff;
+            display: inline-block;
+            width:40%;
+            padding:5px 15px;
+            margin-top:30px;
+            border:1px solid #ececec;
+            position: relative;
+            left: 0;
+            top:0;
+
+        }
+
+    </style>
+</head>
+<body>
+<div class="nav-wrap">
+    <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
+    <span>
+        我的福利
+    </span>
+</div>
+    <div style="padding-top:38px;text-align:center;background-color: #fff;height:calc( 100% - 38px)">
+        <div class="address-name" style="background-color: #229c0b" >
+            <div>补贴邮费</div>
+            <div>激活</div>
+        </div>
+        <div class="address-name" style="background-color: #f30d0d">
+            <div>600元现金</div>
+            <div >激活</div>
+        </div>
+        <div class="address-name"style="background-color: #650df3">
+            <div>全车划痕修复</div>
+            <div>激活</div>
+        </div>
+        <div style="margin:55px 0 0 -55px;">
+            <span>激活码：</span>
+            <input type="text"  style="height:30px;" id="activationCode"/>
+        </div>
+        <div style="margin:55px 0;text-align:center;">
+            <button id="activationCodeSubmit" style="background-color:red;border:1px solid red;color:#fff;height:30px;width:60%;">激活</button>
+        </div>
+    </div>
+
+<script src="resources/js/jquery2.1.js"></script>
+<script src="resources/js/base.js"></script>
+<script>
+    if(!sessionStorage.getItem("account")){
+        business.gologin()
+    }
+    //提交激活码
+    $("#activationCodeSubmit").on("click",function () {
+        business.ajax({
+            url:'/activationCode/submit',
+            data:{
+                accountId:JSON.parse(sessionStorage.getItem("account")).accountId,
+                code:$("#activationCode").val().trim()
+            },
+            success:function(data){
+                business.myLoadingToast(data.msg)
+                // sessionStorage.setItem("activationCode",JSON.stringify(data.data[0]));
+                setTimeout(function(){
+                    business.gonav('user',true);
+                },500)
+
+            },
+            fail:function(data){
+                business.myLoadingToast(data.msg)
+        }
+        })
+    })
+
+</script>
+</body>
+</html>

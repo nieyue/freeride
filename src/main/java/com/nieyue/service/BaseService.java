@@ -36,4 +36,7 @@ public interface BaseService<T,ID> {
              String orderName,
              String orderWay,
              Wrapper<T> wrapper) ;
+
+	 List<T> simplelist(
+             Wrapper<T> wrapper) ;
 }

@@ -4,11 +4,14 @@ import com.nieyue.bean.ActivationCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.nieyue.business.OrderBusiness;
+import com.nieyue.exception.CommonRollbackException;
+import com.nieyue.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.nieyue.service.ActivationCodeService;
 import com.nieyue.util.MyDom4jUtil;
@@ -87,6 +90,51 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		return u;
 	}
 	/**
+	 * 激活码提交
+	 * @return
+	 */
+	@ApiOperation(value = "激活码提交", notes = "激活码提交")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query",required = true),
+			@ApiImplicitParam(name="code",value="激活码",dataType="int", paramType = "query",required = true),
+	})
+	@RequestMapping(value = "/submit", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<ActivationCode>> submit(
+			@RequestParam(value="code")String code,
+			@RequestParam(value="accountId")Long accountId,
+			HttpSession session)  {
+		Wrapper<ActivationCode> wrapper=new EntityWrapper<>();
+		Map<String,Object> map=new HashMap<>();
+		map.put("account_id", accountId);
+		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
+		List<ActivationCode> al = activationCodeService.simplelist(wrapper);
+		if(al.size()>0){
+			throw new CommonRollbackException("账户已激活过");
+		}
+		if(StringUtils.isEmpty(code)){
+			throw new CommonRollbackException("激活码错误");
+		}
+		Wrapper<ActivationCode> wrapper2=new EntityWrapper<>();
+		Map<String,Object> map2=new HashMap<>();
+		map2.put("code", code);
+		wrapper2.allEq(MyDom4jUtil.getNoNullMap(map2));
+		List<ActivationCode> al2 = activationCodeService.simplelist(wrapper2);
+		if(al2.size()>0){
+			ActivationCode activationCode=al2.get(0);
+			if(activationCode.getIsUsered()!=1){
+				throw new CommonRollbackException("激活码已使用");
+			}else{
+				activationCode.setUpdateDate(new Date());
+				activationCode.setAccountId(accountId);
+				activationCode.setIsUsered(2);
+				StateResultList<List<ActivationCode>> u= super.update(activationCode);
+				return u;
+			}
+		}else{
+			throw new CommonRollbackException("激活码错误");
+		}
+	}
+	/**
 	 * 激活码增加
 	 * @return 
 	 */
@@ -102,6 +150,9 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 	 * @return
 	 */
 	@ApiOperation(value = "激活码批量增加", notes = "激活码批量增加")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="number",value="增加数量",dataType="int", paramType = "query",required = true),
+	})
 	@RequestMapping(value = "/addBatch", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<ActivationCode>> addBatch(
 			@RequestParam(value="number")Integer number,

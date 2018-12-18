@@ -11663,7 +11663,8 @@ for (var i = 0; i < treeCitys.length; i++) {
          }
      }
      return areas;
-}  //根据市查出省
+}
+//根据市查出省
  function getProvinceByCity(city){
       var province=null;
      var treeCitys=getThreeCity();

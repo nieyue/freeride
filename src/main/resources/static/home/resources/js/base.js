@@ -1,6 +1,7 @@
 var business={
 	//域名路径
-	domanurl:'http://localhost:8080',
+	//domanurl:'http://localhost:8080',
+	domanurl:'http://111.231.121.28:8080',
     /**
      * 验证规则
      */
@@ -29,7 +30,7 @@ var business={
             timeout:10000,//超时时间设置为10秒；
             xhrFields: {withCredentials: true},
             success: function(data){
-                business.myLoadingToast(data.msg)
+                //business.myLoadingToast(data.msg)
                 if(data.code==200){
                     if(typeof param.success=='function'){
                         param.success(data);
@@ -42,6 +43,123 @@ var business={
             }
         })
 	},
+    /**
+     * 单文件上传组件
+     * options:输入项
+     * options.inputfile 文件元素
+     * options.ajaxObj 数组对象1，formData{key,value} 2,url 3,success 4,error
+     * options.dragFn 拖拽的对象
+     */
+    fileUpload:function(options){
+        var initPhotoExt=options.photoExt||[".jpg",".png",".gif",".apk"];
+        var isPhotoExt=false;
+        if(!options&&typeof options!='object' ){
+            business.myLoadingToast("操作失败",null);
+            return;
+        }
+        var file=options.inputfile.get(0);
+        //console.log(file.files)
+        var photoExt=file.value.substr(file.value.lastIndexOf(".")).toLowerCase();// 获得文件后缀名
+        // 判断格式
+        for (var i = 0; i < initPhotoExt.length; i++) {
+            if(photoExt==initPhotoExt[i])	{
+                isPhotoExt=true;
+            }
+        }
+        if(!isPhotoExt){
+            myUtils.myLoadingToast("请上传后缀名为"+initPhotoExt.join("").replace(/\./g,"/")+"的照片!");
+            return false;
+        }
+        /* if(photoExt!='.jpg'&&photoExt!='.png'&&photoExt!='.gif'&&photoExt!='.apk'){
+             myUtils.myLoadingToast("请上传后缀名为jpg/png/gif的照片!");
+             return false;
+         }*/
+        var fileSize = 0;
+        var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        if (isIE && !file.files) {
+            var filePath = file.value;
+            var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fileSystem.GetFile (filePath);
+            fileSize = file.Size;
+        }else {
+            fileSize = file.files[0].size;
+        }
+        fileSize=Math.round(fileSize/1024*100)/100; // 单位为KB
+        if((photoExt=='.apk'&&fileSize>30000)||(photoExt!='.apk'&&fileSize>200)){
+            business.myLoadingToast("图片大小为"+fileSize+"KB，超过最大尺寸为200KB，请重新上传!");
+            return false;
+        }
+        if (file.files && file.files[0])
+        {
+            var reader = new FileReader();
+            reader.readAsDataURL(file.files[0]);
+            reader.onload = function(e){
+                if(typeof options.ajaxObj!='object'){
+                    business.myLoadingToast("上传失败",null);
+                    return;
+                }
+                if(options.proportion){//是否有宽高比
+                    var img = new Image;
+                    img.src = reader.result;
+                    img.onload = function () {
+                        var width = img.width;
+                        var height = img.height;
+                        if((width/height).toFixed(2)!=(options.proportion).toFixed(2)){
+                            business.myLoadingToast("图片宽高比"+(width/height).toFixed(2)+"，应为"+options.proportion);
+                        }else{
+                            myajax();
+                        }
+
+                    };
+                }else{
+                    myajax();
+                }
+                function myajax(){
+                    business.myPrevToast("上传中",function(){
+                        var fd=new FormData();
+                        if(typeof options.ajaxObj.formData=='object'){
+                            for (var i = 0; i < options.ajaxObj.formData.length; i++) {
+                                fd.append(options.ajaxObj.formData[i].key,options.ajaxObj.formData[i].value);
+                            }
+                        }
+                        $.ajax({
+                            url:options.ajaxObj.url,
+                            type:"POST",
+                            data:fd,
+                            timeout:30000,
+                            enctype:'multipart/form-data',
+                            processData:false,// 告诉jQuery不要去处理发送的数据
+                            contentType:false, // 告诉jQuery不要去设置Content-Type请求头
+                            success:function(src){// 获取最新图片更新
+                                if(typeof options.ajaxObj.success=='function'){
+                                    options.ajaxObj.success(src);
+                                }
+                                business.myPrevToast("上传成功",null,"remove");
+                            },
+                            error:function(d){
+                                if(typeof options.ajaxObj.error=='function'){
+                                    options.ajaxObj.error();
+                                }
+                                console.log(d)
+                                business.myPrevToast("上传失败",null,"remove");
+                            }
+                        });
+                    },"add");
+
+                    if(typeof options.dragFn=='function'){
+                        options.dragFn(e);
+                    }
+                }
+            }
+
+        }else{
+            business.myPrevToast("浏览器不支持",null,"add");
+            setTimeout(function(){
+                business.myPrevToast("浏览器不支持",null,"remove");
+            },1000);
+            //$(imgelement).attr("src",file.value);
+        }
+    },
     /**
      * 判断是否滑动到底部
      */
@@ -121,7 +239,7 @@ var business={
 		if(b){
             if(!sessionStorage.getItem("account")){
                 sessionStorage.clear()
-                location.href="login.html"
+                business.gologin()
                 return;
             }
 
@@ -129,6 +247,10 @@ var business={
                 url:'/account/islogin',
                 success:function(){
                     location.href=param+".html"
+                },
+                fail:function(){
+                    sessionStorage.clear()
+                    business.gologin()
                 }
             })
 			return;

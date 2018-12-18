@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>赤兔顺风车</title>
+    <link href="resources/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="resources/css/base.css">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         .address-name{
             background-color:#fff;
@@ -20,7 +20,7 @@
 <body>
 <div class="nav-wrap">
     <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
-    <span id="searchvalue"></span>
+    <span >顺丰车</span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
@@ -59,12 +59,8 @@
 <script src="resources/js/base.js"></script>
 <script src="resources/js/address.js"></script>
 <script>
-    if(!business.getQueryString("startProvince")
-    ||!business.getQueryString("startCity")
-    ||!business.getQueryString("startArea")
-    ||!business.getQueryString("endProvince")
+    if(!business.getQueryString("startCity")
     ||!business.getQueryString("endCity")
-    ||!business.getQueryString("endArea")
     ){
         location.href="index.html"
     }
@@ -76,49 +72,77 @@
     var pageSize=10;
     var isBottom=false;
     var tripList=[];
-
+    var html="";
     function getTripList(){
         //pageNum=tripList.length+1;
         business.ajax({
-            url:'/account/list',
+            url:'/trip/search',
             data:{
+                startCity:business.getQueryString("startCity"),
+                endCity:business.getQueryString("endCity"),
                 pageNum:pageNum,
                 pageSize:pageSize,
             },
             success:function(data){
-                tripList.concat(data);
+                tripList=tripList.concat(data.data);
                 console.log(data)
-                var html='<div style="border-bottom:1px solid #ececec;">'
+                for (var i = 0; i <tripList.length ; i++) {
+                    var trip=tripList[i];
+                    var datetime=trip.startDate;
+                    var startAddress=trip.startAddress;
+                    var endAddress=trip.endAddress;
+                    var middleAddress=trip.middleAddress;
+                    var personNumber=trip.personNumber;
+                    var unitPrice=trip.unitPrice;
+                    //是否上门接送，1是，2否
+                    var isDoorValue=trip.isDoor==1? '<div style="width:80%;display: inline-block;">'
+                        +' <span style="color:#8034d2;font-weight:bold;">可上门接送</span>'
+                        +' </div>':''
+                    var phone=trip.account.phone;
+                html+='<div style="border-bottom:1px solid #ececec;padding:10px;">'
                             +'<div style="width:30%;display: inline-block;">'
                                     +'<div style="font-size:22px;font-weight: bold;margin-top:2px;">20:30</div>'
                                     +'<div style="font-size:14px;">2018-12-17</div>'
                             +'</div>'
                             +'<div style="height:100%;background-color:#ececec;width:1%;display: inline-block;"></div>'
-                            +'<div style="width:66%;display: inline-block;">'
+                            +'<div style="width:60%;display: inline-block;">'
                                 +'<div style="width:100%;display: inline-block;">'
                                     +'<span>出发地：</span>'
-                                    +'<span>士大夫士大夫</span>'
+                                    +'<span>'+startAddress+'</span>'
                                 +'</div>'
                                 +'<div style="width:100%;display: inline-block;">'
                                     +'<span>目的地：</span>'
-                                    +'<span>士大夫士大夫</span>'
+                                    +'<span>'+endAddress+'</span>'
+                                +'</div>'
+                                +'<div style="width:100%;display: inline-block;">'
+                                    +'<span>途径地：</span>'
+                                    +'<span>'+middleAddress+'</span>'
                                 +'</div>'
                                 +'<div style="width:47%;display: inline-block;">'
-                                    +'<span>可带<span>4</span>人 </span>'
+                                    +'<span>可带<span style="color:red;">'+personNumber+'</span>人 </span>'
                                 +' </div>'
                                 +'<div style="width:47%;display: inline-block;">'
-                                    +' <span>58.5</span>'
+                                    +' <span style="color:red;">'+unitPrice+'</span>'
                                     +' <span>元/人</span>'
                                 +' </div>'
-                                +'</div>'
+                                +isDoorValue
+                            +'</div>'
+                            +'<a style="width:8%;display: inline-block;" href="tel:'+phone+'">'
+                            +'<i class=" fa fa-phone-square" style="color:red;font-size:26px"></i>'
+                            +'</a>'
                             +'</div>';
-                for (var i = 0; i < 10; i++) {
-                    $("#triplist").append(html)
 
                 }
+                //for (var i = 0; i < 10; i++) {
+                    $("#triplist").html(html)
+
+                //}
             },
             fail:function(data){
                 isBottom=true;
+                if(data.code==30002&& tripList.length==0){
+                    $("#triplist").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">暂无顺风车</div>')
+                }
             }
         })
     }
