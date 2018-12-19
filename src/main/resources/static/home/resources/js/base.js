@@ -1,7 +1,8 @@
 var business={
 	//域名路径
 	//domanurl:'http://localhost:8080',
-	domanurl:'http://111.231.121.28:8080',
+	domanurl:'',
+	//domanurl:'http://111.231.121.28:8080',
     /**
      * 验证规则
      */
@@ -177,6 +178,27 @@ var business={
         return isscrollbottom;
     },
     /**
+     * 自定义登录退出
+     */
+    myLoginOut : function(value,fn) {
+        $("body")
+            .append(
+                "<div id='confirmDiv' style='position:fixed;width:100%;height:100%;background-color:#ccc;opacity:0.5;left:0;top:0;'></div><div id='confirm' style='z-index:9999;color:#fff;background-color:black;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;height:200px;width:200px;margin:-100px -100px;top:50%;left:50%;position:fixed;font-size:20px;'>"
+                + "<i class='fa fa-wpbeginner'  style='text-align:center;width:50%;height:50%;font-size:66px;margin-top:10px;'></i><div style='position:absolute;top:100px;width:100%;text-align:center;'>"+value+"</div><div style='position:absolute;left:15px;bottom:15px;width:80px;background-color:#1890ff;color:#fff;' id='confirmYes'>确定</div><div  style='position:absolute;right:15px;bottom:15px;width:80px;background-color:#fff;color:#000;' id='confirmNo'>取消</div></div>");
+        $('#confirmYes').click(function(){
+            $('#confirmDiv').remove();
+            $('#confirm').remove();
+            if(typeof fn=='function'){
+                fn();
+            }
+        });
+        $('#confirmNo').click(function(){
+            $('#confirmDiv').remove();
+            $('#confirm').remove();
+
+        });
+    },
+    /**
      * 实现慢事件执行的toast
      */
     myPrevToast : function(value,fn,motion) {
@@ -271,3 +293,44 @@ var business={
     },
 };
 
+//初始化，所有用户必须登录后访问
+;(function(){
+    if(location.href.indexOf("login.html")<=-1
+        &&location.href.indexOf("register.html")<=-1
+        &&location.href.indexOf("protocol.html")<=-1
+    ){
+        //1自动登录
+        business.ajax({
+            url:"/account/islogin",
+            success:function(data){
+                sessionStorage.setItem("account",JSON.stringify(data.data[0]));
+                sessionStorage.setItem("role",JSON.stringify(data.data[0].role));
+            },
+            fail:function(){
+                //自动登录
+                business.ajax({
+                    url:'/account/weblogin',
+                    success:function(data){
+                        if(!data.data[0]){
+                            //没有就跳转
+                            business.myLoadingToast("登录后访问",function(){
+                                business.gologin()
+                            })
+                        }
+                        sessionStorage.setItem("account",JSON.stringify(data.data[0].account));
+                        sessionStorage.setItem("role",JSON.stringify(data.data[0].role));
+                        location.href='index.html';
+                    },
+                    fail:function(){
+                        //没有就跳转
+                        business.myLoadingToast("登录后访问",function(){
+                            business.gologin()
+                        })
+                    }
+                })
+            }
+        })
+}else{
+
+}
+})();

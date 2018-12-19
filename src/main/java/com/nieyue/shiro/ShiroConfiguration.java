@@ -5,7 +5,9 @@ import com.nieyue.service.PermissionService;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
@@ -33,6 +35,8 @@ public class ShiroConfiguration {
     String sessioncookiename;
     @Value("${server.servlet.session.timeout}")
     Integer sessiontimeout;
+    @Value("${server.servlet.session.cookie.domain}")
+    String sessiondomain;
     @Value("${spring.redis.host}")
     String redishost;
     @Value("${spring.redis.password}")
@@ -138,9 +142,33 @@ public class ShiroConfiguration {
         securityManager.setSessionManager(sessionManager());
         //缓存放入cache
         securityManager.setCacheManager(cacheManager());
+        //注入记住我
+        securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
     }
 
+    /**
+     * SimpleCookie的管理
+     * @param  cookieName cookie名
+     * @param lessSeconds 比设定的少多少秒
+     */
+    public SimpleCookie simpleCookie(String cookieName,Integer lessSeconds ) {
+        SimpleCookie sc=new SimpleCookie();
+        sc.setName(cookieName);
+        sc.setMaxAge(sessiontimeout-lessSeconds);
+        sc.setDomain(sessiondomain);
+        return sc;
+    }
+    /**
+     * rememberMe管理器
+     */
+    @Bean
+    public CookieRememberMeManager rememberMeManager() {
+        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
+        //记住我比sessioncookie少30分钟，即提前30分钟失效
+        cookieRememberMeManager.setCookie(simpleCookie(CookieRememberMeManager.DEFAULT_REMEMBER_ME_COOKIE_NAME,1800));
+        return cookieRememberMeManager;
+    }
     /**
      * com.nieyue.shiro session的管理
      */
@@ -149,8 +177,7 @@ public class ShiroConfiguration {
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setSessionDAO(redisSessionDAO());
-        sessionManager.getSessionIdCookie().setName(sessioncookiename);
-
+        sessionManager.setSessionIdCookie(simpleCookie(sessioncookiename,0));
         return sessionManager;
     }
     /**
@@ -164,6 +191,7 @@ public class ShiroConfiguration {
         redisSessionDAO.setExpire(sessiontimeout);//过期时间
         return redisSessionDAO;
     }
+
     /**
      * cacheManager 缓存 redis实现
      * 使用的是shiro-redis开源插件

@@ -62,7 +62,7 @@ public class AccountController extends BaseController<Account, Long>{
 	  @ApiImplicitParam(name="email",value="email，模糊查询",dataType="string", paramType = "query"),
 	  @ApiImplicitParam(name="realname",value="真实姓名，模糊查询",dataType="string", paramType = "query"),
 	  @ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query"),
-	  @ApiImplicitParam(name="masterId",value="上级id",dataType="long", paramType = "query"),
+	  @ApiImplicitParam(name="masterId",value="上级账户ID，查询下级账户",dataType="long", paramType = "query"),
 	  @ApiImplicitParam(name="roleId",value="角色ID",dataType="long", paramType = "query"),
 	  @ApiImplicitParam(name="status",value="状态，0正常，1锁定，2，异常",dataType="int", paramType = "query"),
 	  @ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
@@ -97,10 +97,12 @@ public class AccountController extends BaseController<Account, Long>{
 		map.put("master_id", masterId);
 	 	map.put("role_id", roleId);
 	 	map.put("status", status);
-	 	map.put("create_date", createDate);
 	 	map.put("login_date", loginDate);
 	 	wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 	 	Map<String,Object> maplike=new HashMap<String,Object>();
+		if(createDate!=null) {
+			maplike.put("create_date", DateUtil.dateFormatSimpleDate(createDate, "yyyy-MM-dd"));
+		}
 	 	maplike.put("phone", phone);
 	 	maplike.put("email", email);
 	 	maplike.put("realname", realname);
@@ -423,7 +425,7 @@ public class AccountController extends BaseController<Account, Long>{
 		  @ApiImplicitParam(name="email",value="email，模糊查询",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="realname",value="真实姓名，模糊查询",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query"),
-		  @ApiImplicitParam(name="masterId",value="上级id",dataType="long", paramType = "query"),
+		  @ApiImplicitParam(name="masterId",value="上级账户ID，查询下级账户",dataType="long", paramType = "query"),
 		  @ApiImplicitParam(name="roleId",value="角色ID",dataType="long", paramType = "query"),
 		  @ApiImplicitParam(name="status",value="状态，0正常，1锁定，2，异常",dataType="int", paramType = "query"),
 		  @ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
@@ -451,10 +453,12 @@ public class AccountController extends BaseController<Account, Long>{
 	 	map.put("invite_code", inviteCode);
 	 	map.put("master_id", masterId);
 	 	map.put("status", status);
-	 	map.put("create_date", createDate);
 	 	map.put("login_date", loginDate);
 	 	wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 	 	Map<String,Object> maplike=new HashMap<String,Object>();
+	 	if(createDate!=null){
+			maplike.put("create_date", DateUtil.dateFormatSimpleDate(createDate,"yyyy-MM-dd"));
+		}
 	 	maplike.put("phone", phone);
 	 	maplike.put("email", email);
 	 	maplike.put("realname", realname);
@@ -510,17 +514,19 @@ public class AccountController extends BaseController<Account, Long>{
 	 */
 	@ApiOperation(value = "web用户登录", notes = "web用户登录")
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="adminName",value="手机号/电子邮箱",dataType="string", paramType = "query",required=true),
-		  @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",required=true),
+		  @ApiImplicitParam(name="isSelfLogin",value="1自动登录，2不自动登录",dataType="int", paramType = "query"),
+		  @ApiImplicitParam(name="adminName",value="手机号/电子邮箱",dataType="string", paramType = "query"),
+		  @ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query"),
 		  @ApiImplicitParam(name="verificationCode",value="验证码",dataType="string", paramType = "query")
 		  })
 	@RequestMapping(value = "/weblogin", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Map<String,Object>>> webLoginAccount(
-			@RequestParam("adminName") String adminName,
-			@RequestParam("password") String password,
+			@RequestParam(value="isSelfLogin",required=false) Integer isSelfLogin,
+			@RequestParam(value="adminName",required=false) String adminName,
+			@RequestParam(value="password",required=false) String password,
 			@RequestParam(value="verificationCode",required=false) String verificationCode,
 			HttpSession session)  {
-		List<Map<String, Object>> list = accountBusiness.webLogin(adminName, password,verificationCode, session);
+		List<Map<String, Object>> list = accountBusiness.webLogin(isSelfLogin,adminName, password,verificationCode, session);
 		return ResultUtil.getSlefSRSuccessList(list);
 		
 	}
@@ -528,7 +534,7 @@ public class AccountController extends BaseController<Account, Long>{
 	 * 手机验证码发送/邮箱验证链接
 	 *
 	 * @param adminName
-	 * @param 模板码 1用户注册，2修改密码，3修改提现密码，4修改手机号，5身份验证
+	 * @param templateCode 模板码 1用户注册，2修改密码，3修改提现密码，4修改手机号，5身份验证
 	 * @return
 	 * @throws RequestLimitException
 	 * @throws AccountIsExistException

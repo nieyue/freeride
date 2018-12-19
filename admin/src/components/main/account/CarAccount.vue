@@ -2,13 +2,16 @@
 <template>
     <div class="body-wrap">
     <div class="body-btn-wrap">
-      <Button type='primary'  @click='add'>增加车主</Button>
+      <Button type='primary'  @click='add' v-if='business.getIsSuperAdmin()'>增加车主</Button>
       <Button type='info' style="margin:0 20px;" @click='exportAccount'>账户导出</Button>
       <div class="search-wrap">
           <!-- <Select v-model="params.roleId"  transfer class="search-wrap-input" >
             <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.name }}</Option>
         </Select> -->
-        <Input v-model="params.realname" class="search-wrap-input" placeholder="姓名"></Input>
+         <Input v-model="params.realname" class="search-wrap-input" placeholder="真实姓名"></Input>
+        <Input v-model="params.masterId" class="search-wrap-input" placeholder="上级账户ID，查询下级账户"></Input>
+        <DatePicker type="date" placeholder="查询日期"  format="yyyy-MM-dd"
+            @on-change="getParamsCreateDate" style="width: 150px" ></DatePicker>
         <Select v-model="params.auth" transfer class="search-wrap-input"  placeholder="认证，全部">
             <Option v-for="item in authParamsList" :value="item.id" :key="item.id">{{ item.value }}</Option>
         </Select>
@@ -250,7 +253,8 @@ export default {
           align:'center'
         },
        {
-        	title:'邀请码',
+          title:'邀请码',
+          key:'inviteCode',
             minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -308,7 +312,8 @@ export default {
           }
         },
        {
-        	title:'身份证正面',
+          title:'身份证正面',
+          key:'identityCardsFrontImg',
             minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -323,7 +328,8 @@ export default {
           }
         }, 
        {
-        	title:'身份证反面',
+          title:'身份证反面',
+          key:'identityCardsBackImg',
             minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -338,7 +344,8 @@ export default {
           }
         }, 
        {
-        	title:'驾照正面',
+          title:'驾照正面',
+           key:'drivingLicenseFrontImg',
             minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -353,7 +360,8 @@ export default {
           }
         }, 
        {
-        	title:'驾照反面',
+          title:'驾照反面',
+          key:'drivingLicenseBackImg',
             minWidth:100,
           align:'center',
           render: (h, params) => {
@@ -469,16 +477,25 @@ export default {
               }, '积分');
               var s=h("div","");
     
-			s= h("div",[
-                  h("div",[
-                     varhh11,
-                  varhh12,
-                  ]),
-                  h("div",[
-                    varhh21,
-                  ]),
-                 
-                ]);
+          if( this.business.getIsSuperAdmin()){
+            s= h("div",[
+                        h("div",[
+                          varhh11,
+                        varhh12,
+                        ]),
+                        h("div",[
+                          varhh21,
+                        ]),
+                      
+                      ]);
+          }else{
+             s= h("div",[
+                        h("div",[
+                          varhh21,
+                        ]),
+                      
+                      ]);
+          }
             return s;
           }
         }
@@ -502,6 +519,10 @@ export default {
     onPageSizeChange(a){
       this.params.pageSize=a;
       this.selectPage(1)
+    },
+    //获取查询日期
+    getParamsCreateDate(d){
+      this.params.createDate=d+" 00:00:00";
     },
   //获取列表
    getRoleList () {
@@ -714,6 +735,31 @@ export default {
         this.$Message.error("最少选一个")
         return;
       }
+       als.forEach(e=>{
+        if(e.sex==1){
+          e.sex='男性'
+        }else if(e.sex==2){
+          e.sex='女性'
+        }else {
+          e.sex='未知'
+        }
+        if(e.auth==1){
+          e.auth='审核中'
+        }else if(e.auth==2){
+          e.auth='已认证'
+        }else {
+          e.auth='没认证'
+        }
+        if(e.status==1){
+          e.status='封禁'
+        }else if(e.status==2){
+          e.status='异常'
+        }else {
+          e.status='正常'
+        }
+
+       
+      })
       this.$refs.table.exportCsv({
           filename: '用户数据',
           columns: this.accountColumns.filter((data, index) => index>=2),

@@ -66,13 +66,14 @@ $("#getVerificationCode").click(function(){
                 adminName:adminName,
                 password:password,
                 verificationCode:verificationCode,
+                isSelfLogin:1,//自动登录
             },
             success:function(data){
                 //登录
                 business.myLoadingToast("登录成功")
                 sessionStorage.setItem("account",JSON.stringify(data.data[0].account))
                 sessionStorage.setItem("role",JSON.stringify(data.data[0].role))
-                location.href='user.html';
+                location.href='index.html';
             }
         })
     })

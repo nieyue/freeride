@@ -111,18 +111,17 @@ $("#getValidCode").on("click",function(){
                 validCode:validCode,
             },
             success:function(data){
-                //登录
+                //自动登录
                 business.ajax({
                     url:'/account/weblogin',
                     data:{
-                        adminName:adminName,
-                        password:password,
+                        isSelfLogin:1,//自动登录
                     },
                     success:function(data){
                         business.myLoadingToast("注册成功")
-                        sessionStorage.setItem("account",JSON.stringify(data.data[0].account))
-                        sessionStorage.setItem("role",JSON.stringify(data.data[0].role))
-                        location.href='user.html';
+                        sessionStorage.setItem("account",JSON.stringify(data.data[0].account));
+                        sessionStorage.setItem("role",JSON.stringify(data.data[0].role));
+                        location.href='index.html';
                     }
                 })
             }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -114,37 +115,43 @@ public class AccountBusiness {
 	}
 	/**
 	 * web登录
+	 * @param isSelfLogin ，1自动登录，2不自动登录
 	 * @return false 不包含，  true 包含
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Map<String,Object>> webLogin(
+			Integer isSelfLogin,
 			String adminName,
 			String password,
 			String verificationCode,
 			HttpSession session
 			){
-		//1代验证码
-		if(verificationCode!=null) {
-			String ran = (String) session.getAttribute("verificationCode");
-			if (ran == null || !ran.equals(verificationCode)) {
-				throw new VerifyCodeErrorException();
-			}
-		}
-
-		//角色类型
-		Account account = accountService.loginAccount(adminName, password, null);
-		if(ObjectUtils.isEmpty(account)){
-			throw new AccountLoginException();
-		}
 		List<Map<String,Object>> list = new ArrayList<>();
 		 Subject currentUser = SecurityUtils.getSubject();
-		 UsernamePasswordToken token = new UsernamePasswordToken(adminName, password);
-		 //UsernamePasswordToken token = new UsernamePasswordToken(adminName, MyDESutil.getMD5(password));
-		 try {
-	            currentUser.login(token);
-	        } catch (AuthenticationException e) {
-	            throw new AccountLoginException();//
-	        }
+
+		 if(!currentUser.isRemembered()
+		 ){
+			 //登录
+			 //1代验证码
+			 String ran = (String) session.getAttribute("verificationCode");
+			 if (ran == null || !ran.equals(verificationCode)) {
+				 throw new VerifyCodeErrorException();
+			 }
+			 Account account = accountService.loginAccount(adminName, password, null);
+			 if(ObjectUtils.isEmpty(account)){
+				 throw new AccountLoginException();
+			 }
+			 UsernamePasswordToken token = new UsernamePasswordToken(adminName, password);
+			 token.setRememberMe(isSelfLogin==1?true:false);
+
+			 //UsernamePasswordToken token = new UsernamePasswordToken(adminName, MyDESutil.getMD5(password));
+			 try {
+					currentUser.login(token);
+				} catch (AuthenticationException e) {
+					throw new AccountLoginException();//
+				}
+
+		 }
 		 Map<String,Object> loginMap=(Map<String, Object>) session.getAttribute("loginMap");
 		 list.add(loginMap);
 		 session.removeAttribute("loginMap");//去掉

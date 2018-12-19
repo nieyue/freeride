@@ -11,11 +11,11 @@
                         <Icon type="logo-twitter" />
                         <span>欢迎页</span>
                     </MenuItem>
-                    <MenuItem :name="menu.config.config">
+                    <MenuItem :name="menu.config.config" v-if="isSuperAdmin">
                         <Icon type="md-medical" />
                         <span>平台配置</span>
                     </MenuItem>
-                    <MenuItem :name="menu.config.activationCode">
+                    <MenuItem :name="menu.config.activationCode" v-if="isSuperAdmin">
                         <Icon type="md-medical" />
                         <span>激活码</span>
                     </MenuItem>

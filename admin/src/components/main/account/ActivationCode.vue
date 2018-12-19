@@ -2,7 +2,16 @@
 <template>
     <div class="body-wrap">
         <div class="body-btn-wrap">
-            <Button type='primary'  @click='add'>批量增加</Button>
+          <Button type='primary'  @click='add'>批量增加</Button>
+          <Button type='info' style="margin:0 20px;" @click='exportActivationCode'>激活码导出</Button>
+          <div class="search-wrap">
+            <DatePicker type="date" placeholder="查询日期"  format="yyyy-MM-dd"
+                @on-change="getParamsCreateDate" style="width: 150px" ></DatePicker>
+            <Select v-model="params.isUsered" transfer class="search-wrap-input"  placeholder="是否使用，全部">
+                <Option v-for="item in isUseredParamsList" :value="item.id" :key="item.id">{{ item.value }}</Option>
+            </Select>
+            <Button @click="search" type="info"  >查询</Button>
+          </div>
         </div>
           <Modal v-model="addActivationCodeModel"
            title="修改密码"
@@ -49,6 +58,12 @@ export default {
         {id:1,value:'未使用'},
         {id:2,value:'已使用'}
         ],
+        //是否使用，1未使用，2已使用
+      isUseredParamsList:[
+        {id:'',value:'全部'},
+        {id:1,value:'未使用'},
+        {id:2,value:'已使用'}
+        ],
         //增加激活码
 			addActivationCodeModel:false,
 			addActivationCodeLoading:false,
@@ -62,6 +77,10 @@ export default {
             },
 	    activationCodeList: [],
 	    activationCodeColumns: [
+        {
+          type: 'selection',
+          align: 'center'
+        },
         {
           title: '序号',
           align:'center',
@@ -112,6 +131,12 @@ export default {
     }
   },
   methods: {
+     //查询
+    search(){
+      this.params.currentPage=1;
+      this.params.pageNum =1;
+      this.getList()
+    },
     //分页点击
     selectPage (currentPage) {
       this.params.currentPage=currentPage;
@@ -128,6 +153,10 @@ export default {
     onPageSizeChange(a){
       this.params.pageSize=a;
       this.selectPage(1)
+    },
+    //获取查询日期
+    getParamsCreateDate(d){
+      this.params.createDate=d+" 00:00:00";
     },
   //获取列表
    getList () {
@@ -177,6 +206,26 @@ export default {
     })
 
     },
+    //导出
+    exportActivationCode(){
+      var als=this.$refs.table.getSelection();
+      if(als.length<=0){
+        this.$Message.error("最少选一个")
+        return;
+      }
+      als.forEach(e=>{
+        if(e.isUsered==1){
+          e.isUsered='未使用'
+        }else{
+          e.isUsered='已使用'
+        }
+      })
+      this.$refs.table.exportCsv({
+          filename: '激活码数据',
+          columns: this.activationCodeColumns.filter((data, index) => index>=2),
+          data: als
+      });
+    }
   },
       watch: {
     //当前页面参数修改动态启动

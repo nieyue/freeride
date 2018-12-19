@@ -15,6 +15,7 @@ import MyWangeditor from '@/components/common/MyWangeditor'
 import MyPhone from '@/components/common/MyPhone'
 
 Vue.config.productionTip = false
+//axios.defaults.baseURL="http://www.stsfc.cn";
 axios.defaults.baseURL="http://111.231.121.28:8080";
 //axios.defaults.baseURL="http://localhost:8080";
 //axios.defaults.baseURL="http://nieyue.ngrok.xiaomiqiu.cn";

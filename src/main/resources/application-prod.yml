@@ -2,10 +2,10 @@ server:
   port: 8080
   servlet:
     session:
-      timeout: 18000
-      #timeout: 1296000s #1个月
+      timeout: 604800 #7天
       cookie:
         name: SESSION
+        domain: null
   tomcat:
     max-threads: 1000
     min-spare-threads: 200
@@ -16,7 +16,7 @@ spring:
   datasource:
     name: master
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://111.231.121.28:3306/freeride_db
+    url: jdbc:mysql://93.90.75.17:3306/freeride_db
     username: root
     password: liliu
     type: com.alibaba.druid.pool.DruidDataSource
@@ -44,7 +44,7 @@ spring:
     #合并多个DruidDataSource的监控数据
     useGlobalDataSourceStat: true
   redis:
-    host: 111.231.121.28
+    host: 93.90.75.17
     password: liliu
     port: 6379
     database: 1
@@ -62,15 +62,13 @@ spring:
 myPugin:
   jmx:
     rmi:
-      hostname: 111.231.121.28
+      hostname: 93.90.75.17
       port: 1234
   uploaderPath:
     rootPath: /home
     locationPath: /uploaderPath/img
-  session:
-    myDomainName: null
   projectName: freerideProject
-  projectDomainUrl: http://111.231.121.28:8080
+  projectDomainUrl: http://www.stsfc.cn
   com.nieyue.shiro:
     anon:
       locations: / , /*.txt  , /swagger-resources/** , /swagger-ui.html , /webjars/** , /v2/** , /home/** , /resources/** ,/uploaderPath/**

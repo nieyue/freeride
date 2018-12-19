@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.nieyue.business.OrderBusiness;
 import com.nieyue.exception.CommonRollbackException;
+import com.nieyue.util.DateUtil;
 import com.nieyue.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,10 +20,7 @@ import com.nieyue.util.StateResultList;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -72,8 +70,16 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 		//大于等于
-		if(createDate!=null) {
+		/*if(createDate!=null) {
 			wrapper.andNew().ge("create_date", createDate);
+		}*/
+		Map<String,Object> maplike=new HashMap<String,Object>();
+		if(createDate!=null){
+			maplike.put("create_date", DateUtil.dateFormatSimpleDate(createDate,"yyyy-MM-dd"));
+		}
+		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+		for (Map.Entry<String, Object> entry : newmaplie) {
+			wrapper.like(entry.getKey(),(String)entry.getValue());
 		}
 		StateResultList<List<ActivationCode>> rl = super.list(pageNum, pageSize, orderName, orderWay,wrapper);
 			return rl;
@@ -208,9 +214,17 @@ public class ActivationCodeController extends BaseController<ActivationCode,Long
 		map.put("is_usered", isUsered);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
-		//大于等于
+		/*//大于等于
 		if(createDate!=null){
 			wrapper.andNew().ge("create_date",createDate);
+		}*/
+		Map<String,Object> maplike=new HashMap<String,Object>();
+		if(createDate!=null){
+			maplike.put("create_date", DateUtil.dateFormatSimpleDate(createDate,"yyyy-MM-dd"));
+		}
+		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+		for (Map.Entry<String, Object> entry : newmaplie) {
+			wrapper.like(entry.getKey(),(String)entry.getValue());
 		}
 		StateResultList<List<Integer>> c = super.count(wrapper);
 		return c;

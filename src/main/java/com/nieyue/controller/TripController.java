@@ -8,8 +8,7 @@ import com.nieyue.exception.NotAnymoreException;
 import com.nieyue.service.AccountService;
 import com.nieyue.service.ConfigService;
 import com.nieyue.service.IntegralService;
-import com.nieyue.util.Arith;
-import com.nieyue.util.ResultUtil;
+import com.nieyue.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,8 +16,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.nieyue.service.TripService;
-import com.nieyue.util.MyDom4jUtil;
-import com.nieyue.util.StateResultList;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -206,7 +203,17 @@ public class TripController extends BaseController<Trip,Long> {
 			if(cl.size()>0){
 				Config c = cl.get(0);
 				Integer freeNumber = c.getFreeNumber();
-				List<Trip> tl = tripService.list(1, freeNumber + 1, "create_date", "desc", null);
+				Wrapper<Trip> w=new EntityWrapper<>();
+				Map<String,Object> m=new HashMap<>();
+				m.put("account_id", trip.getAccountId());
+				w.allEq(MyDom4jUtil.getNoNullMap(m));
+				Map<String,Object> maplike=new HashMap<String,Object>();
+				maplike.put("create_date", DateUtil.dateFormatSimpleDate(new Date(),"yyyy-MM-dd"));
+				Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+				for (Map.Entry<String, Object> entry : newmaplie) {
+					w.like(entry.getKey(),(String)entry.getValue());
+				}
+				List<Trip> tl = tripService.list(1, freeNumber + 1, "create_date", "desc", w);
 				if(tl.size()>=freeNumber){
 					throw new CommonRollbackException("每日免费发布"+freeNumber+"次");
 				}
@@ -235,10 +242,10 @@ public class TripController extends BaseController<Trip,Long> {
 	 */
 	@ApiOperation(value = "行程删除", notes = "行程删除")
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="TripId",value="行程ID",dataType="long", paramType = "query",required=true)
+		  @ApiImplicitParam(name="tripId",value="行程ID",dataType="long", paramType = "query",required=true)
 		  })
 	@RequestMapping(value = "/delete", method = {RequestMethod.GET,RequestMethod.POST})
-	public @ResponseBody StateResultList<List<Trip>> delete(@RequestParam("TripId") Long tripId,HttpSession session)  {
+	public @ResponseBody StateResultList<List<Trip>> delete(@RequestParam("tripId") Long tripId,HttpSession session)  {
 		StateResultList<List<Trip>> d = super.delete(tripId);
 		return d;
 	}

@@ -128,13 +128,6 @@
 
      //增加行程
      $("#tripSubmit").on("click",function(){
-         if(!sessionStorage.getItem("account")){
-             business.myLoadingToast("请登陆");
-             setTimeout(function(){
-                 business.gologin();
-			 },500)
-             return;
-		 }
          var accountId=JSON.parse(sessionStorage.getItem("account")).accountId;
 
          if($("#province").val()=='0'

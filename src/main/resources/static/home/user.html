@@ -55,6 +55,9 @@
                 <span>联系我们</span>
                 <span style="float: right">>></span>
             </div>
+            <div  style="text-align: center;">
+                <span style="background-color: red;border:5px;height: 38px;display: inline-block;color:#fff;width:100%;line-height: 38px;" id="loginout">退出登录</span>
+            </div>
         </div>
 
 
@@ -123,6 +126,23 @@
     //联系我们
     $("#contact").click(function(){
         business.gonav("contact",false);
+    })
+    //退出登录
+    $("#loginout").click(function(){
+       business.myLoginOut("确定退出吗？",function(){
+           business.ajax({
+               url:'/account/loginout',
+               data:{
+                   accountId:JSON.parse(sessionStorage.getItem("account")).accountId,
+               },
+               success:function(data){
+                   business.myLoadingToast('退出成功')
+                   business.gologin()
+               },
+               fail:function(data){
+               }
+           })
+       })
     })
 </script>
 </body>
