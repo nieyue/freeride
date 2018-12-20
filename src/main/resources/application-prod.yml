@@ -16,7 +16,7 @@ spring:
   datasource:
     name: master
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://93.90.75.17:3306/freeride_db
+    url: jdbc:mysql://119.27.177.29:3306/freeride_db
     username: root
     password: liliu
     type: com.alibaba.druid.pool.DruidDataSource
@@ -44,7 +44,7 @@ spring:
     #合并多个DruidDataSource的监控数据
     useGlobalDataSourceStat: true
   redis:
-    host: 93.90.75.17
+    host: 119.27.177.29
     password: liliu
     port: 6379
     database: 1
@@ -62,13 +62,13 @@ spring:
 myPugin:
   jmx:
     rmi:
-      hostname: 93.90.75.17
+      hostname: 119.27.177.29
       port: 1234
   uploaderPath:
     rootPath: /home
     locationPath: /uploaderPath/img
   projectName: freerideProject
-  projectDomainUrl: http://www.stsfc.cn
+  projectDomainUrl: http://119.27.177.29:8080
   com.nieyue.shiro:
     anon:
       locations: / , /*.txt  , /swagger-resources/** , /swagger-ui.html , /webjars/** , /v2/** , /home/** , /resources/** ,/uploaderPath/**

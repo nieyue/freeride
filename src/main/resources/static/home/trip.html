@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="viewport"
+		  content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
     <title>发布</title>
 	<link href="resources/css/font-awesome.min.css" rel="stylesheet">
 	<link href="resources/css/datetime.css" rel="stylesheet">
@@ -110,16 +111,16 @@
 	//时间
 	mobiletime({
 	trigger:'#startTime',
+	fen:[0,30],
+	miao:[0],
 	callback:function(indexArr,data){
-	//console.log(indexArr)
+	console.log(indexArr)
 	//console.log(data)
-	var xiaoshi=indexArr[0]+1;
+	var xiaoshi=indexArr[0];
 	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
-	var fen=indexArr[1]+1;
-	 fen=fen>=10?fen:"0"+fen;
-	var miao=indexArr[2]+1;
-	 miao=miao>=10?miao:"0"+miao;
-	$("#startTime").val(xiaoshi+":"+fen+":"+miao)
+	var fen=indexArr[1];
+	 fen=fen==1?30:"00";
+	$("#startTime").val(xiaoshi+":"+fen+":00")
 	}
 	})
 

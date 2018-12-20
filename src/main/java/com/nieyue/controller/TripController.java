@@ -98,7 +98,7 @@ public class TripController extends BaseController<Trip,Long> {
 			return ResultUtil.getSlefSRSuccessList(tl);
 		}else{
 			//第2种起始地址相近
-			Wrapper<Trip> wrapper2=new EntityWrapper<>();
+			/*Wrapper<Trip> wrapper2=new EntityWrapper<>();
 			Map<String,Object> map2=new HashMap<>();
 			map2.put("is_door", isDoor);
 			map2.put("account_id", accountId);
@@ -120,7 +120,7 @@ public class TripController extends BaseController<Trip,Long> {
 					t2.setAccount(account);
 				});
 				return ResultUtil.getSlefSRSuccessList(tl2);
-			}
+			}*/
 
 		}
 		throw new NotAnymoreException();//没有更多

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="viewport"
+		  content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
     <title>发布</title>
 	<link href="resources/css/font-awesome.min.css" rel="stylesheet">
 	<link href="resources/css/datetime.css" rel="stylesheet">
@@ -116,11 +117,11 @@
 	callback:function(indexArr,data){
 	//console.log(indexArr)
 	//console.log(data)
-	var xiaoshi=indexArr[0]+1;
+	var xiaoshi=indexArr[0];
 	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
-	var fen=indexArr[1]+1;
+	var fen=indexArr[1];
 	 fen=fen>=10?fen:"0"+fen;
-	var miao=indexArr[2]+1;
+	var miao=indexArr[2];
 	 miao=miao>=10?miao:"0"+miao;
 	$("#startTime").val(xiaoshi+":"+fen+":"+miao)
 	}
