@@ -217,6 +217,12 @@ public class TripController extends BaseController<Trip,Long> {
 				if(tl.size()>=freeNumber){
 					throw new CommonRollbackException("每日免费发布"+freeNumber+"次");
 				}
+
+				if(tl.size()>0
+				&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+30*60*1000)))){
+					throw new CommonRollbackException("两次发布时间间隔30分钟");
+
+				}
 			}
 			trip.setUpdateDate(new Date());
 			trip.setCreateDate(new Date());

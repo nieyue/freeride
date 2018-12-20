@@ -21,7 +21,9 @@
 			<select name="" id="city" style="width:80px">
 				<option value="0">请选择市</option>
 			</select>
-			<input type="text" id="area" style="width:100px;vertical-align: top;" placeholder="详细地址"/>
+			<select name="" id="area" style="width:80px">
+				<option value="0">请选择区</option>
+			</select>
 		</div>
 		<div style="margin:15px 0;">
 			<span>目的地：</span>
@@ -31,7 +33,9 @@
 			<select name="" id="city2" style="width:80px">
 				<option value="0">请选择市</option>
 			</select>
-			<input type="text" id="area2" style="width:100px;vertical-align: top;" placeholder="详细地址"/>
+			<select name="" id="area2" style="width:80px">
+				<option value="0">请选择区</option>
+			</select>
 		</div>
 		<div style="margin:15px 0;">
 			<span>途径地：</span>
@@ -91,7 +95,6 @@
 <!-- 固定栏 end-->
 <script src="resources/js/jquery2.1.js"></script>
 <script src="resources/js/address.js"></script>
-<script src="resources/js/city.js"></script>
  <script src="resources/js/datetime.js"></script>
  <script src="resources/js/base.js"></script>
  <script>
@@ -103,8 +106,8 @@
 		 })
 	 }
 	 //初始化地址
-     initProvinceCity("#province","#city");
-     initProvinceCity("#province2","#city2");
+     initProvinceCityArea("#province","#city","#area");
+     initProvinceCityArea("#province2","#city2","#area2");
 	//日期
 	$('#startDate').mdater();
 	//时间

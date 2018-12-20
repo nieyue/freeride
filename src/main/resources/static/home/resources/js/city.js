@@ -139,3 +139,47 @@ var citys = [
 }
 
 ];
+
+//初始化省市
+function initProvinceCity(provinceelement,cityelement){
+    //所有其他省 格式：[{province:'湖南省',citys:['长沙市','常德市']}]
+    var provinces=[];
+    for(var i=0;i<citys.length;i++){
+        var city=citys[i];
+        for(var j=0;j<city.cityList.length;j++){
+            var pbc=getProvinceByCity(city.cityList[j]);
+            if(pbc&&pbc!='澳门'&&pbc!='香港'&&pbc!='台湾省'){
+                //省
+                var have=false;
+                for (var k = 0; k < provinces.length; k++) {
+                    var p=provinces[k];
+                    //已经存在就放入
+                    if(p.province==pbc){
+                        have=true;
+                        p.citys.push(city.cityList[j]);
+                    }
+                }
+                //不存在
+                if(!have){
+                    provinces.push({province:pbc,citys:[city.cityList[j]]})
+                }
+            }
+        }
+    }
+    for (var i = 0; i < provinces.length; i++) {
+        $(provinceelement).append('<option value="'+provinces[i].province+'">'+provinces[i].province+"</option>")
+    };
+    $(provinceelement).change(function(){
+        for (var i = 0; i < provinces.length; i++) {
+            if(provinces[i].province==$(provinceelement).val()){
+                var shis=provinces[i].citys;
+                console.log(shis)
+                $(cityelement).html('<option value="0">请选择市</option>');
+                for (var j = 0; j < shis.length; j++) {
+                    $(cityelement).append('<option value="'+shis[j]+'">'+shis[j]+"</option>")
+
+                }
+            }
+        }
+    })
+}
