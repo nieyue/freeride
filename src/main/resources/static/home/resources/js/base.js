@@ -1,8 +1,8 @@
 var business={
 	//域名路径
 	//domanurl:'http://localhost:8080',
-	domanurl:'',
-	//domanurl:'http://111.231.121.28:8080',
+	//domanurl:'',
+	domanurl:'http://119.27.177.29:8080',
     /**
      * 验证规则
      */
@@ -297,6 +297,7 @@ var business={
 ;(function(){
     if(location.href.indexOf("login.html")<=-1
         &&location.href.indexOf("register.html")<=-1
+        &&location.href.indexOf("forget.html")<=-1
         &&location.href.indexOf("protocol.html")<=-1
     ){
         //1自动登录

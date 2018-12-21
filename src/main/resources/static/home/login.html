@@ -32,6 +32,9 @@
         <div style="margin:15px 0;text-align:center;">
             <button id="loginSubmit" style="background-color:red;border:1px solid red;color:#fff;height:50px;width:60%;">登录</button>
         </div>
+        <div style="margin:15px 0;text-align:right;">
+            <button id="forgetPassword" style="background-color:#fff;border:1px solid #000;color:#000;height:30px;width:30%;">忘记密码</button>
+        </div>
     </div>
 
 <script src="resources/js/jquery2.1.js"></script>
@@ -43,6 +46,10 @@
 $("#getVerificationCode").click(function(){
     $("#getVerificationCode").attr("src",vcurl+"?v="+new Date().getTime())
 })
+    //跳转忘记密码
+    $("#forgetPassword").click(function(){
+        business.gonav("forget",false)
+    })
     //登录
     $("#loginSubmit").on("click",function(){
         var adminName=$("#adminName").val().trim();
@@ -74,7 +81,14 @@ $("#getVerificationCode").click(function(){
                 business.myLoadingToast("登录成功")
                 sessionStorage.setItem("account",JSON.stringify(data.data[0].account))
                 sessionStorage.setItem("role",JSON.stringify(data.data[0].role))
-                location.href='index.html';
+                setTimeout(function(){
+                    business.gonav("index",false);
+                },500)
+
+            }
+            ,
+            fail:function(data){
+                business.myLoadingToast(data.msg)
             }
         })
     })

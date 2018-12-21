@@ -197,9 +197,15 @@ public class AccountController extends BaseController<Account, Long>{
 			throw new AccountIsNotExistException();//账户不存在
 		}
 		//手机验证码
-		String vc=(String) session.getAttribute("validCode");
-		if(!vc.equals(validCode)){
-			throw new VerifyCodeErrorException();//验证码错误
+		//String vc=(String) session.getAttribute("validCode");
+		try {
+			//Boolean vc = true;
+			Boolean vc = bmobSms.verifySms(adminName, validCode);
+			if(!vc){
+				throw new VerifyCodeErrorException();//验证码错误
+			}
+		} catch (Exception e) {
+			throw new VerifyCodeErrorException();
 		}
 		ac.setPassword(MyDESutil.getMD5(password));
 		StateResultList<List<Account>> u = super.update(ac);

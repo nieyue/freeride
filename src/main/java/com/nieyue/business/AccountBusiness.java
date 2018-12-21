@@ -230,7 +230,7 @@ public class AccountBusiness {
 					throw new VerifyCodeErrorException();//验证码错误
 				}
 			} catch (Exception e) {
-				throw new CommonRollbackException("验证错误");
+				throw new VerifyCodeErrorException();
 			}
 
 		}
