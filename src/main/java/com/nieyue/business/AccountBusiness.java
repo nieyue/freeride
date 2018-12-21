@@ -128,7 +128,7 @@ public class AccountBusiness {
 			){
 		List<Map<String,Object>> list = new ArrayList<>();
 		 Subject currentUser = SecurityUtils.getSubject();
-		 if(!currentUser.isRemembered()
+		if(!currentUser.isRemembered()
 		 ){
 			 //登录
 			 //1代验证码

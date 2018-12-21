@@ -182,7 +182,7 @@ public class ShiroConfiguration {
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(sessiontimeout);    // 设置session超时
+        sessionManager.setGlobalSessionTimeout(sessiontimeout*1000);    // 设置session超时
         sessionManager.setDeleteInvalidSessions(true);      // 删除无效session
         sessionManager.setSessionDAO(redisSessionDAO());
         sessionManager.setSessionIdCookie(simpleCookie1());
