@@ -1,8 +1,8 @@
 var business={
 	//域名路径
-	//domanurl:'http://localhost:8080',
+	domanurl:'http://localhost:8080',
 	//domanurl:'',
-	domanurl:'http://119.27.177.29:8080',
+	//domanurl:'http://119.27.177.29:8080',
     /**
      * 验证规则
      */

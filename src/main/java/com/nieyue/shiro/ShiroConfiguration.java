@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.JedisPoolConfig;
-import com.nieyue.service.PermissionService;
 
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
@@ -149,13 +148,21 @@ public class ShiroConfiguration {
 
     /**
      * SimpleCookie的管理
-     * @param  cookieName cookie名
-     * @param lessSeconds 比设定的少多少秒
      */
-    public SimpleCookie simpleCookie(String cookieName,Integer lessSeconds ) {
+    @Bean
+    public SimpleCookie simpleCookie1( ) {
         SimpleCookie sc=new SimpleCookie();
-        sc.setName(cookieName);
-        sc.setMaxAge(sessiontimeout-lessSeconds);
+        sc.setName(sessioncookiename);
+        sc.setMaxAge(sessiontimeout);
+        sc.setDomain(sessiondomain);
+        return sc;
+    }
+    @Bean
+    public SimpleCookie simpleCookie2( ) {
+        SimpleCookie sc=new SimpleCookie();
+        sc.setName(CookieRememberMeManager.DEFAULT_REMEMBER_ME_COOKIE_NAME);
+        //记住我比sessioncookie少30分钟，即提前30分钟失效
+        sc.setMaxAge(sessiontimeout-1800);
         sc.setDomain(sessiondomain);
         return sc;
     }
@@ -165,8 +172,7 @@ public class ShiroConfiguration {
     @Bean
     public CookieRememberMeManager rememberMeManager() {
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
-        //记住我比sessioncookie少30分钟，即提前30分钟失效
-        cookieRememberMeManager.setCookie(simpleCookie(CookieRememberMeManager.DEFAULT_REMEMBER_ME_COOKIE_NAME,1800));
+        cookieRememberMeManager.setCookie(simpleCookie2());
         return cookieRememberMeManager;
     }
     /**
@@ -176,8 +182,10 @@ public class ShiroConfiguration {
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setGlobalSessionTimeout(sessiontimeout);    // 设置session超时
+        sessionManager.setDeleteInvalidSessions(true);      // 删除无效session
         sessionManager.setSessionDAO(redisSessionDAO());
-        sessionManager.setSessionIdCookie(simpleCookie(sessioncookiename,0));
+        sessionManager.setSessionIdCookie(simpleCookie1());
         return sessionManager;
     }
     /**
