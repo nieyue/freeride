@@ -36,8 +36,13 @@ const router= new Router({
         },
         {
           path: 'config/:pathParams',
-          name: '配置',
+          name: '平台配置',
           component: resolve=>require(['@/components/main/config/Config'],resolve)
+        },
+        {
+          path: 'contact/:pathParams',
+          name: '联系配置',
+          component: resolve=>require(['@/components/main/config/Contact'],resolve)
         },
         {
           path: 'account/selfAccount',

@@ -52,10 +52,10 @@
                 <span>我的福利</span>
                 <span style="float: right">>></span>
             </div>
-            <div class="address-name" id="contact">
+           <!-- <div class="address-name" id="contact">
                 <span>联系我们</span>
                 <span style="float: right">>></span>
-            </div>
+            </div>-->
             <div  style="text-align: center;">
                 <span style="background-color: red;border:5px;height: 38px;display: inline-block;color:#fff;width:100%;line-height: 38px;" id="loginout">退出登录</span>
             </div>
@@ -87,7 +87,7 @@
     
 </div>
 <!-- 固定栏 end-->
-<script src="resources/js/jquery2.1.js"></script>
+<script src="resources/js/jquery1.12.2.js"></script>
 <script src="resources/js/base.js"></script>
 <script>
     //初始化
@@ -111,18 +111,8 @@
     })
     //我的福利
     $("#welfare").click(function(){
-        business.ajax({
-            url:'/activationCode/list',
-            data:{
-                accountId:JSON.parse(sessionStorage.getItem("account")).accountId,
-            },
-            success:function(data){
-                business.myLoadingToast('已激活')
-            },
-            fail:function(data){
-                business.gonav("welfare",true);
-            }
-        })
+    business.gonav("welfare",true);
+
     })
     //联系我们
     $("#contact").click(function(){

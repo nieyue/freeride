@@ -132,10 +132,10 @@ public class AccountBusiness {
 		 ){
 			 //登录
 			 //1代验证码
-			 String ran = (String) session.getAttribute("verificationCode");
+			/* String ran = (String) session.getAttribute("verificationCode");
 			 if (ran == null || !ran.equals(verificationCode)) {
 				 throw new VerifyCodeErrorException();
-			 }
+			 }*/
 			 Account account = accountService.loginAccount(adminName, password, null);
 			 if(ObjectUtils.isEmpty(account)){
 				 throw new AccountLoginException();

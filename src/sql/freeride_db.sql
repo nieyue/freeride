@@ -132,6 +132,15 @@ INDEX INDEX_UPDATEDATE (update_date) USING BTREE
 )ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='行程表';
 
 
+#创建联系表
+CREATE TABLE contact_tb(
+  contact_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '联系id',
+  address varchar(255)  COMMENT '联系地址',
+  create_date datetime COMMENT '创建时间',
+  update_date datetime COMMENT '更新时间',
+  PRIMARY KEY (contact_id)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='联系表';
+
 #创建配置表
 CREATE TABLE config_tb(
   config_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置id',

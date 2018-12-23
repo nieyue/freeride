@@ -19,6 +19,10 @@
                         <Icon type="md-medical" />
                         <span>激活码</span>
                     </MenuItem>
+                    <MenuItem :name="menu.config.contact" v-if="isSuperAdmin">
+                        <Icon type="md-medical" />
+                        <span>联系配置</span>
+                    </MenuItem>
                 </Submenu>
                 <MenuItem name="/main/account/selfAccount">
                     <Icon type="ios-man" />
@@ -118,7 +122,8 @@
             config:{
                  welcome:"/main/welcome/"+pp,
                  config:"/main/config/"+pp,
-                 activationCode:"/main/activationCode/"+pp
+                 activationCode:"/main/activationCode/"+pp,
+                 contact:"/main/contact/"+pp
             },
             //角色权限
             rolePermission:{

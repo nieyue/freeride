@@ -24,11 +24,11 @@
             <span style="display: inline-block;line-height: 48px;height:100%;">&#12288;密码：</span>
             <input type="password" style="border:0 solid #ccc;height:100%;" id="password" placeholder="6-20位密码">
         </div>
-        <div style="height:50px;border-bottom:1px solid #ececec;">
+       <!-- <div style="height:50px;border-bottom:1px solid #ececec;">
             <span style="display: inline-block;line-height: 48px;height:100%;vertical-align:top;">验证码：</span>
             <input type="text" style="border:0 solid #ccc;display: inline-block;line-height: 48px;height:100%;width:50%;vertical-align:top;" id="verificationCode" placeholder="验证码">
             <img style="display: inline-block;height:100%;width:26%;line-height: 48px;"  id="getVerificationCode"/>
-        </div>
+        </div>-->
         <div style="margin:15px 0;text-align:center;">
             <button id="loginSubmit" style="background-color:red;border:1px solid red;color:#fff;height:50px;width:60%;">登录</button>
         </div>
@@ -37,15 +37,15 @@
         </div>
     </div>
 
-<script src="resources/js/jquery2.1.js"></script>
+    <script src="resources/js/jquery1.12.2.js"></script>
 <script src="resources/js/base.js"></script>
 <script>
     //获取验证码
-    var vcurl=business.domanurl+"/tool/getVerificationCode";
-    $("#getVerificationCode").attr("src",vcurl);
-$("#getVerificationCode").click(function(){
-    $("#getVerificationCode").attr("src",vcurl+"?v="+new Date().getTime())
-})
+   /* var vcurl=business.domanurl+"/tool/getVerificationCode";
+   $("#getVerificationCode").attr("src",vcurl);
+    $("#getVerificationCode").click(function(){
+        $("#getVerificationCode").attr("src",vcurl+"?v="+new Date().getTime())
+    })*/
     //跳转忘记密码
     $("#forgetPassword").click(function(){
         business.gonav("forget",false)
@@ -57,11 +57,11 @@ $("#getVerificationCode").click(function(){
             business.myLoadingToast("请检查手机号")
             return;
         }
-        var verificationCode=$("#verificationCode").val().trim();
+       /* var verificationCode=$("#verificationCode").val().trim();
         if(!verificationCode){
             business.myLoadingToast("请检查验证码")
             return;
-        }
+        }*/
 
         var password=$("#password").val().trim();
         if(!password||password.length<6||password.length>20){
@@ -73,7 +73,7 @@ $("#getVerificationCode").click(function(){
             data:{
                 adminName:adminName,
                 password:password,
-                verificationCode:verificationCode,
+                //verificationCode:verificationCode,
                 isSelfLogin:1,//自动登录
             },
             success:function(data){
