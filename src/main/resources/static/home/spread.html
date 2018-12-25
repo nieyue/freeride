@@ -11,22 +11,38 @@
         html,body{
             height: 100%;
         }
-        .wrap{
+        .spread-wrap{
             text-align:center;
             background-color: #fff;
             height:100%;
             background-image:url(resources/img/spread.jpg);
             background-size:100% 100%;
         }
-
+        .spread-btnwrap{
+            position: fixed;
+            bottom:10%;
+            left:0;
+            width:100%;
+        }
+        @media screen and (min-width: 750px){
+            .spread-wrap{
+                width:750px;
+                margin:auto;
+            }
+            .spread-btnwrap{
+                width:750px;
+                left:50%;
+                margin-left:-375px ;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="wrap">
+    <div class="spread-wrap">
     </div>
-    <div style=" position: fixed;bottom:10%;left:0;width:100%;">
+    <div class="spread-btnwrap">
         <div style="text-align:center;">
-            <button id="ios" style="background-color:#fff;border:1px solid #fff;color:#3180e4;height:38px;width:50%;">
+            <button id="ios" style="background-color:#fff;border:1px solid #fff;color:#3180e4;height:38px;width:50%;cursor:pointer;">
                 <i class="fa fa-apple" style="font-size:26px;"></i>
                 &nbsp;
                 <span style="display: inline-block;vertical-align: top;margin-top:5px;">ISO版下载</span>
@@ -34,7 +50,7 @@
         </div>
         <div style="margin-bottom:15px;text-align:center;">
 
-            <button id="android" style="margin-top:10px;background-color:#fff;border:1px solid #fff;color:#3180e4;height:38px;width:50%;">
+            <button id="android" style="margin-top:10px;background-color:#fff;border:1px solid #fff;color:#3180e4;height:38px;width:50%;cursor:pointer;">
                 &nbsp;<i class="fa fa-android"  style="font-size:26px;"></i>
                 &nbsp;
                 <span style="display: inline-block;vertical-align: top;margin-top:5px;">安卓版下载</span>
@@ -45,10 +61,10 @@
 <script src="resources/js/jquery1.12.2.js"></script>
 <script>
 $("#ios").on("click",function(){
-    location.href="#"
+    location.href="resources/file/spread.ipa"
 })
 $("#android").on("click",function(){
-    location.href="#"
+    location.href="resources/file/spread.apk"
 })
 </script>
 </body>
