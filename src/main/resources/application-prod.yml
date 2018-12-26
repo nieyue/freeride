@@ -6,7 +6,7 @@ server:
       timeout: 31536000 #1年
       cookie:
         name: SESSION
-        domain: null
+        domain: null #改为域名后，只能在此域名有效
   tomcat:
     max-threads: 1000
     min-spare-threads: 200
@@ -69,7 +69,7 @@ myPugin:
     rootPath: /home
     locationPath: /uploaderPath/img
   projectName: freerideProject
-  projectDomainUrl: http://119.27.177.29:8080
-  com.nieyue.shiro:
+  projectDomainUrl: http://eyri.yxsvip.cn
+  shiro:
     anon:
       locations: / , /*.txt  , /swagger-resources/** , /swagger-ui.html , /webjars/** , /v2/** , /home/** , /resources/** ,/uploaderPath/**

@@ -5,7 +5,7 @@ server:
       timeout: 604800 #7天
       cookie:
         name: SESSION
-        domain: null
+        domain: localhost
 
   tomcat:
     max-threads: 1000
@@ -72,6 +72,6 @@ myPugin:
   projectName: freerideProject
   projectDomainUrl: http://localhost:8080
   #projectDomainUrl: http://nieyue.ngrok.xiaomiqiu.cn
-  com.nieyue.shiro:
+  shiro:
     anon:
       locations: / ,/*.txt , /swagger-resources/** , /swagger-ui.html , /webjars/** , /v2/** , /home/** ,/uploaderPath/** , /resources/** , /tool/**

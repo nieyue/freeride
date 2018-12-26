@@ -128,6 +128,8 @@ public class AccountBusiness {
 			){
 		List<Map<String,Object>> list = new ArrayList<>();
 		 Subject currentUser = SecurityUtils.getSubject();
+		//System.err.println(session.getMaxInactiveInterval());
+		//System.err.println(currentUser.getSession().getTimeout());
 		if(!currentUser.isRemembered()
 		 ){
 			 //登录

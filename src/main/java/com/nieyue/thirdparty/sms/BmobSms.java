@@ -67,13 +67,16 @@ public class BmobSms {
             //response = JSONObject.fromObject(result);
            return true;
         }else{
+            System.out.println(JSONObject.fromObject(result = EntityUtils.toString(response.getEntity(),"utf-8")));
             return false;
         }
 
     }
 
     public static void main(String[] args) throws IOException {
-        boolean b=new BmobSms().sendSms("15111336587");
+       // boolean b=new BmobSms().sendSms("15111336587");
+
+        Boolean b = new BmobSms().verifySms("15111336587", "795130");
         System.out.println(b);
     }
 }

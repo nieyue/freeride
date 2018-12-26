@@ -1,8 +1,10 @@
 var business={
 	//域名路径
-	//domanurl:'http://localhost:8080',
+	domanurl:'http://localhost:8080',
+
 	//domanurl:'',
-	domanurl:'http://119.27.177.29:8080',
+	//domanurl:'http://119.27.177.29:8080',
+	//domanurl:'http://eyri.yxsvip.cn',
     /**
      * 验证规则
      */
@@ -86,10 +88,10 @@ var business={
             fileSize = file.files[0].size;
         }
         fileSize=Math.round(fileSize/1024*100)/100; // 单位为KB
-        if((photoExt=='.apk'&&fileSize>30000)||(photoExt!='.apk'&&fileSize>200)){
+        /*if((photoExt=='.apk'&&fileSize>30000)||(photoExt!='.apk'&&fileSize>200)){
             business.myLoadingToast("图片大小为"+fileSize+"KB，超过最大尺寸为200KB，请重新上传!");
             return false;
-        }
+        }*/
         if (file.files && file.files[0])
         {
             var reader = new FileReader();
@@ -221,7 +223,7 @@ var business={
         }
         $("body")
             .append(
-                "<div id='prevToastWarp' style='display:none;position:fixed;width:100%;height:100%;top:0;left:0; z-index:999999999'><div id='prevToast' style='color:#fff;background-color:#000;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;min-height:30px;margin:-15px -50px;top:50%;left:50%;position:fixed;'><canvas id='prevloading'  height='30px' width='30px' style='display:inline-block;margin-bottom:-10px;' >您的浏览器不支持html5</canvas>"
+                "<div id='prevToastWarp' style='display:none;position:fixed;width:100%;height:100%;top:0;left:0; z-index:999999999'><div id='prevToast' style='text-align:center;color:#fff;background-color:#000;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;min-height:30px;margin:66% auto;max-width:60%;'>"
                 +"<span id='prevToastValue'>"+ value +"</span>&nbsp;&nbsp; </div></div>");
         if(typeof fn=='function'){
             fn();
@@ -231,8 +233,10 @@ var business={
     myLoadingToast:function(value, fn){
         $("body")
             .append(
-                "<div id='loadingToast' style='display:none;color:#fff;background-color:black;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;min-height:30px;max-width:200px;padding:0 10px;margin:-5px -"+value.length*7+"px;top:50%;left:50%;position:fixed;z-index:999999999'>"
-                + value + "</div>");
+                "<div id='loadingToast' style='display:none;width:100%;text-align:center;min-height:30px;top:50%;left:0;position:fixed;z-index:999999999;'>"
+                +"<div  style='color:#fff;background-color:black;border:1px solid black;border-radius:5px;text-align:center;line-height:30px;min-height:30px;max-width:200px;padding:0 10px;margin:auto;'>"
+                + value + "</div>"
+                +"</div>");
         $("#loadingToast").fadeIn();
         setTimeout(function() {
             $("#loadingToast").fadeOut('slow');
@@ -241,6 +245,70 @@ var business={
                 fn();
             }
         }, 1000);
+    },
+    /**
+     * loading小图片
+     */
+    loading:function (canvas,options){
+        this.canvas = canvas;
+        if(options){
+            this.loading.radius = options.radius||12;
+            this.loading.circleLineWidth = options.circleLineWidth||4;
+            this.loading.circleColor = options.circleColor||'#00db00';
+            this.loading.moveArcColor = options.moveArcColor||'#a6ffa6';
+            this.loading.__loading=options.__loading!=null?options.__loading!=true?false:true:true;
+        }else{
+            this.loading.radius = 12;
+            this.loading.circelLineWidth = 4;
+            this.loading.circleColor = '#00db00';
+            this.loading.moveArcColor = '#a6ffa6';
+            this.loading.__loading=true;
+        }
+
+        function show(myutil){
+            var canvas = myutil.canvas;
+            if(!canvas)return;
+            if(!canvas.getContext)return;
+            if(canvas.__loading)return;
+            canvas.__loading = myutil.loading;
+            var ctx = canvas.getContext('2d');
+            var radius = myutil.loading.radius;
+            var me = myutil.loading;
+            var rotatorAngle = Math.PI*1.5;
+            var step = Math.PI/6;
+            canvas.loadingInterval = setInterval(function(){
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                var lineWidth = me.circleLineWidth;
+                var center = {x:canvas.width/2 ,y:canvas.height/2};
+                ctx.beginPath();
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = me.circleColor;
+                ctx.arc(center.x,center.y,radius,0,Math.PI*2);
+                ctx.closePath();
+                ctx.stroke();
+                // 在圆圈上面画小圆
+                ctx.beginPath();
+                ctx.strokeStyle = me.moveArcColor;
+                ctx.arc(center.x,center.y,radius,rotatorAngle,rotatorAngle+Math.PI*.45);
+                ctx.stroke();
+                rotatorAngle+=step;
+
+            },66);
+        }
+        function hide(myutil){
+            var canvas=myutil.canvas;
+            canvas.__loading = false;
+            if(canvas.loadingInterval){
+                window.clearInterval(canvas.loadingInterval);
+            }
+            var ctx = canvas.getContext('2d');
+            if(ctx)ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+        if(this.loading.__loading){
+            show(this);
+        }else{
+            hide(this);
+        }
     },
 	//返回
 	goback:function(){

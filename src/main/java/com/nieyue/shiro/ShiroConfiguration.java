@@ -53,7 +53,7 @@ public class ShiroConfiguration {
     @Value("${spring.redis.lettuce.pool.max-active}")
     Integer redispoolmaxactive;
     //com.nieyue.shiro anon location静态资源
-    @Value("${myPugin.com.nieyue.shiro.anon.locations}")
+    @Value("${myPugin.shiro.anon.locations}")
     String shiroanonlocations;
     @Autowired
     private PermissionService permissionService;
