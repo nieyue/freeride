@@ -79,6 +79,8 @@ public class TripController extends BaseController<Trip,Long> {
 		//大于等于
 		if(createDate!=null) {
 			wrapper.andNew().ge("create_date", createDate);
+		}else{
+			wrapper.andNew().ge("create_date", new Date());
 		}
 		//第1种起始地址与目的地址都相近
 		Map<String,Object> maplike=new HashMap<String,Object>();
@@ -91,11 +93,15 @@ public class TripController extends BaseController<Trip,Long> {
 
 		List<Trip> tl = tripService.list(pageNum, pageSize, orderName, orderWay, wrapper);
 		if(tl!=null&&tl.size()>0){
+			List<Trip> ntl=new ArrayList<>();
 			tl.forEach(t->{
 				Account account = accountService.load(t.getAccountId());
-				t.setAccount(account);
+				if(account!=null){
+					t.setAccount(account);
+					ntl.add(t);
+				}
 			});
-			return ResultUtil.getSlefSRSuccessList(tl);
+			return ResultUtil.getSlefSRSuccessList(ntl);
 		}else{
 			//第2种起始地址相近
 			/*Wrapper<Trip> wrapper2=new EntityWrapper<>();
@@ -106,7 +112,9 @@ public class TripController extends BaseController<Trip,Long> {
 			//大于等于
 			if(createDate!=null) {
 				wrapper2.andNew().ge("create_date", createDate);
-			}
+			}else{
+			wrapper.andNew().ge("create_date", new Date());
+		}
 			Map<String,Object> maplike2=new HashMap<String,Object>();
 			maplike2.put("start_address", startCity);
 			Set<Map.Entry<String, Object>> newmaplie2 = MyDom4jUtil.getNoNullMap(maplike2).entrySet();
@@ -115,11 +123,15 @@ public class TripController extends BaseController<Trip,Long> {
 			}
 			List<Trip> tl2 = tripService.list(pageNum, pageSize, orderName, orderWay, wrapper2);
 			if(tl2!=null&&tl2.size()>0){
+			List<Trip> ntl2=new ArrayList<>();
 				tl2.forEach(t2->{
 					Account account = accountService.load(t2.getAccountId());
+					if(account!=null){
 					t2.setAccount(account);
+					ntl2.add(t);
+				}
 				});
-				return ResultUtil.getSlefSRSuccessList(tl2);
+				return ResultUtil.getSlefSRSuccessList(ntl2);
 			}*/
 
 		}
