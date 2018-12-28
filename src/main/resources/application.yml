@@ -10,7 +10,7 @@ logging:
 #mybatis:
 #  #check-config-location: true
 #  #executor-type: batch
-#  type-aliases-package: com.nieyue.com.nieyue.bean
+#  type-aliases-package: com.nieyue.bean
 #  com.nieyue.mapper-locations: classpath:config/com/nieyue/mapper/*.xml
 #  configuration:
 #    mapUnderscoreToCamelCase: true
@@ -18,7 +18,7 @@ logging:
 #    useGeneratedKeys: true
 mybatis-plus:
   # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/com.nieyue.mapper/*Mapper.xml
-  com.nieyue.mapper-locations: classpath:/com/nieyue/mapper/*.xml
+  mapper-locations: classpath:/com/nieyue/mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.nieyue.bean
   global-config:
@@ -31,7 +31,7 @@ mybatis-plus:
     #mp2.3+ 全局表前缀 mp_
     #table-prefix: mp_
     #刷新mapper 调试神器
-    refresh-com.nieyue.mapper: true
+    refresh-mapper: true
     #数据库大写下划线转换
     #capital-mode: true
     # Sequence序列接口实现类配置
