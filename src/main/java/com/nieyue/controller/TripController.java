@@ -78,9 +78,9 @@ public class TripController extends BaseController<Trip,Long> {
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
 		//大于等于
 		if(createDate!=null) {
-			wrapper.andNew().ge("create_date", createDate);
+			wrapper.andNew().ge("start_date", createDate);
 		}else{
-			wrapper.andNew().ge("create_date", new Date());
+			wrapper.andNew().ge("start_date", new Date());
 		}
 		//第1种起始地址与目的地址都相近
 		Map<String,Object> maplike=new HashMap<String,Object>();
@@ -111,9 +111,9 @@ public class TripController extends BaseController<Trip,Long> {
 			wrapper2.allEq(MyDom4jUtil.getNoNullMap(map2));
 			//大于等于
 			if(createDate!=null) {
-				wrapper2.andNew().ge("create_date", createDate);
+				wrapper2.andNew().ge("start_date", createDate);
 			}else{
-			wrapper.andNew().ge("create_date", new Date());
+			wrapper.andNew().ge("start_date", new Date());
 		}
 			Map<String,Object> maplike2=new HashMap<String,Object>();
 			maplike2.put("start_address", startCity);
