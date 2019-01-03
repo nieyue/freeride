@@ -22,7 +22,7 @@
 <body>
 <div class="nav-wrap">
     <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
-    <span ></span>
+    <span >乘客列表</span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
@@ -43,7 +43,7 @@
         </a>
     </div>
     <div class ="mer-footer-div" style="width:33%;left:33%">
-        <a onclick="business.gonav('trip',true)">
+        <a onclick="business.gonav('selecttrip',true)">
             <i class="fa fa-edit" style="font-size:26px;top:-22px;position:absolute;left:auto;margin-left:-25px;border-radius:30px;background-color:#fff;height:50px;width:50px;line-height:55px;border:1px solid #000;color:#000;"></i>
             <span>发布</span>
         </a>
@@ -62,13 +62,9 @@
 <script src="resources/js/address.js"></script>
 <script>
     if(!business.getQueryString("startCity")
-    ||!business.getQueryString("endCity")
     ){
         location.href="index.html"
     }
-    //查询值
-   // $("#searchvalue").text(business.getQueryString("startProvince")+business.getQueryString("startCity")+business.getQueryString("startArea")+"--"
-    //+business.getQueryString("endProvince")+business.getQueryString("endCity")+business.getQueryString("endArea"));
     //行程列表
     var pageNum=1;
     var pageSize=10;
@@ -80,8 +76,8 @@
         business.ajax({
             url:'/trip/search',
             data:{
+                type:2,
                 startCity:business.getQueryString("startCity"),
-                endCity:business.getQueryString("endCity"),
                 pageNum:pageNum,
                 pageSize:pageSize,
             },
@@ -121,15 +117,11 @@
                                     +'<span>'+middleAddress+'</span>'
                                 +'</div>'
                                 +'<div style="width:47%;display: inline-block;">'
-                                    +'<span>可带<span style="color:red;">'+personNumber+'</span>人 </span>'
-                                +' </div>'
-                                +'<div style="width:47%;display: inline-block;">'
-                                    +' <span style="color:red;">'+unitPrice+'</span>'
-                                    +' <span>元/人</span>'
+                                    +'<span>&#12288;人数：<span style="color:red;">'+personNumber+'</span>人 </span>'
                                 +' </div>'
                                 +isDoorValue
                             +'</div>'
-                            +'<a style="width:8%;display: inline-block;" href="tel:'+phone+'">'
+                            +'<a style="width:8%;display: inline-block;" onClick="business.carPhone('+phone+')">'
                             +'<i class=" fa fa-phone-square" style="color:red;font-size:26px"></i>'
                             +'</a>'
                             +'</div>';
@@ -137,13 +129,17 @@
                 }
                 //for (var i = 0; i < 10; i++) {
                     $("#triplist").html(html)
-
+                //显示积分不够
+                business.carPhone=function(phone){
+                    business.myLoadingToast("积分不够")
+                    //location.href="tel:"+phone;
+                }
                 //}
             },
             fail:function(data){
                 isBottom=true;
                 if(data.code==30002&& tripList.length==0){
-                    $("#triplist").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">暂无顺风车</div>')
+                    $("#triplist").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">暂无乘客</div>')
                 }
             }
         })

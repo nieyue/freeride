@@ -1061,7 +1061,7 @@ var mobileSelect3 = new MobileSelect({
                 {data: numArr2},
                 {data: numArr3}
             ],
-    position:[0, 0, 0],
+    position:[param.shi1||0,param.fen1|| 0, param.miao1||0],
     transitionEnd:function(indexArr, data){
         console.log(data);
         if(typeof  param.transitionEnd=='function'){

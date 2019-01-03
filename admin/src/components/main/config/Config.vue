@@ -29,6 +29,31 @@
             placeholder="免费发布次数(每天)">
           </InputNumber >
         </FormItem>
+        <FormItem prop="perdayStartMinNum" label="每天首次最少发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="addConfig.perdayStartMinNum"
+            placeholder="每天首次最少发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perdayStartMaxNum" label="每天首次最大发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="addConfig.perdayStartMaxNum"
+            placeholder="每天首次最大发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSeconds" label="分隔多少秒发布:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="addConfig.perSeconds"
+            placeholder="分隔多少秒发布">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSecondsMinNum" label="分隔秒最少发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="addConfig.perSecondsMinNum"
+            placeholder="分隔秒最少发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSecondsMaxNum" label="分隔秒最大发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="addConfig.perSecondsMaxNum"
+            placeholder="分隔秒最大发布数量">
+          </InputNumber >
+        </FormItem>
       </Form>
       <div slot='footer'>
         <Button  @click='addCancel'>取消</Button>
@@ -63,6 +88,31 @@
             placeholder="免费发布次数(每天)">
           </InputNumber >
         </FormItem>
+         <FormItem prop="perdayStartMinNum" label="每天首次最少发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="updateConfig.perdayStartMinNum"
+            placeholder="每天首次最少发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perdayStartMaxNum" label="每天首次最大发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="updateConfig.perdayStartMaxNum"
+            placeholder="每天首次最大发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSeconds" label="分隔多少秒发布:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="updateConfig.perSeconds"
+            placeholder="分隔多少秒发布">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSecondsMinNum" label="分隔秒最少发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="updateConfig.perSecondsMinNum"
+            placeholder="分隔秒最少发布数量">
+          </InputNumber >
+        </FormItem>
+        <FormItem prop="perSecondsMaxNum" label="分隔秒最大发布数量:">
+          <InputNumber   :max="10000000" :min="0" :step="1" style="width:180px" v-model="updateConfig.perSecondsMaxNum"
+            placeholder="分隔秒最大发布数量">
+          </InputNumber >
+        </FormItem>
       </Form>
       <div slot='footer'>
         <Button  @click='updateCancel'>取消</Button>
@@ -91,6 +141,26 @@
             <p>
               <span>免费发布次数(每天)：</span>
               <span v-text="updateConfig.freeNumber"></span>次
+            </p>
+            <p>
+              <span>每天首次最少发布数量：</span>
+              <span v-text="updateConfig.perdayStartMinNum"></span>个
+            </p>
+            <p>
+              <span>每天首次最大发布数量：</span>
+              <span v-text="updateConfig.perdayStartMaxNum"></span>个
+            </p>
+            <p>
+              <span>分隔多少秒发布：</span>
+              <span v-text="updateConfig.perSeconds"></span>秒
+            </p>
+            <p>
+              <span>分隔秒最少发布数量：</span>
+              <span v-text="updateConfig.perSecondsMinNum"></span>个
+            </p>
+            <p>
+              <span>分隔秒最大发布数量：</span>
+              <span v-text="updateConfig.perSecondsMaxNum"></span>个
             </p>
             <p>
               <span>创建时间：</span>

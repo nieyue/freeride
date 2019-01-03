@@ -114,6 +114,7 @@ INDEX INDEX_UPDATEDATE (update_date) USING BTREE
 #创建行程表
 CREATE TABLE trip_tb(
 trip_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '行程id',
+type tinyint(4) default 1 COMMENT '类型，1车主，2乘客',
 start_address varchar(255) COMMENT '出发地',
 end_address varchar(255) COMMENT '目的地',
 middle_address varchar(255) COMMENT '途径地',
@@ -125,6 +126,7 @@ create_date datetime COMMENT '创建时间',
 update_date datetime COMMENT '更新时间',
 account_id bigint(20) COMMENT '账户id,外键',
 PRIMARY KEY (trip_id),
+INDEX INDEX_TYPE (type) USING BTREE,
 INDEX INDEX_ISDOOR (is_door) USING BTREE,
 INDEX INDEX_ACCOUNTID (account_id) USING BTREE,
 INDEX INDEX_CREATEDATE (create_date) USING BTREE,
@@ -141,6 +143,16 @@ CREATE TABLE contact_tb(
   PRIMARY KEY (contact_id)
 )ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='联系表';
 
+#创建地址表
+CREATE TABLE address_tb(
+  address_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '地址id',
+  type tinyint(4) COMMENT '类型：1出发地，2目的地',
+  address varchar(255)  COMMENT '地址',
+  create_date datetime COMMENT '创建时间',
+  update_date datetime COMMENT '更新时间',
+  PRIMARY KEY (address_id)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8 COMMENT='地址表';
+
 #创建配置表
 CREATE TABLE config_tb(
   config_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置id',
@@ -148,6 +160,11 @@ CREATE TABLE config_tb(
   service_phone varchar(255)  COMMENT '平台联系电话',
   service_qq varchar(255)  COMMENT '平台联系qq',
   free_number tinyint(4)  COMMENT '免费发布次数',
+  perday_start_min_num int(11)  COMMENT '每天首次最少发布数量',
+  perday_start_max_num int(11)  COMMENT '每天首次最大发布数量',
+  per_seconds int(11)  COMMENT '分隔多少秒发布',
+  per_seconds_min_num int(11)  COMMENT '分隔秒最少发布数量',
+  per_seconds_max_num int(11)  COMMENT '分隔秒最大发布数量',
   create_date datetime COMMENT '创建时间',
   update_date datetime COMMENT '更新时间',
   PRIMARY KEY (config_id)
@@ -165,8 +182,8 @@ INSERT IGNORE INTO role_tb (role_id,name,duty,update_date)
 VALUES (1003,'用户','用户',now());
 
 #初始化配置
-INSERT IGNORE INTO config_tb (config_id,platform_name,free_number,create_date,update_date)
-VALUES (1000,'赤兔顺风车',3,now(),now());
+INSERT IGNORE INTO config_tb (config_id,platform_name,free_number,perday_start_min_num,perday_start_max_num,per_seconds,per_seconds_min_num,per_seconds_max_num,create_date,update_date)
+VALUES (1000,'赤兔顺风车',3,5,50,300,3,10,now(),now());
 
 #设置初始管理员密码MD5加密123456
 INSERT IGNORE INTO account_tb (account_id,nickname,phone,email,password,create_date,login_date,role_id) 

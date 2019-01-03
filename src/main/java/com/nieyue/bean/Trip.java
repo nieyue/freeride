@@ -31,6 +31,11 @@ public class Trip implements Serializable {
 	@TableId("trip_id")
 	private Long tripId;
 	/**
+	 * 类型，1车主列表，2乘客列表
+	 */
+	@ApiModelProperty(value="类型，1车主列表，2乘客列表")
+	private Integer type;
+	/**
 	 * 出发地
 	 */
 	@ApiModelProperty(value="出发地")

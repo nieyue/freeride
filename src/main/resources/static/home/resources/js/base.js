@@ -1,10 +1,10 @@
 var business={
 	//域名路径
-	//domanurl:'http://localhost:8080',
+	//domainurl:'http://localhost:8080',
 
-	//domanurl:'',
-	//domanurl:'http://119.27.177.29:8080',
-	domanurl:'http://eyri.yxsvip.cn',
+    domainurl:'',
+	//domainurl:'http://119.27.177.29:8080',
+	//domainurl:'http://eyri.yxsvip.cn',
     /**
      * 验证规则
      */
@@ -25,7 +25,7 @@ var business={
 	//ajax
 	ajax:function(param){
         $.ajax({
-            url:business.domanurl+param.url,
+            url:business.domainurl+param.url,
             data:param.data||{},
             async:param.async==false?false:true,
             dataType:'json',//服务器返回json格式数据
@@ -404,8 +404,8 @@ var business={
 }
 })();
 
-//解决ios缩放不生效
 window.onload=function () {
+//解决ios缩放不生效
     document.addEventListener('touchstart',function (event) {
         if(event.touches.length>1){
             event.preventDefault();
@@ -419,4 +419,17 @@ window.onload=function () {
         }
         lastTouchEnd=now;
     },false)
+
+    //解决按钮输入底部导航顶上去
+    var windheight =window.innerHeight;
+    var bottomx = document.getElementById('bottomx'); //底部导航
+    window.onresize=function(){
+        var docheight = window.innerHeight;
+        if(docheight < windheight){
+            bottomx.style.position = 'static';
+        }else{
+            bottomx.style.position = 'fixed';
+        }
+    }
 }
+//

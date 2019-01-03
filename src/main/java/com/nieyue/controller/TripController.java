@@ -50,6 +50,7 @@ public class TripController extends BaseController<Trip,Long> {
 	 */
 	@ApiOperation(value = "顺风车查询", notes = "顺风车查询分页浏览")
 	@ApiImplicitParams({
+	  @ApiImplicitParam(name="type",value="类型，1车主，2乘客",dataType="int", paramType = "query"),
 	  @ApiImplicitParam(name="startCity",value="当前城市",dataType="string", paramType = "query"),
 	  @ApiImplicitParam(name="endCity",value="目的城市",dataType="string", paramType = "query"),
 	  @ApiImplicitParam(name="isDoor",value="是否上门接送，1是，2否",dataType="int", paramType = "query"),
@@ -62,6 +63,7 @@ public class TripController extends BaseController<Trip,Long> {
 	  })
 	@RequestMapping(value = "/search", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> search(
+			@RequestParam(value="type",required=false)Integer type,
 			@RequestParam(value="startCity",required=false)String startCity,
 			@RequestParam(value="endCity",required=false)String endCity,
 			@RequestParam(value="isDoor",required=false)Integer isDoor,
@@ -73,6 +75,7 @@ public class TripController extends BaseController<Trip,Long> {
 			@RequestParam(value="orderWay",required=false,defaultValue="desc") String orderWay)  {
 		Wrapper<Trip> wrapper=new EntityWrapper<>();
 		Map<String,Object> map=new HashMap<>();
+		map.put("type", type);
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
@@ -84,8 +87,10 @@ public class TripController extends BaseController<Trip,Long> {
 		}
 		//第1种起始地址与目的地址都相近
 		Map<String,Object> maplike=new HashMap<String,Object>();
-		maplike.put("start_address", startCity);
-		maplike.put("end_address", endCity);
+		maplike.put("start_address", startCity.substring(0,startCity.indexOf('市')));
+		if(type!=null&&type==1){//车主
+			maplike.put("end_address", endCity.substring(0,endCity.indexOf('市')));
+		}
 		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
 		for (Map.Entry<String, Object> entry : newmaplie) {
 			wrapper.like(entry.getKey(),(String)entry.getValue());
@@ -145,6 +150,7 @@ public class TripController extends BaseController<Trip,Long> {
 	 */
 	@ApiOperation(value = "行程列表", notes = "行程分页浏览")
 	@ApiImplicitParams({
+	  @ApiImplicitParam(name="type",value="类型，1车主，2乘客",dataType="int", paramType = "query"),
 	  @ApiImplicitParam(name="isDoor",value="是否上门接送，1是，2否",dataType="int", paramType = "query"),
 	  @ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
 	  @ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query"),
@@ -155,6 +161,7 @@ public class TripController extends BaseController<Trip,Long> {
 	  })
 	@RequestMapping(value = "/list", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> list(
+			@RequestParam(value="type",required=false)Integer type,
 			@RequestParam(value="isDoor",required=false)Integer isDoor,
 			@RequestParam(value="createDate",required=false)Date createDate,
 			@RequestParam(value="accountId",required=false)Long accountId,
@@ -164,6 +171,7 @@ public class TripController extends BaseController<Trip,Long> {
 			@RequestParam(value="orderWay",required=false,defaultValue="desc") String orderWay)  {
 		Wrapper<Trip> wrapper=new EntityWrapper<>();
 		Map<String,Object> map=new HashMap<>();
+		map.put("type", type);
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
@@ -194,18 +202,33 @@ public class TripController extends BaseController<Trip,Long> {
 	}
 	/**
 	 * 行程增加
-	 * @return 
+	 * @return
 	 */
 	@ApiOperation(value = "行程增加", notes = "行程增加")
 	@RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Trip>> add(@ModelAttribute Trip trip, HttpSession session) {
+		trip.setCreateDate(new Date());
+		trip.setUpdateDate(new Date());
+		StateResultList<List<Trip>> u = super.add(trip);
+		return u;
+	}
+	/**
+	 * 车主行程增加
+	 * @return 
+	 */
+	@ApiOperation(value = "车主行程增加", notes = "车主行程增加")
+	@RequestMapping(value = "/caradd", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Trip>> caradd(@ModelAttribute Trip trip, HttpSession session) {
 		Lock lock=new ReentrantLock();
 		try{
 			lock.lock();
 			Account account = accountService.load(trip.getAccountId());
 			Role role = (Role)session.getAttribute("role");
+			if(account==null || 1!=trip.getType()){
+				throw new CommonRollbackException("非车主发布");
+			}
 			if((role.getName().indexOf("管理")<=-1)
-					&&(account==null || account.getAuth()!=2)){
+					&&(account.getAuth()!=2)){
 				throw new CommonRollbackException("账户没有认证");
 			}
 			if(trip.getStartDate().before(new Date())){
@@ -217,6 +240,7 @@ public class TripController extends BaseController<Trip,Long> {
 				Integer freeNumber = c.getFreeNumber();
 				Wrapper<Trip> w=new EntityWrapper<>();
 				Map<String,Object> m=new HashMap<>();
+				m.put("type", trip.getType());
 				m.put("account_id", trip.getAccountId());
 				w.allEq(MyDom4jUtil.getNoNullMap(m));
 				Map<String,Object> maplike=new HashMap<String,Object>();
@@ -230,8 +254,73 @@ public class TripController extends BaseController<Trip,Long> {
 					throw new CommonRollbackException("每日免费发布"+freeNumber+"次");
 				}
 
-				if(tl.size()>0
-				&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+30*60*1000)))){
+				if(tl.size()>0&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+30*60*1000)))){
+					throw new CommonRollbackException("两次发布时间间隔30分钟");
+
+				}
+			}
+			trip.setUpdateDate(new Date());
+			trip.setCreateDate(new Date());
+			StateResultList<List<Trip>> a = super.add(trip);
+			Wrapper<Integral> wrapper=new EntityWrapper<>();
+			Map<String,Object> map=new HashMap<>();
+			map.put("account_id", trip.getAccountId());
+			wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
+			List<Integral> il = integralService.list(1, 1, null, null, wrapper);
+			if(il.size()>0){
+				Integral integral = il.get(0);
+				integral.setIntegral(Arith.add(il.get(0).getIntegral(),1));//加1积分
+				integralService.update(integral);
+			}
+			return a;
+		}finally {
+			lock.unlock();
+		}
+	}
+	/**
+	 * 乘客行程增加
+	 * @return
+	 */
+	@ApiOperation(value = "乘客行程增加", notes = "乘客行程增加")
+	@RequestMapping(value = "/useradd", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody StateResultList<List<Trip>> useradd(@ModelAttribute Trip trip, HttpSession session) {
+		Lock lock=new ReentrantLock();
+		try{
+			lock.lock();
+			Account account = accountService.load(trip.getAccountId());
+			Role role = (Role)session.getAttribute("role");
+			if(account==null ||2!=trip.getType()){
+				throw new CommonRollbackException("非乘客发布");
+			}
+
+			/*if((role.getName().indexOf("管理")<=-1)
+					&&( account.getAuth()!=2)){
+				throw new CommonRollbackException("账户没有认证");
+			}*/
+			if(trip.getStartDate().before(new Date())){
+				throw new CommonRollbackException("请选择开始时间大于当前时间");
+			}
+			List<Config> cl = configService.simplelist(null);
+			if(cl.size()>0){
+				Config c = cl.get(0);
+				Integer freeNumber = c.getFreeNumber();
+				Wrapper<Trip> w=new EntityWrapper<>();
+				Map<String,Object> m=new HashMap<>();
+				m.put("type", trip.getType());
+				m.put("account_id", trip.getAccountId());
+				w.allEq(MyDom4jUtil.getNoNullMap(m));
+				Map<String,Object> maplike=new HashMap<String,Object>();
+				maplike.put("create_date", DateUtil.dateFormatSimpleDate(new Date(),"yyyy-MM-dd"));
+				Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+				for (Map.Entry<String, Object> entry : newmaplie) {
+					w.like(entry.getKey(),(String)entry.getValue());
+				}
+				List<Trip> tl = tripService.list(1, freeNumber + 1, "create_date", "desc", w);
+				if(tl.size()>=freeNumber){
+					throw new CommonRollbackException("每日免费发布"+freeNumber+"次");
+				}
+
+				if(tl.size()>0&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+30*60*1000)))){
 					throw new CommonRollbackException("两次发布时间间隔30分钟");
 
 				}
@@ -273,18 +362,21 @@ public class TripController extends BaseController<Trip,Long> {
 	 */
 	@ApiOperation(value = "行程数量", notes = "行程数量查询")
 	@ApiImplicitParams({
+			@ApiImplicitParam(name="type",value="类型，1车主，2乘客",dataType="int", paramType = "query"),
 			@ApiImplicitParam(name="isDoor",value="是否上门接送，1是，2否",dataType="int", paramType = "query"),
 			@ApiImplicitParam(name="createDate",value="创建时间",dataType="date-time", paramType = "query"),
 			@ApiImplicitParam(name="accountId",value="账户id",dataType="long", paramType = "query"),
 	})
 	@RequestMapping(value = "/count", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Integer>> count(
+			@RequestParam(value="type",required=false)Integer type,
 			@RequestParam(value="isDoor",required=false)Integer isDoor,
 			@RequestParam(value="createDate",required=false)Date createDate,
 			@RequestParam(value="accountId",required=false)Long accountId,
 			HttpSession session)  {
 		Wrapper<Trip> wrapper=new EntityWrapper<>();
 		Map<String,Object> map=new HashMap<>();
+		map.put("type", type);
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));

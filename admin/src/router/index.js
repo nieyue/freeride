@@ -45,6 +45,11 @@ const router= new Router({
           component: resolve=>require(['@/components/main/config/Contact'],resolve)
         },
         {
+          path: 'address/:pathParams',
+          name: '地址管理',
+          component: resolve=>require(['@/components/main/config/Address'],resolve)
+        },
+        {
           path: 'account/selfAccount',
           name: '个人信息',
           component: resolve=>require(['@/components/main/account/SelfAccount'],resolve),

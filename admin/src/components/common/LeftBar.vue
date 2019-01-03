@@ -23,6 +23,10 @@
                         <Icon type="md-medical" />
                         <span>联系配置</span>
                     </MenuItem>
+                    <MenuItem :name="menu.config.address" v-if="isSuperAdmin">
+                        <Icon type="md-medical" />
+                        <span>地址管理</span>
+                    </MenuItem>
                 </Submenu>
                 <MenuItem name="/main/account/selfAccount">
                     <Icon type="ios-man" />
@@ -123,7 +127,8 @@
                  welcome:"/main/welcome/"+pp,
                  config:"/main/config/"+pp,
                  activationCode:"/main/activationCode/"+pp,
-                 contact:"/main/contact/"+pp
+                 contact:"/main/contact/"+pp,
+                 address:"/main/address/"+pp
             },
             //角色权限
             rolePermission:{
