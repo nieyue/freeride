@@ -144,19 +144,19 @@ public class AddressController extends BaseController<Address,Long> {
 		for (int i = 0; i < lll.size(); i++) {
 			List<List<Object>> ll = lll.get(i);
 			//数据从1行开始，0是列名
-			for (int j = 1; j < lll.size(); j++) {
+			for (int j = 1; j < ll.size(); j++) {
 				List<Object> l = ll.get(j);
 				for (int z = 0; z < l.size(); z++) {
 					Address address = null;
 					//account.set
-					if(z==0){
+					if(z==0 &&!"".equals(l.get(z).toString())){
 						address=new Address();
 						address.setType(1);//出发地
 						address.setAddress(l.get(z).toString());
 						address.setCreateDate(new Date());
 						address.setUpdateDate(new Date());
 						addressService.add(address);
-					}else if(z==2){
+					}else if(z==1 &&!"".equals(l.get(z).toString())){
 						address=new Address();
 						address.setType(2);//目的地
 						address.setAddress(l.get(z).toString());

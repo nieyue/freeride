@@ -3,6 +3,14 @@
     <div class="body-wrap">
     <div class="body-btn-wrap">
        <Button type='primary'  @click='add'>增加地址</Button>
+        <Upload style="display:inline-block;"
+        name="excel"
+         :show-upload-list="false"
+        :action="upload.action"
+        :on-success="handleSuccess">
+        <Button icon="ios-cloud-upload-outline">导入地址</Button>
+        </Upload>
+    </Upload>
     </div>
 		 <!--新增 -->
      <Modal v-model="addAddressModel"
@@ -13,7 +21,7 @@
       <Form ref="addAddress" :model="addAddress" :label-width="100" label-position="right"  :rules="addAddressRules">
           <FormItem prop="type" label="类型:">
             <Select v-model="addAddress.type" transfer size="large" style="width:100px">
-                <Option v-for="item in addressList" :value="item.id" :key="item.id">{{ item.value }}</Option>
+                <Option v-for="item in adList" :value="item.id" :key="item.id">{{ item.value }}</Option>
             </Select>
         </FormItem>
         <FormItem prop="address" label="地址地址:">
@@ -39,7 +47,7 @@
       <Form ref="updateAddress" :model="updateAddress" :label-width="100" label-position="right"  :rules="updateAddressRules">
         <FormItem prop="type" label="类型:">
             <Select v-model="updateAddress.type" transfer size="large" style="width:100px">
-                <Option v-for="item in addressList" :value="item.id" :key="item.id">{{ item.value }}</Option>
+                <Option v-for="item in adList" :value="item.id" :key="item.id">{{ item.value }}</Option>
             </Select>
         </FormItem>
         <FormItem prop="address" label="地址地址:">
@@ -67,6 +75,10 @@ export default {
   name: 'Address',
   data () {
     return {
+      //上传
+      upload:{
+        action:this.axios.defaults.imgURL+"/address/importExcel",
+      },
         params:{
             pageSizeOpts:[10,20,50,100,500,1000],//每页条数切换的配置
             startNum:1,//初始化个数
@@ -76,7 +88,7 @@ export default {
             total:0//总数
         },
         //类型，1出发地，2目的地
-        addressList:[
+        adList:[
             {id:1,value:'出发地'},
             {id:2,value:'目的地'},
         ],
@@ -89,6 +101,7 @@ export default {
                     ]
                 },
 			addAddress:{
+        type:1
 			},
 			//修改参数
 			updateAddressModel:false,
@@ -120,6 +133,22 @@ export default {
           minWidth:100,
           key: 'addressId',
           align:'center'
+        },
+       {
+          title:'类型',
+          minWidth:100,
+            key:'type',
+          align:'center',
+          render: (h, params) => {
+              
+            let typevalue="";
+            this.adList.forEach(element => {
+              if(element.id==params.row.type){
+                typevalue=element.value;
+              }
+            });
+             return  h('span',typevalue);
+          }
         },
         {
           title:'地址',
@@ -187,6 +216,14 @@ export default {
     }
   },
   methods: {
+    //上传成功
+        handleSuccess (res, file){
+          if(res.code==200){
+            this.getList()
+          }
+            console.log(res)
+           console.log(file)
+        },
     //分页点击
     selectPage (currentPage) {
       this.params.currentPage=currentPage;

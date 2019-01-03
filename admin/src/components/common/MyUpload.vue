@@ -20,7 +20,7 @@
             :show-upload-list="false"
             :default-file-list="uploadList"
             :on-success="handleSuccess"
-            :format="['jpg','jpeg','png','mp4']"
+            :format="['jpg','jpeg','png','mp4','xls','xlsx']"
             :max-size="2048"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"

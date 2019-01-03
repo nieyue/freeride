@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 
 import net.sf.json.JSONObject;
@@ -490,6 +491,7 @@ public class DateUtil {
 		//System.err.println(StringUtils.isEmpty(aaa));
 		String bbb="a";
 		System.err.println(aaa.equals(bbb));
-		
+		int number = new Random().nextInt(22 - 3) + 3;
+    System.out.println(number);
     }  
 }
