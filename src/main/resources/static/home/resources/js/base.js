@@ -2,9 +2,9 @@ var business={
 	//域名路径
 	//domainurl:'http://localhost:8080',
 
-    domainurl:'',
+    //domainurl:'',
 	//domainurl:'http://119.27.177.29:8080',
-	//domainurl:'http://eyri.yxsvip.cn',
+	domainurl:'http://eyri.yxsvip.cn',
     /**
      * 验证规则
      */
@@ -422,13 +422,13 @@ window.onload=function () {
 
     //解决按钮输入底部导航顶上去
     var windheight =window.innerHeight;
-    var bottomx = document.getElementById('bottomx'); //底部导航
+    var bottomx = document.querySelector('.mer-footer'); //底部导航
     window.onresize=function(){
         var docheight = window.innerHeight;
         if(docheight < windheight){
-            bottomx.style.position = 'static';
+            bottomx.style.display = 'none';
         }else{
-            bottomx.style.position = 'fixed';
+            bottomx.style.display = 'inline-block';
         }
     }
 }

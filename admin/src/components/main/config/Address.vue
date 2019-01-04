@@ -7,6 +7,7 @@
         name="excel"
          :show-upload-list="false"
         :action="upload.action"
+        :on-progress="onProgess"
         :on-success="handleSuccess">
         <Button icon="ios-cloud-upload-outline">导入地址</Button>
         </Upload>
@@ -24,8 +25,12 @@
                 <Option v-for="item in adList" :value="item.id" :key="item.id">{{ item.value }}</Option>
             </Select>
         </FormItem>
-        <FormItem prop="address" label="地址地址:">
-          <Input type="text" v-model="addAddress.address" placeholder="地址地址">
+        <FormItem prop="city" label="城市:">
+          <Input type="text" v-model="addAddress.city" placeholder="城市">
+          </Input>
+        </FormItem>
+        <FormItem prop="address" label="地址:">
+          <Input type="text" v-model="addAddress.address" placeholder="地址">
           </Input>
         </FormItem>
       </Form>
@@ -50,8 +55,12 @@
                 <Option v-for="item in adList" :value="item.id" :key="item.id">{{ item.value }}</Option>
             </Select>
         </FormItem>
-        <FormItem prop="address" label="地址地址:">
-          <Input type="text" v-model="updateAddress.address" placeholder="地址地址">
+        <FormItem prop="city" label="城市:">
+          <Input type="text" v-model="updateAddress.city" placeholder="城市">
+          </Input>
+        </FormItem>
+        <FormItem prop="address" label="地址:">
+          <Input type="text" v-model="updateAddress.address" placeholder="地址">
           </Input>
         </FormItem>
       </Form>
@@ -96,6 +105,9 @@ export default {
 			addAddressModel:false,
 			addLoading:false,
 			addAddressRules: {
+                city: [
+                    {required: true, message: '城市为必填项', trigger: 'blur'}
+                    ],
                 address: [
                     {required: true, message: '地址为必填项', trigger: 'blur'}
                     ]
@@ -107,6 +119,9 @@ export default {
 			updateAddressModel:false,
 			updateLoading:false,
 			updateAddressRules: {
+                city: [
+                    {required: true, message: '城市为必填项', trigger: 'blur'}
+                    ],
                 address: [
                     {required: true, message: '地址为必填项', trigger: 'blur'}
                     ]
@@ -149,6 +164,12 @@ export default {
             });
              return  h('span',typevalue);
           }
+        },
+        {
+          title:'城市',
+          minWidth:100,
+        	key:'city',
+          align:'center'
         },
         {
           title:'地址',
@@ -216,13 +237,18 @@ export default {
     }
   },
   methods: {
+    //上传时
+    onProgess(event, file, fileList){
+       this.$Spin.show();
+    },
     //上传成功
         handleSuccess (res, file){
           if(res.code==200){
             this.getList()
           }
-            console.log(res)
-           console.log(file)
+             this.$Spin.hide();
+            //console.log(res)
+          // console.log(file)
         },
     //分页点击
     selectPage (currentPage) {
@@ -349,6 +375,7 @@ export default {
   created () {
     this.selectPage(JSON.parse(this.$route.params.pathParams).currentPage)
     //this.getList();
+   
   },
   mounted () {
 

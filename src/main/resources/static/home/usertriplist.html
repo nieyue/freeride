@@ -31,8 +31,8 @@
 
           </div>
       </div>
-      
-  </div>  
+
+  </div>
 
 <!-- 固定栏-->
 <div class="mer-footer">
@@ -54,7 +54,7 @@
             <span>我的</span>
         </a>
     </div>
-    
+
 </div>
 <!-- 固定栏 end-->
 <script src="resources/js/jquery1.12.2.js"></script>
@@ -65,14 +65,23 @@
     ){
         location.href="index.html"
     }
+    //如果不是车主不显示
+    var role=JSON.parse(localStorage.getItem("role"));
+    if(role.name!='车主'){
+        business.myLoadingToast("车主认证后开通",function(){
+            business.gonav('auth',true);
+        })
+    }
     //行程列表
     var pageNum=1;
     var pageSize=10;
+    var currentPage=1;
     var isBottom=false;
     var tripList=[];
     var html="";
     function getTripList(){
-        //pageNum=tripList.length+1;
+        pageNum=pageSize*(currentPage-1)+1;
+        currentPage++;
         business.ajax({
             url:'/trip/search',
             data:{
@@ -89,7 +98,7 @@
                     var datetime=trip.startDate;
                     var startAddress=trip.startAddress;
                     var endAddress=trip.endAddress;
-                    var middleAddress=trip.middleAddress;
+                    var middleAddress=trip.middleAddress||"";
                     var personNumber=trip.personNumber;
                     var unitPrice=trip.unitPrice;
                     //是否上门接送，1是，2否
@@ -121,7 +130,7 @@
                                 +' </div>'
                                 +isDoorValue
                             +'</div>'
-                            +'<a style="width:8%;display: inline-block;" onClick="business.carPhone('+phone+')">'
+                            +'<a style="width:8%;display: inline-block;" onClick="business.carPhone(\''+phone+'\')">'
                             +'<i class=" fa fa-phone-square" style="color:red;font-size:26px"></i>'
                             +'</a>'
                             +'</div>';

@@ -147,6 +147,7 @@ CREATE TABLE contact_tb(
 CREATE TABLE address_tb(
   address_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '地址id',
   type tinyint(4) COMMENT '类型：1出发地，2目的地',
+  city varchar(255)  COMMENT '城市',
   address varchar(255)  COMMENT '地址',
   create_date datetime COMMENT '创建时间',
   update_date datetime COMMENT '更新时间',

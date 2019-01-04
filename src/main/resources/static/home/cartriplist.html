@@ -72,11 +72,13 @@
     //行程列表
     var pageNum=1;
     var pageSize=10;
+    var currentPage=1;
     var isBottom=false;
     var tripList=[];
     var html="";
     function getTripList(){
-        //pageNum=tripList.length+1;
+        pageNum=pageSize*(currentPage-1)+1;
+        currentPage++;
         business.ajax({
             url:'/trip/search',
             data:{
@@ -131,7 +133,7 @@
                                 +' </div>'
                                 +isDoorValue
                             +'</div>'
-                            +'<a style="width:8%;display: inline-block;"  onClick="business.carPhone('+phone+')">'
+                            +'<a style="width:8%;display: inline-block;"  onClick="business.carPhone(\''+phone+'\')">'
                             +'<i class=" fa fa-phone-square" style="color:red;font-size:26px"></i>'
                             +'</a>'
                             +'</div>';

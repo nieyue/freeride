@@ -99,20 +99,28 @@
  <script src="resources/js/datetime.js"></script>
  <script src="resources/js/base.js"></script>
  <script>
-	 var shis=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+     var nowshi=new Date().getHours();
+     var oshis=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+     var shis=[];
+     for (var i = 0; i <oshis.length ; i++) {
+         if(oshis[i]>=nowshi){
+             shis.push(oshis[i])
+		 }
+     }
+	 var fens=[0,5,10,15,20,25,30,35,40,45,50,55];
 	//时间
 	mobiletime({
 	trigger:'#startTime',
     shi:shis,
-	fen:[0,30],
+	fen:fens,
 	miao:[0],
 	callback:function(indexArr,data){
 	console.log(indexArr)
 	//console.log(data)
 	var xiaoshi=shis[indexArr[0]];
 	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
-	var fen=indexArr[1];
-	 fen=fen==1?30:"00";
+	var fen=fens[indexArr[1]];
+	fen=fen>=10?fen:"0"+fen;
 	$("#startTime").val(xiaoshi+":"+fen+":00")
 	}
 	})

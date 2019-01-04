@@ -152,6 +152,7 @@ public class AddressController extends BaseController<Address,Long> {
 					if(z==0 &&!"".equals(l.get(z).toString())){
 						address=new Address();
 						address.setType(1);//出发地
+						address.setCity(multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().indexOf(".xls")));
 						address.setAddress(l.get(z).toString());
 						address.setCreateDate(new Date());
 						address.setUpdateDate(new Date());
@@ -159,6 +160,7 @@ public class AddressController extends BaseController<Address,Long> {
 					}else if(z==1 &&!"".equals(l.get(z).toString())){
 						address=new Address();
 						address.setType(2);//目的地
+						address.setCity(multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().indexOf(".xls")));
 						address.setAddress(l.get(z).toString());
 						address.setCreateDate(new Date());
 						address.setUpdateDate(new Date());

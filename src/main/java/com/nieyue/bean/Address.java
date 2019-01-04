@@ -35,6 +35,11 @@ public class Address implements Serializable{
 	@ApiModelProperty(value="类型：1出发地，2目的地")
 	private Integer type;
 	/**
+	 * 城市
+	 */
+	@ApiModelProperty(value="城市")
+	private String city;
+	/**
 	 * 地址地址
 	 */
 	@ApiModelProperty(value="地址地址")

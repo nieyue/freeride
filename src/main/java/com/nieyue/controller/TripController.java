@@ -316,12 +316,12 @@ public class TripController extends BaseController<Trip,Long> {
 					w.like(entry.getKey(),(String)entry.getValue());
 				}
 				List<Trip> tl = tripService.list(1, freeNumber + 1, "create_date", "desc", w);
-				if(tl.size()>=freeNumber){
+				/*if(tl.size()>=freeNumber){
 					throw new CommonRollbackException("每日免费发布"+freeNumber+"次");
-				}
+				}*/
 
-				if(tl.size()>0&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+30*60*1000)))){
-					throw new CommonRollbackException("两次发布时间间隔30分钟");
+				if(tl.size()>0&&(new Date().before(new Date(tl.get(0).getCreateDate().getTime()+c.getPerSeconds()*1000)))){
+					throw new CommonRollbackException("两次发布时间间隔"+c.getPerSeconds()/60+"分钟");
 
 				}
 			}
