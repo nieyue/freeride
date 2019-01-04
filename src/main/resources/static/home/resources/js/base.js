@@ -423,12 +423,14 @@ window.onload=function () {
     //解决按钮输入底部导航顶上去
     var windheight =window.innerHeight;
     var bottomx = document.querySelector('.mer-footer'); //底部导航
-    window.onresize=function(){
-        var docheight = window.innerHeight;
-        if(docheight < windheight){
-            bottomx.style.display = 'none';
-        }else{
-            bottomx.style.display = 'inline-block';
+    if(bottomx){
+        window.onresize=function(){
+            var docheight = window.innerHeight;
+            if(docheight < windheight){
+                bottomx.style.display = 'none';
+            }else{
+                bottomx.style.display = 'inline-block';
+            }
         }
     }
 }

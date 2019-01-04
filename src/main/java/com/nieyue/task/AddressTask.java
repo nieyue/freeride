@@ -57,18 +57,19 @@ public class AddressTask {
                 //7天
                // trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(7*24-1)+1)));
                 //今天
-                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(24-new Date().getHours()-1))));
+                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()-1))));
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
                 Address alca = alc.get(new Random().nextInt(alc.size()));
-                trip.setStartAddress(alca.getCity()+alca.getAddress());
+                trip.setStartAddress(alca.getAddress());
                 Address alma = alm.get(new Random().nextInt(alm.size()));
                 while(alma.getAddress().equals(alca.getAddress())){
                     alma = alm.get(new Random().nextInt(alm.size()));
                 }
-                trip.setEndAddress(alma.getCity()+alma.getAddress());
-                //trip.setMiddleAddress(alma.getCity()+alma.getAddress());
+                trip.setEndAddress(alma.getAddress());
+                //途径地放市
+                trip.setMiddleAddress(alca.getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);
@@ -106,18 +107,19 @@ public class AddressTask {
                 trip.setType(2);
                 //7天
                // trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(7*24-1)+1)));
-                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(24-new Date().getHours()-1))));
+                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()-1))));
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
                 Address alca = alc.get(new Random().nextInt(alc.size()));
-                trip.setStartAddress(alca.getCity()+alca.getAddress());
+                trip.setStartAddress(alca.getAddress());
                 Address alma = alm.get(new Random().nextInt(alm.size()));
                 while(alma.getAddress().equals(alca.getAddress())){
                     alma = alm.get(new Random().nextInt(alm.size()));
                 }
-                trip.setEndAddress(alma.getCity()+alma.getAddress());
-                //trip.setMiddleAddress(alma.getCity()+alma.getAddress());
+                trip.setEndAddress(alma.getAddress());
+                //途径地放市
+                trip.setMiddleAddress(alca.getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);

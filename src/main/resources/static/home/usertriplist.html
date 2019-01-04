@@ -23,6 +23,7 @@
 <div class="nav-wrap">
     <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
     <span >乘客列表</span>
+    <span style="cursor:pointer;position:absolute;right:8px;top:4px;color:#fff;background-color:#5a83f1;width:38px;height:30px;line-height: 30px;border-radius:3px;" onclick="business.flushUserTripList()">刷新</span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
@@ -65,13 +66,7 @@
     ){
         location.href="index.html"
     }
-    //如果不是车主不显示
-    var role=JSON.parse(localStorage.getItem("role"));
-    if(role.name!='车主'){
-        business.myLoadingToast("车主认证后开通",function(){
-            business.gonav('auth',true);
-        })
-    }
+
     //行程列表
     var pageNum=1;
     var pageSize=10;
@@ -98,13 +93,6 @@
                     var datetime=trip.startDate;
                     var startAddress=trip.startAddress;
                     var endAddress=trip.endAddress;
-                    var middleAddress=trip.middleAddress||"";
-                    var personNumber=trip.personNumber;
-                    var unitPrice=trip.unitPrice;
-                    //是否上门接送，1是，2否
-                    var isDoorValue=trip.isDoor==1? '<div style="width:80%;display: inline-block;">'
-                        +' <span style="color:#8034d2;font-weight:bold;">可上门接送</span>'
-                        +' </div>':''
                     var phone=trip.account.phone;
                 html+='<div style="border-bottom:1px solid #ececec;padding:10px;">'
                             +'<div style="width:30%;display: inline-block;">'
@@ -112,7 +100,7 @@
                                     +'<div style="font-size:14px;">'+datetime.substr(0,10)+'</div>'
                             +'</div>'
                             +'<div style="height:100%;background-color:#ececec;width:1%;display: inline-block;"></div>'
-                            +'<div style="width:60%;display: inline-block;">'
+                            +'<div style="width:58%;display: inline-block;">'
                                 +'<div style="width:100%;display: inline-block;">'
                                     +'<span>出发地：</span>'
                                     +'<span>'+startAddress+'</span>'
@@ -121,17 +109,9 @@
                                     +'<span>目的地：</span>'
                                     +'<span>'+endAddress+'</span>'
                                 +'</div>'
-                                +'<div style="width:100%;display: inline-block;">'
-                                    +'<span>途径地：</span>'
-                                    +'<span>'+middleAddress+'</span>'
-                                +'</div>'
-                                +'<div style="width:47%;display: inline-block;">'
-                                    +'<span>&#12288;人数：<span style="color:red;">'+personNumber+'</span>人 </span>'
-                                +' </div>'
-                                +isDoorValue
                             +'</div>'
-                            +'<a style="width:8%;display: inline-block;" onClick="business.carPhone(\''+phone+'\')">'
-                            +'<i class=" fa fa-phone-square" style="color:red;font-size:26px"></i>'
+                            +'<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
+                            +'接单'
                             +'</a>'
                             +'</div>';
 
@@ -140,6 +120,13 @@
                     $("#triplist").html(html)
                 //显示积分不够
                 business.carPhone=function(phone){
+                    //如果不是车主调整认证
+                    var role=JSON.parse(localStorage.getItem("role"));
+                    if(role.name!='车主'){
+                        business.myLoadingToast("车主认证后开通",function(){
+                            business.gonav('auth',true);
+                        })
+                    }
                     business.myLoadingToast("积分不够")
                     //location.href="tel:"+phone;
                 }
@@ -165,6 +152,16 @@
         }
 
     });
+    //刷新
+    business.flushUserTripList=function(){
+        var pageNum=1;
+        var pageSize=10;
+        var currentPage=1;
+        var isBottom=false;
+        var tripList=[];
+        var html="";
+        getTripList();
+    }
 
     //$("#triplist").
 </script>

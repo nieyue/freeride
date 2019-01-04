@@ -54,24 +54,24 @@
 
         </div>
         <input type="file" id="identityCardsFrontImgFile"  style="display: none"/>
-        <div class="address-name" style="background-color: #f30d0d" id="identityCardsBackImgClick">
+        <!--<div class="address-name" style="background-color: #f30d0d" id="identityCardsBackImgClick">
             <div>
                 <span>点击上传身份证反面</span>
             </div>
         </div>
-        <input type="file" id="identityCardsBackImgFile"  style="display: none"/>
+        <input type="file" id="identityCardsBackImgFile"  style="display: none"/>-->
         <div class="address-name"style="background-color: #650df3" id="drivingLicenseFrontImgClick">
             <div>
                 <span>点击上传驾照正面</span>
             </div>
         </div>
         <input type="file" id="drivingLicenseFrontImgFile"  style="display: none"/>
-        <div class="address-name"style="background-color: #650df3" id="drivingLicenseBackImgClick">
+     <!--   <div class="address-name"style="background-color: #650df3" id="drivingLicenseBackImgClick">
             <div>
                 <span>点击上传驾照反面</span>
             </div>
         </div>
-        <input type="file" id="drivingLicenseBackImgFile"  style="display: none"/>
+        <input type="file" id="drivingLicenseBackImgFile"  style="display: none"/>-->
         <div style="margin:15px 0 0 -55px;">
             <span>&#12288;&#12288;姓名：</span>
             <input type="text"  style="height:30px;" id="realname"/>
@@ -133,13 +133,13 @@
         identityCardsFrontImg=url;
     })
     //身份证反面
-    $("#identityCardsBackImgClick").on("click",function(){
+    /*$("#identityCardsBackImgClick").on("click",function(){
         $("#identityCardsBackImgFile").click();
     })
     var identityCardsBackImg;
     commonFileUpload("#identityCardsBackImgFile","#identityCardsBackImgClick",function(url){
         identityCardsBackImg=url;
-    })
+    })*/
     //驾照正面
     $("#drivingLicenseFrontImgClick").on("click",function(){
         $("#drivingLicenseFrontImgFile").click();
@@ -149,13 +149,13 @@
         drivingLicenseFrontImg=url;
     })
     //驾照反面
-    $("#drivingLicenseBackImgClick").on("click",function(){
+    /*$("#drivingLicenseBackImgClick").on("click",function(){
         $("#drivingLicenseBackImgFile").click();
     })
     var drivingLicenseBackImg;
     commonFileUpload("#drivingLicenseBackImgFile","#drivingLicenseBackImgClick",function(url){
         drivingLicenseBackImg=url;
-    })
+    })*/
 
     //车主认证
     $("#authSubmit").on("click",function(){
@@ -167,9 +167,9 @@
             return;
         }
        if(!identityCardsFrontImg
-            ||!identityCardsBackImg
+            //||!identityCardsBackImg
             ||!drivingLicenseFrontImg
-            ||!drivingLicenseBackImg
+            //||!drivingLicenseBackImg
         ){
             business.myLoadingToast("请上传图片");
             return;
@@ -200,9 +200,9 @@
                 address:address,
                 inviteCode:inviteCode,
                 identityCardsFrontImg:identityCardsFrontImg,
-                identityCardsBackImg:identityCardsBackImg,
+               // identityCardsBackImg:identityCardsBackImg,
                 drivingLicenseFrontImg:drivingLicenseFrontImg,
-                drivingLicenseBackImg:drivingLicenseBackImg
+               // drivingLicenseBackImg:drivingLicenseBackImg
             },
             success:function(data){
                 business.myLoadingToast(data.msg)

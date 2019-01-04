@@ -322,9 +322,9 @@ public class AccountController extends BaseController<Account, Long>{
 			@ApiImplicitParam(name="address",value="收货地址",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="drivingLicenseFrontImg",value="驾照正面",dataType="string", paramType = "query",required=true),
-			@ApiImplicitParam(name="drivingLicenseBackImg",value="驾照反面",dataType="string", paramType = "query",required=true),
+			@ApiImplicitParam(name="drivingLicenseBackImg",value="驾照反面",dataType="string", paramType = "query"),
 			@ApiImplicitParam(name="identityCardsFrontImg",value="身份证正面",dataType="string", paramType = "query",required=true),
-			@ApiImplicitParam(name="identityCardsBackImg",value="身份证反面",dataType="string", paramType = "query",required=true)
+			@ApiImplicitParam(name="identityCardsBackImg",value="身份证反面",dataType="string", paramType = "query")
 	})
 	@RequestMapping(value = "/auth", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Account>> authAccount(
@@ -333,9 +333,9 @@ public class AccountController extends BaseController<Account, Long>{
 			@RequestParam("address") String address,
 			@RequestParam("inviteCode") String inviteCode,
 			@RequestParam("drivingLicenseFrontImg") String drivingLicenseFrontImg,
-			@RequestParam("drivingLicenseBackImg") String drivingLicenseBackImg,
+			@RequestParam(value="drivingLicenseBackImg",required = false) String drivingLicenseBackImg,
 			@RequestParam("identityCardsFrontImg") String identityCardsFrontImg,
-			@RequestParam("identityCardsBackImg") String identityCardsBackImg,
+			@RequestParam(value="identityCardsBackImg",required = false) String identityCardsBackImg,
 			HttpSession session)  {
 		List<Account> list = new ArrayList<Account>();
 		Account account = accountService.load(accountId);
@@ -354,9 +354,13 @@ public class AccountController extends BaseController<Account, Long>{
 			account.setRealname(realname);
 			account.setAddress(address);
 			account.setIdentityCardsFrontImg(identityCardsFrontImg);
-			account.setIdentityCardsBackImg(identityCardsBackImg);
+			if(identityCardsBackImg!=null){
+				account.setIdentityCardsBackImg(identityCardsBackImg);
+			}
 			account.setDrivingLicenseFrontImg(drivingLicenseFrontImg);
-			account.setDrivingLicenseBackImg(drivingLicenseBackImg);
+			if(drivingLicenseBackImg!=null){
+				account.setDrivingLicenseBackImg(drivingLicenseBackImg);
+			}
 			account.setMasterId(masteraccountl.get(0).getAccountId());
 			boolean b = accountService.update(account);
 			if(b){

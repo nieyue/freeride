@@ -87,13 +87,17 @@ public class TripController extends BaseController<Trip,Long> {
 		}
 		//第1种起始地址与目的地址都相近
 		Map<String,Object> maplike=new HashMap<String,Object>();
-		maplike.put("start_address", startCity.substring(0,startCity.indexOf('市')));
 		if(type!=null&&type==1){//车主
+			maplike.put("start_address", startCity.substring(0,startCity.indexOf('市')));
 			maplike.put("end_address", endCity.substring(0,endCity.indexOf('市')));
+			Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+			for (Map.Entry<String, Object> entry : newmaplie) {
+				wrapper.like(entry.getKey(),(String)entry.getValue());
+			}
 		}
-		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
-		for (Map.Entry<String, Object> entry : newmaplie) {
-			wrapper.like(entry.getKey(),(String)entry.getValue());
+		if(type!=null&&type==2){
+			wrapper.andNew().like("start_address", startCity.substring(0,startCity.indexOf('市')));
+			wrapper.or().like("middle_address",startCity.substring(0,startCity.indexOf('市')));
 		}
 
 		List<Trip> tl = tripService.list(pageNum, pageSize, orderName, orderWay, wrapper);
@@ -297,6 +301,9 @@ public class TripController extends BaseController<Trip,Long> {
 					&&( account.getAuth()!=2)){
 				throw new CommonRollbackException("账户没有认证");
 			}*/
+			if(new Date().getHours()<6 || new Date().getHours()>21){
+				throw new CommonRollbackException("每天6-21时发布");
+			}
 			if(trip.getStartDate().before(new Date())){
 				throw new CommonRollbackException("请选择开始时间大于当前时间");
 			}

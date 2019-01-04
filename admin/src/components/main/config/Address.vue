@@ -2,16 +2,19 @@
 <template>
     <div class="body-wrap">
     <div class="body-btn-wrap">
-       <Button type='primary'  @click='add'>增加地址</Button>
-        <Upload style="display:inline-block;"
-        name="excel"
-         :show-upload-list="false"
-        :action="upload.action"
-        :on-progress="onProgess"
-        :on-success="handleSuccess">
-        <Button icon="ios-cloud-upload-outline">导入地址</Button>
-        </Upload>
-    </Upload>
+        <Button type='primary'  @click='add'>增加地址</Button>
+          <Upload style="display:inline-block;"
+          name="excel"
+          :show-upload-list="false"
+          :action="upload.action"
+          :on-progress="onProgess"
+          :on-success="handleSuccess">
+          <Button icon="ios-cloud-upload-outline">导入地址</Button>
+          </Upload>
+         <div class="search-wrap">
+          <Input v-model="params.city" class="search-wrap-input" placeholder="城市"></Input>
+          <Button @click="search" type="info"  >查询</Button>
+        </div>
     </div>
 		 <!--新增 -->
      <Modal v-model="addAddressModel"
@@ -250,6 +253,12 @@ export default {
             //console.log(res)
           // console.log(file)
         },
+    //查询
+    search(){
+      this.params.currentPage=1;
+      this.params.pageNum =1;
+      this.getList()
+    },
     //分页点击
     selectPage (currentPage) {
       this.params.currentPage=currentPage;

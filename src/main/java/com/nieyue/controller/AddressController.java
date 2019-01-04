@@ -1,11 +1,10 @@
 package com.nieyue.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.nieyue.bean.Address;
 import com.nieyue.service.AddressService;
-import com.nieyue.util.MyExcel;
-import com.nieyue.util.ResultUtil;
-import com.nieyue.util.SnowflakeIdWorker;
-import com.nieyue.util.StateResultList;
+import com.nieyue.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,8 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -46,6 +44,7 @@ public class AddressController extends BaseController<Address,Long> {
 	 */
 	@ApiOperation(value = "地址列表", notes = "地址分页浏览")
 	@ApiImplicitParams({
+	    @ApiImplicitParam(name="city",value="城市",dataType="string", paramType = "query"),
 	    @ApiImplicitParam(name="pageNum",value="页头数位",dataType="int", paramType = "query",defaultValue="1"),
 	    @ApiImplicitParam(name="pageSize",value="每页数目",dataType="int", paramType = "query",defaultValue="10"),
 	    @ApiImplicitParam(name="orderName",value="排序字段",dataType="string", paramType = "query",defaultValue="addressId"),
@@ -53,11 +52,19 @@ public class AddressController extends BaseController<Address,Long> {
 	  })
 	@RequestMapping(value = "/list", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Address>> browsePagingAddress(
+			@RequestParam(value="city",required=false)String city,
 			@RequestParam(value="pageNum",defaultValue="1",required=false)int pageNum,
 			@RequestParam(value="pageSize",defaultValue="10",required=false) int pageSize,
 			@RequestParam(value="orderName",required=false,defaultValue="addressId") String orderName,
 			@RequestParam(value="orderWay",required=false,defaultValue="desc") String orderWay)  {
-			StateResultList<List<Address>> rl = super.list(pageNum, pageSize, orderName, orderWay,null);
+		Wrapper<Address> wrapper=new EntityWrapper<>();
+		Map<String,Object> maplike=new HashMap<String,Object>();
+		maplike.put("city", city);
+		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+		for (Map.Entry<String, Object> entry : newmaplie) {
+			wrapper.like(entry.getKey(),(String)entry.getValue());
+		}
+		StateResultList<List<Address>> rl = super.list(pageNum, pageSize, orderName, orderWay,wrapper);
 			return rl;
 	}
 	/**
@@ -105,10 +112,21 @@ public class AddressController extends BaseController<Address,Long> {
 	 * @return
 	 */
 	@ApiOperation(value = "地址数量", notes = "地址数量查询")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="city",value="城市",dataType="string", paramType = "query"),
+	})
 	@RequestMapping(value = "/count", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Integer>> count(
+			@RequestParam(value="city",required=false)String city,
 			HttpSession session)  {
-		StateResultList<List<Integer>> c = super.count(null);
+		Wrapper<Address> wrapper=new EntityWrapper<>();
+		Map<String,Object> maplike=new HashMap<String,Object>();
+		maplike.put("city", city);
+		Set<Map.Entry<String, Object>> newmaplie = MyDom4jUtil.getNoNullMap(maplike).entrySet();
+		for (Map.Entry<String, Object> entry : newmaplie) {
+			wrapper.like(entry.getKey(),(String)entry.getValue());
+		}
+		StateResultList<List<Integer>> c = super.count(wrapper);
 		return c;
 	}
 	/**
@@ -117,7 +135,7 @@ public class AddressController extends BaseController<Address,Long> {
 	 */
 	@ApiOperation(value = "地址单个加载", notes = "地址单个加载")
 	@ApiImplicitParams({
-		  @ApiImplicitParam(name="AddressId",value="地址ID",dataType="long", paramType = "query",required=true)
+		  @ApiImplicitParam(name="addressId",value="地址ID",dataType="long", paramType = "query",required=true)
 		  })
 	@RequestMapping(value = "/load", method = {RequestMethod.GET,RequestMethod.POST})
 	public  StateResultList<List<Address>> loadAddress(
