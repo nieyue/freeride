@@ -13,26 +13,24 @@
         .address-name{
             color:#fff;
             display: inline-block;
-            width:40%;
-            height: 100px;
+            width:60%;
+            height: 130px;
             padding:5px 15px;
             margin-top:30px;
             border:1px dashed #ececec;
             position: relative;
             left: 0;
             top:0;
+            background-size:100% 100%;
+            background-repeat: no-repeat;
 
         }
         .address-name div{
             text-align: center;
-            position: relative;
-            left: 0;
-            top:0;
+            height: 100%;
+            line-height: 130px;
         }
         .address-name span{
-            position: absolute;
-            left: 10px;
-            top:40px;
             display: inline-block;
 
         }
@@ -47,7 +45,7 @@
     </span>
 </div>
     <div style="padding-top:38px;text-align:center;background-color: #fff;height:calc( 100% - 38px)">
-        <div class="address-name" style="background-color: #f30d0d" id="identityCardsFrontImgClick">
+        <div class="address-name" style="background-image:url('resources/img/identityCardsFrontImg.jpg');" id="identityCardsFrontImgClick">
             <div>
                 <span>点击上传身份证正面</span>
             </div>
@@ -60,7 +58,7 @@
             </div>
         </div>
         <input type="file" id="identityCardsBackImgFile"  style="display: none"/>-->
-        <div class="address-name"style="background-color: #650df3" id="drivingLicenseFrontImgClick">
+        <div class="address-name"style="background-image:url('resources/img/drivingLicenseFrontImg.jpg');" id="drivingLicenseFrontImgClick">
             <div>
                 <span>点击上传驾照正面</span>
             </div>

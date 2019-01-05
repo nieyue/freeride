@@ -79,11 +79,11 @@ public class TripController extends BaseController<Trip,Long> {
 		map.put("is_door", isDoor);
 		map.put("account_id", accountId);
 		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
-		//大于等于
+		//大于等于3天前
 		if(createDate!=null) {
 			wrapper.andNew().ge("start_date", createDate);
 		}else{
-			wrapper.andNew().ge("start_date", new Date());
+			wrapper.andNew().ge("start_date", new Date(new Date().getTime()-1000*60*60*24*3));
 		}
 		//第1种起始地址与目的地址都相近
 		Map<String,Object> maplike=new HashMap<String,Object>();

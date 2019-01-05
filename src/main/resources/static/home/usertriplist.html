@@ -23,7 +23,7 @@
 <div class="nav-wrap">
     <span style="position:absolute;left:18px;top:0;" onclick="business.goback()"><</span>
     <span >乘客列表</span>
-    <span style="cursor:pointer;position:absolute;right:8px;top:4px;color:#fff;background-color:#5a83f1;width:38px;height:30px;line-height: 30px;border-radius:3px;" onclick="business.flushUserTripList()">刷新</span>
+    <span style="cursor:pointer;position:absolute;right:8px;top:4px;color:#fff;background-color:#5a83f1;width:68px;height:30px;line-height: 30px;border-radius:3px;" id="flushUserTripList">刷新订单</span>
 </div>
 <div  style="margin:38px 0 100px 0;background-color:#fff;">
 
@@ -94,6 +94,14 @@
                     var startAddress=trip.startAddress;
                     var endAddress=trip.endAddress;
                     var phone=trip.account.phone;
+                    var resultstatus= '<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
+                        +'接单'
+                        +'</a>';
+                    if(new Date(trip.startDate).getTime()<=new Date().getTime()){
+                        resultstatus='<a style="width:10%;display: inline-block;font-size:0.6rem;margin-top:1rem;background-color:#3c3c3c;color:#fff;line-height:2rem;vertical-align: top;text-align:center;">'
+                            +'已出发'
+                            +'</a>';
+                    }
                 html+='<div style="border-bottom:1px solid #ececec;padding:10px;">'
                             +'<div style="width:30%;display: inline-block;">'
                                     +'<div style="font-size:22px;font-weight: bold;margin-top:2px;">'+datetime.substr(11,5)+'</div>'
@@ -110,9 +118,7 @@
                                     +'<span>'+endAddress+'</span>'
                                 +'</div>'
                             +'</div>'
-                            +'<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
-                            +'接单'
-                            +'</a>'
+                            +resultstatus
                             +'</div>';
 
                 }
@@ -123,8 +129,8 @@
                     //如果不是车主调整认证
                     var role=JSON.parse(localStorage.getItem("role"));
                     if(role.name!='车主'){
-                        business.myLoadingToast("车主认证后开通",function(){
-                            business.gonav('auth',true);
+                        business.myLoadingToast("成为车主后才能接单",function(){
+                            //business.gonav('auth',true);
                         })
                     }
                     business.myLoadingToast("积分不够")
@@ -148,21 +154,22 @@
             return;
         }
         if(navigator.onLine&&!isBottom&& business.isScrollBottom(document)){
+            console.log(111)
             getTripList()
         }
 
     });
     //刷新
-    business.flushUserTripList=function(){
-        var pageNum=1;
-        var pageSize=10;
-        var currentPage=1;
-        var isBottom=false;
-        var tripList=[];
-        var html="";
+    $("#flushUserTripList").on("click",function(){
+        pageNum=1;
+        pageSize=10;
+        currentPage=1;
+        isBottom=false;
+        tripList=[];
+        html="";
+        $("#triplist").html(html)
         getTripList();
-    }
-
+    })
     //$("#triplist").
 </script>
 </body>
