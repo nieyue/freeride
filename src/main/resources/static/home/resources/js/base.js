@@ -223,7 +223,7 @@ var business={
         }
         $("body")
             .append(
-                "<div id='prevToastWarp' style='display:none;position:fixed;width:100%;height:100%;top:0;left:0; z-index:999999999'><div id='prevToast' style='text-align:center;color:#fff;background-color:#000;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;min-height:30px;margin:66% auto;max-width:60%;'>"
+                "<div id='prevToastWarp' style='display:none;position:fixed;width:100%;height:100%;top:0;left:0; z-index:999999999'><div id='prevToast' style='text-align:center;color:#fff;background-color:#000;text-align:center;line-height:30px;border:1px solid black;border-radius:5px;min-height:30px;margin:66% auto;max-width:60%;width:auto;'>"
                 +"<span id='prevToastValue'>"+ value +"</span>&nbsp;&nbsp; </div></div>");
         if(typeof fn=='function'){
             fn();
@@ -234,7 +234,7 @@ var business={
         $("body")
             .append(
                 "<div id='loadingToast' style='display:none;width:100%;text-align:center;min-height:30px;top:50%;left:0;position:fixed;z-index:999999999;'>"
-                +"<div  style='color:#fff;background-color:black;border:1px solid black;border-radius:5px;text-align:center;line-height:30px;min-height:30px;max-width:200px;padding:0 10px;margin:auto;'>"
+                +"<div  style='color:#fff;background-color:black;border:1px solid black;border-radius:5px;text-align:center;line-height:30px;min-height:30px;max-width:200px;width:auto;;padding:0 10px;margin:auto;'>"
                 + value + "</div>"
                 +"</div>");
         $("#loadingToast").fadeIn();
@@ -245,6 +245,45 @@ var business={
                 fn();
             }
         }, 1000);
+    },
+    /**
+     * 底部加载toast
+     */
+    myFootLoadingToast : function(position,bottom, fn,motion) {
+        if(!position){
+            position="fixed";
+        }
+        if(typeof bottom!='number'||isNaN(bottom)){
+            bottom=0;
+        }
+        // 如果存在，remove
+        if(document.querySelector("#footToast")){
+            if(motion=="add"){
+                $("#footToast").css("bottom",bottom);
+                $("#footToast").fadeIn();
+                $("#footToast").attr("display","block");
+            }else if(motion=="remove"){
+                setTimeout(function() {
+                    $("#footToast").fadeOut('slow');
+                    $("#footToast").attr("display","none");
+                }, 1000);
+            }
+            if(typeof fn=='function'){
+                fn();
+            }
+            return;
+        }
+        var appendOrAfter="append";
+        if(position=="relative"){
+            appendOrAfter="after";
+        }
+        $("body")[appendOrAfter](
+            "<div id='footToast' style='display:none;color:#fff;background-color:#ccc;text-align:center;line-height:30px;border:0px solid black;min-height:30px;width:100%;bottom:"+bottom+";left:0;position:"+position+";'><canvas id='bottomloading'  height='30px' width='30px' style='display:inline-block;margin-bottom:-10px;' >您的浏览器不支持html5</canvas><span id='footToastValue'>正在努力加载中...</span></div>");
+
+        if(typeof fn=='function'){
+            fn();
+        }
+
     },
     /**
      * loading小图片

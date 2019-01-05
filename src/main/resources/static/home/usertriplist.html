@@ -73,78 +73,100 @@
     var currentPage=1;
     var isBottom=false;
     var tripList=[];
+    //var tempTripList=[];
     var html="";
     function getTripList(){
+       /* if(tripList.length>=0&&tempTripList.length>=0){
+            tripList=tripList.concat(tempTripList);
+        }*/
         pageNum=pageSize*(currentPage-1)+1;
         currentPage++;
-        business.ajax({
-            url:'/trip/search',
-            data:{
-                type:2,
-                startCity:business.getQueryString("startCity"),
-                pageNum:pageNum,
-                pageSize:pageSize,
-            },
-            success:function(data){
-                tripList=tripList.concat(data.data);
-                console.log(data)
-                for (var i = 0; i <tripList.length ; i++) {
-                    var trip=tripList[i];
-                    var datetime=trip.startDate;
-                    var startAddress=trip.startAddress;
-                    var endAddress=trip.endAddress;
-                    var phone=trip.account.phone;
-                    var resultstatus= '<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
-                        +'接单'
-                        +'</a>';
-                    if(new Date(trip.startDate).getTime()<=new Date().getTime()){
-                        resultstatus='<a style="width:10%;display: inline-block;font-size:0.6rem;margin-top:1rem;background-color:#3c3c3c;color:#fff;line-height:2rem;vertical-align: top;text-align:center;">'
-                            +'已出发'
-                            +'</a>';
-                    }
-                html+='<div style="border-bottom:1px solid #ececec;padding:10px;">'
-                            +'<div style="width:30%;display: inline-block;">'
-                                    +'<div style="font-size:22px;font-weight: bold;margin-top:2px;">'+datetime.substr(11,5)+'</div>'
-                                    +'<div style="font-size:14px;">'+datetime.substr(0,10)+'</div>'
-                            +'</div>'
-                            +'<div style="height:100%;background-color:#ececec;width:1%;display: inline-block;"></div>'
-                            +'<div style="width:58%;display: inline-block;">'
-                                +'<div style="width:100%;display: inline-block;">'
-                                    +'<span>出发地：</span>'
-                                    +'<span>'+startAddress+'</span>'
-                                +'</div>'
-                                +'<div style="width:100%;display: inline-block;">'
-                                    +'<span>目的地：</span>'
-                                    +'<span>'+endAddress+'</span>'
-                                +'</div>'
-                            +'</div>'
-                            +resultstatus
-                            +'</div>';
+        business.myPrevToast("努力加载中",function(){
+            business.ajax({
+                url:'/trip/search',
+                data:{
+                    type:2,
+                    startCity:business.getQueryString("startCity"),
+                    pageNum:pageNum,
+                    pageSize:pageSize,
+                },
+                success:function(data){
+                    business.myPrevToast("努力加载中",function(){
+                        tripList=tripList.concat(data.data);
+                        //缓存
+                        /*if(tripList.length<=0){
+                            tripList=tripList.concat(data.data);
+                        }else if(tempTripList.length<=0){
+                            tempTripList=data.data;
+                            tripList=tripList.concat(tempTripList);
+                        }else{
+                            tempTripList=data.data;
+                        }*/
+                        console.log(data)
+                        for (var i = 0; i <tripList.length ; i++) {
+                            var trip=tripList[i];
+                            var datetime=trip.startDate;
+                            var startAddress=trip.startAddress;
+                            var endAddress=trip.endAddress;
+                            var phone=trip.account.phone;
+                            var resultstatus= '<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
+                                +'接单'
+                                +'</a>';
+                            if(new Date(trip.startDate).getTime()<=new Date().getTime()){
+                                resultstatus='<a style="width:10%;display: inline-block;font-size:0.6rem;margin-top:1rem;background-color:#3c3c3c;color:#fff;line-height:2rem;vertical-align: top;text-align:center;">'
+                                    +'已出发'
+                                    +'</a>';
+                            }
+                        html+='<div style="border-bottom:1px solid #ececec;padding:10px;">'
+                                    +'<div style="width:30%;display: inline-block;">'
+                                            +'<div style="font-size:22px;font-weight: bold;margin-top:2px;">'+datetime.substr(11,5)+'</div>'
+                                            +'<div style="font-size:14px;">'+datetime.substr(0,10)+'</div>'
+                                    +'</div>'
+                                    +'<div style="height:100%;background-color:#ececec;width:1%;display: inline-block;"></div>'
+                                    +'<div style="width:58%;display: inline-block;">'
+                                        +'<div style="width:100%;display: inline-block;">'
+                                            +'<span>出发地：</span>'
+                                            +'<span>'+startAddress+'</span>'
+                                        +'</div>'
+                                        +'<div style="width:100%;display: inline-block;">'
+                                            +'<span>目的地：</span>'
+                                            +'<span>'+endAddress+'</span>'
+                                        +'</div>'
+                                    +'</div>'
+                                    +resultstatus
+                                    +'</div>';
 
+                        }
+                        //for (var i = 0; i < 10; i++) {
+                            $("#triplist").html(html)
+                        //显示积分不够
+                        business.carPhone=function(phone){
+                            //如果不是车主调整认证
+                            var role=JSON.parse(localStorage.getItem("role"));
+                            if(role.name!='车主'){
+                                business.myLoadingToast("成为车主后才能接单",function(){
+                                    //business.gonav('auth',true);
+                                })
+                            }
+                            business.myLoadingToast("积分不够")
+                            //location.href="tel:"+phone;
+                        }
+
+                    },"remove");
+
+                    //}
+                },
+                fail:function(data){
+                    business.myPrevToast("努力加载中",function(){
+                        isBottom=true;
+                        if(data.code==30002&& tripList.length==0){
+                            $("#triplist").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">暂无乘客</div>')
+                        }
+                    },"remove");
                 }
-                //for (var i = 0; i < 10; i++) {
-                    $("#triplist").html(html)
-                //显示积分不够
-                business.carPhone=function(phone){
-                    //如果不是车主调整认证
-                    var role=JSON.parse(localStorage.getItem("role"));
-                    if(role.name!='车主'){
-                        business.myLoadingToast("成为车主后才能接单",function(){
-                            //business.gonav('auth',true);
-                        })
-                    }
-                    business.myLoadingToast("积分不够")
-                    //location.href="tel:"+phone;
-                }
-                //}
-            },
-            fail:function(data){
-                isBottom=true;
-                if(data.code==30002&& tripList.length==0){
-                    $("#triplist").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">暂无乘客</div>')
-                }
-            }
-        })
+            })
+
+        },"add");
     }
     getTripList();
     //滚动刷新
