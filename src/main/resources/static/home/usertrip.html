@@ -146,12 +146,6 @@
 		 }
          var startAddress=$("#area").val();
          var endAddress=$("#area2").val();
-         var middleAddress=$("#middleAddress").val();
-         var personNumber=$("#personNumber").val();
-         if(!business.userVerification.catNum.test(personNumber)){
-             business.myLoadingToast("非零正整数")
-             return;
-         }
          var startDate=timeStampToDayDate(new Date())+" "+$("#startTime").val();
 
          business.ajax({
@@ -160,8 +154,6 @@
                  type:2,
                  startAddress:startAddress,
                  endAddress:endAddress,
-                 middleAddress:middleAddress,
-                 personNumber:personNumber,
                  startDate:startDate,
 				 accountId:accountId
 

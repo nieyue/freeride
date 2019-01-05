@@ -157,7 +157,7 @@
 
     //车主认证
     $("#authSubmit").on("click",function(){
-        if(!sessionStorage.getItem("account")){
+        if(!localStorage.getItem("account")){
             business.myLoadingToast("请登陆");
             setTimeout(function(){
                 business.gologin();
