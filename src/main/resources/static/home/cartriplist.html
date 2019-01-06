@@ -75,7 +75,7 @@
     var currentPage=1;
     var isBottom=false;
     var tripList=[];
-    var html="";
+
     function getTripList(){
         pageNum=pageSize*(currentPage-1)+1;
         currentPage++;
@@ -89,9 +89,9 @@
                 pageSize:pageSize,
             },
             success:function(data){
-                tripList=tripList.concat(data.data);
+                tripList=data.data;
                 console.log(data)
-
+                var html="";
                 for (var i = 0; i <tripList.length ; i++) {
                     var trip=tripList[i];
                     var datetime=trip.startDate;
@@ -140,7 +140,7 @@
 
                 }
                 //for (var i = 0; i < 10; i++) {
-                    $("#triplist").html(html)
+                    $("#triplist").append(html)
                 //显示积分不够
                 business.carPhone=function(phone){
                     business.myLoadingToast("积分不够")

@@ -74,7 +74,7 @@
     var isBottom=false;
     var tripList=[];
     //var tempTripList=[];
-    var html="";
+
     function getTripList(){
        /* if(tripList.length>=0&&tempTripList.length>=0){
             tripList=tripList.concat(tempTripList);
@@ -92,7 +92,8 @@
                 },
                 success:function(data){
                     business.myPrevToast("努力加载中",function(){
-                        tripList=tripList.concat(data.data);
+                        //tripList=tripList.concat(data.data);
+                        tripList=data.data;
                         //缓存
                         /*if(tripList.length<=0){
                             tripList=tripList.concat(data.data);
@@ -103,6 +104,7 @@
                             tempTripList=data.data;
                         }*/
                         console.log(data)
+                        var html="";
                         for (var i = 0; i <tripList.length ; i++) {
                             var trip=tripList[i];
                             var datetime=trip.startDate;
@@ -138,7 +140,7 @@
 
                         }
                         //for (var i = 0; i < 10; i++) {
-                            $("#triplist").html(html)
+                            $("#triplist").append(html)
                         //显示积分不够
                         business.carPhone=function(phone){
                             //如果不是车主调整认证
@@ -188,8 +190,7 @@
         currentPage=1;
         isBottom=false;
         tripList=[];
-        html="";
-        $("#triplist").html(html)
+        $("#triplist").html("")
         getTripList();
     })
     //$("#triplist").
