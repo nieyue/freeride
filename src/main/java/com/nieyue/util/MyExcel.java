@@ -240,9 +240,10 @@ public class MyExcel {
     	list.add(list0);
     	list.add(list1);
     	
-    	exportData(listname,list,"D://home","/",null);
+    	//exportData(listname,list,"D://home","/",null);
     	
-    	List<List<List<Object>>> sss = importData(new File("D://home/d.xls"));
+    	//List<List<List<Object>>> sss = importData(new File("D://home/d.xls"));
+    	List<List<List<Object>>> sss = importData(new File("E:\\qq\\MobileFile\\徐州市.xlsx"));
     	for (int i = 0; i < sss.size(); i++) {
     		List<List<Object>> ss = sss.get(i);
 			System.out.println("------------");

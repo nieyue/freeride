@@ -171,7 +171,9 @@ public class AddressController extends BaseController<Address,Long> {
 						address=new Address();
 						address.setType(1);//出发地
 						address.setCity(multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().indexOf(".xls")));
-						address.setAddress(l.get(z).toString());
+						String str = l.get(z).toString();
+						str = str.replaceAll("[^\\u0000-\\uFFFF]", "");
+						address.setAddress(str);
 						address.setCreateDate(new Date());
 						address.setUpdateDate(new Date());
 						addressService.add(address);
@@ -179,7 +181,9 @@ public class AddressController extends BaseController<Address,Long> {
 						address=new Address();
 						address.setType(2);//目的地
 						address.setCity(multipartFile.getOriginalFilename().substring(0,multipartFile.getOriginalFilename().indexOf(".xls")));
-						address.setAddress(l.get(z).toString());
+						String str = l.get(z).toString();
+						str = str.replaceAll("[^\\u0000-\\uFFFF]", "");
+						address.setAddress(str);
 						address.setCreateDate(new Date());
 						address.setUpdateDate(new Date());
 						addressService.add(address);
