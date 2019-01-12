@@ -45,31 +45,43 @@
     </span>
 </div>
     <div style="padding-top:38px;text-align:center;background-color: #fff;height:calc( 100% - 38px)">
-        <div class="address-name" style="background-image:url('resources/img/identityCardsFrontImg.jpg');" id="identityCardsFrontImgClick">
+        <!--<div class="address-name" style="background-image:url('resources/img/identityCardsFrontImg.jpg');" id="identityCardsFrontImgClick">
             <div>
                 <span>点击上传身份证正面</span>
             </div>
 
         </div>
-        <input type="file" id="identityCardsFrontImgFile"  style="display: none"/>
+        <input type="file" id="identityCardsFrontImgFile"  style="display: none"/>-->
         <!--<div class="address-name" style="background-color: #f30d0d" id="identityCardsBackImgClick">
             <div>
                 <span>点击上传身份证反面</span>
             </div>
         </div>
         <input type="file" id="identityCardsBackImgFile"  style="display: none"/>-->
-        <div class="address-name"style="background-image:url('resources/img/drivingLicenseFrontImg.jpg');" id="drivingLicenseFrontImgClick">
+       <!-- <div class="address-name"style="background-image:url('resources/img/drivingLicenseFrontImg.jpg');" id="drivingLicenseFrontImgClick">
             <div>
                 <span>点击上传驾照正面</span>
             </div>
         </div>
-        <input type="file" id="drivingLicenseFrontImgFile"  style="display: none"/>
+        <input type="file" id="drivingLicenseFrontImgFile"  style="display: none"/>-->
      <!--   <div class="address-name"style="background-color: #650df3" id="drivingLicenseBackImgClick">
             <div>
                 <span>点击上传驾照反面</span>
             </div>
         </div>
         <input type="file" id="drivingLicenseBackImgFile"  style="display: none"/>-->
+        <div style="margin:15px 0 0 -55px;">
+            <span>车主驾龄：</span>
+            <input type="text"  style="height:30px;" id="carAge"/>
+        </div>
+        <div style="margin:15px 0 0 -55px;">
+            <span>汽车品牌：</span>
+            <input type="text"  style="height:30px;" id="carModel"/>
+        </div>
+        <div style="margin:15px 0 0 -55px;">
+            <span>汽车颜色：</span>
+            <input type="text"  style="height:30px;" id="carColor"/>
+        </div>
         <div style="margin:15px 0 0 -55px;">
             <span>&#12288;&#12288;姓名：</span>
             <input type="text"  style="height:30px;" id="realname"/>
@@ -78,10 +90,10 @@
             <span>收货地址：</span>
             <input type="text"  style="height:30px;" id="address"/>
         </div>
-        <div style="margin:15px 0 0 -55px;">
+       <!-- <div style="margin:15px 0 0 -55px;">
             <span>&#12288;邀请码：</span>
             <input type="text"  style="height:30px;" id="inviteCode"/>
-        </div>
+        </div>-->
         <div style="margin:55px 0;text-align:center;">
             <button id="authSubmit" style="background-color:red;border:1px solid red;color:#fff;height:30px;width:60%;">认证</button>
         </div>
@@ -123,13 +135,13 @@
         })
     }
     //身份证正面
-    $("#identityCardsFrontImgClick").on("click",function(){
+    /*$("#identityCardsFrontImgClick").on("click",function(){
         $("#identityCardsFrontImgFile").click();
     })
     var identityCardsFrontImg;
     commonFileUpload("#identityCardsFrontImgFile","#identityCardsFrontImgClick",function(url){
         identityCardsFrontImg=url;
-    })
+    })*/
     //身份证反面
     /*$("#identityCardsBackImgClick").on("click",function(){
         $("#identityCardsBackImgFile").click();
@@ -139,13 +151,13 @@
         identityCardsBackImg=url;
     })*/
     //驾照正面
-    $("#drivingLicenseFrontImgClick").on("click",function(){
+    /*$("#drivingLicenseFrontImgClick").on("click",function(){
         $("#drivingLicenseFrontImgFile").click();
     })
     var drivingLicenseFrontImg;
     commonFileUpload("#drivingLicenseFrontImgFile","#drivingLicenseFrontImgClick",function(url){
         drivingLicenseFrontImg=url;
-    })
+    })*/
     //驾照反面
     /*$("#drivingLicenseBackImgClick").on("click",function(){
         $("#drivingLicenseBackImgFile").click();
@@ -164,14 +176,14 @@
             },500)
             return;
         }
-       if(!identityCardsFrontImg
+       /*if(!identityCardsFrontImg
             //||!identityCardsBackImg
             ||!drivingLicenseFrontImg
             //||!drivingLicenseBackImg
         ){
             business.myLoadingToast("请上传图片");
             return;
-        }
+        }*/
         var accountId=JSON.parse(localStorage.getItem("account")).accountId;
 
         var realname=$("#realname").val().trim();
@@ -185,10 +197,10 @@
             business.myLoadingToast("请填写正确收货地址")
             return;
         }
-        if(!inviteCode||inviteCode.length!=8){
+        /*if(!inviteCode||inviteCode.length!=8){
             business.myLoadingToast("请填写正确邀请码")
             return;
-        }
+        }*/
 
         business.ajax({
             url:'/account/auth',
@@ -196,10 +208,9 @@
                 accountId:accountId,
                 realname:realname,
                 address:address,
-                inviteCode:inviteCode,
-                identityCardsFrontImg:identityCardsFrontImg,
+                //identityCardsFrontImg:identityCardsFrontImg,
                // identityCardsBackImg:identityCardsBackImg,
-                drivingLicenseFrontImg:drivingLicenseFrontImg,
+               // drivingLicenseFrontImg:drivingLicenseFrontImg,
                // drivingLicenseBackImg:drivingLicenseBackImg
             },
             success:function(data){

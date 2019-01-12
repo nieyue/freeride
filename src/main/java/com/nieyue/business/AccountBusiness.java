@@ -21,6 +21,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -202,12 +203,14 @@ public class AccountBusiness {
 	 * phone 手机号
 	 * password 密码
 	 * validCode 验证码
+	 * inviteCode 邀请码
 	 */
 	public List<Map<String,Object>> webRegister(
 			String adminName,
 			String verificationCode,
 			String password,
 			String validCode,
+			String inviteCode,
 			HttpSession session
 	){
 		List<Map<String,Object>> list = new ArrayList<>();
@@ -262,7 +265,17 @@ public class AccountBusiness {
 					}
 			}
 		}
-		account.setInviteCode(orderBusiness.generateShortUuid());
+		//获取上级账户
+		Wrapper<Account> wrapper=new EntityWrapper<>();
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("invite_code", inviteCode);
+		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
+		List<Account> masteraccountl = accountService.list(1, 1,"accountId","desc", wrapper);
+		if(masteraccountl.size()<=0){
+			throw new CommonRollbackException("邀请码错误");
+		}
+		account.setMasterId(masteraccountl.get(0).getAccountId());
+
 		account.setCreateDate(new Date());
 		account.setLoginDate(new Date());
 		account.setAuth(0);//未认证

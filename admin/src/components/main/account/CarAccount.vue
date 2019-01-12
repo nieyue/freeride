@@ -253,7 +253,7 @@ export default {
             minWidth:100,
           align:'center'
         },
-       {
+       /* {
           title:'邀请码',
           key:'inviteCode',
             minWidth:100,
@@ -273,7 +273,7 @@ export default {
                       }, '更新')
              ]);
           }
-        },
+        }, */
          {
         	title:'收货地址',
             key:'address',
@@ -295,9 +295,8 @@ export default {
               }
             });
             if(params.row.auth==1){
-              return  h('div',[
-                        authvalue,
-                      h('Button', {
+              if(this.business.getIsSuperAdmin()){
+                var button=h('Button', {
                         props: {
                           type: 'primary',
                           size: 'small'
@@ -307,7 +306,11 @@ export default {
                             this.authExamine(params.row);
                           }
                         }
-                      }, '审核')]);
+                      }, '审核')
+              }
+                       return  h('div',[
+                          authvalue,
+                        button]);   
             }
              return  h('span',authvalue);
           }

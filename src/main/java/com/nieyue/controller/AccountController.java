@@ -19,6 +19,9 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +48,8 @@ public class AccountController extends BaseController<Account, Long>{
 	private RoleService roleService;
 	@Autowired
 	private OrderBusiness orderBusiness;
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
 	@Autowired
 	private BmobSms bmobSms;
 
@@ -168,7 +173,15 @@ public class AccountController extends BaseController<Account, Long>{
 				){
 			throw new AccountIsExistException();//账户已经存在
 		}
-		ac.setInviteCode(orderBusiness.generateShortUuid());
+		//记录当前的邀请码
+		BoundValueOperations<String, String> bv = stringRedisTemplate.boundValueOps("currentInviteCode");
+		if(bv.size()<=0|| StringUtils.isEmpty(bv.get())){
+			bv.set(String.valueOf(1000));
+		}else{
+			bv.set(String.valueOf(Integer.valueOf(bv.get())+1));
+		}
+		ac.setInviteCode(bv.get());
+		//ac.setInviteCode(orderBusiness.generateShortUuid());
 		StateResultList<List<Account>> u = super.update(ac);
 		return u;
 	}
@@ -320,7 +333,6 @@ public class AccountController extends BaseController<Account, Long>{
 			@ApiImplicitParam(name="accountId",value="账户ID",dataType="long", paramType = "query",required=true),
 			@ApiImplicitParam(name="realname",value="真实姓名",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="address",value="收货地址",dataType="string", paramType = "query",required=true),
-			@ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="drivingLicenseFrontImg",value="驾照正面",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="drivingLicenseBackImg",value="驾照反面",dataType="string", paramType = "query"),
 			@ApiImplicitParam(name="identityCardsFrontImg",value="身份证正面",dataType="string", paramType = "query",required=true),
@@ -331,37 +343,31 @@ public class AccountController extends BaseController<Account, Long>{
 			@RequestParam("accountId") Long accountId,
 			@RequestParam("realname") String realname,
 			@RequestParam("address") String address,
-			@RequestParam("inviteCode") String inviteCode,
-			@RequestParam("drivingLicenseFrontImg") String drivingLicenseFrontImg,
+			@RequestParam(value="drivingLicenseFrontImg",required = false) String drivingLicenseFrontImg,
 			@RequestParam(value="drivingLicenseBackImg",required = false) String drivingLicenseBackImg,
-			@RequestParam("identityCardsFrontImg") String identityCardsFrontImg,
+			@RequestParam(value="identityCardsFrontImg",required = false) String identityCardsFrontImg,
 			@RequestParam(value="identityCardsBackImg",required = false) String identityCardsBackImg,
 			HttpSession session)  {
 		List<Account> list = new ArrayList<Account>();
 		Account account = accountService.load(accountId);
-		//获取上级账户
-		Wrapper<Account> wrapper=new EntityWrapper<>();
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("invite_code", inviteCode);
-		wrapper.allEq(MyDom4jUtil.getNoNullMap(map));
-		List<Account> masteraccountl = accountService.list(1, 1,"accountId","desc", wrapper);
-		if(masteraccountl.size()<=0){
-			throw new CommonRollbackException("邀请码错误");
-		}
+
 		//必须是没认证的
 		if(account!=null &&!account.equals("")&& account.getAuth().equals(0)){
 			account.setAuth(1);//审核中
 			account.setRealname(realname);
 			account.setAddress(address);
-			account.setIdentityCardsFrontImg(identityCardsFrontImg);
+			if(identityCardsFrontImg!=null){
+				account.setIdentityCardsFrontImg(identityCardsFrontImg);
+			}
 			if(identityCardsBackImg!=null){
 				account.setIdentityCardsBackImg(identityCardsBackImg);
 			}
-			account.setDrivingLicenseFrontImg(drivingLicenseFrontImg);
+			if(drivingLicenseFrontImg!=null){
+				account.setDrivingLicenseFrontImg(drivingLicenseFrontImg);
+			}
 			if(drivingLicenseBackImg!=null){
 				account.setDrivingLicenseBackImg(drivingLicenseBackImg);
 			}
-			account.setMasterId(masteraccountl.get(0).getAccountId());
 			boolean b = accountService.update(account);
 			if(b){
 				list.add(account);
@@ -640,7 +646,8 @@ public class AccountController extends BaseController<Account, Long>{
 			@ApiImplicitParam(name="adminName",value="手机号/邮箱号",dataType="string", paramType = "query",required=true),
 			@ApiImplicitParam(name="verificationCode",value="图片验证码",dataType="string", paramType = "query"),
 			@ApiImplicitParam(name="password",value="密码",dataType="string", paramType = "query",required=true),
-			@ApiImplicitParam(name="validCode",value="手机号/邮箱号验证码",dataType="string", paramType = "query")
+			@ApiImplicitParam(name="validCode",value="手机号/邮箱号验证码",dataType="string", paramType = "query"),
+			@ApiImplicitParam(name="inviteCode",value="邀请码",dataType="string", paramType = "query",required=true),
 	})
 	@RequestMapping(value = "/webregister", method = {RequestMethod.GET,RequestMethod.POST})
 	public @ResponseBody StateResultList<List<Map<String,Object>>> webRegisterAccount(
@@ -648,9 +655,10 @@ public class AccountController extends BaseController<Account, Long>{
 			@RequestParam(value="verificationCode",required = false) String verificationCode,
 			@RequestParam("password") String password,
 			@RequestParam("validCode") String validCode,
+			@RequestParam("inviteCode") String inviteCode,
 			HttpServletRequest request,
 			HttpSession session) throws AccountIsExistException, VerifyCodeErrorException, CommonNotRollbackException {
-		List<Map<String,Object>> list = accountBusiness.webRegister(adminName, verificationCode, password, validCode, session);
+		List<Map<String,Object>> list = accountBusiness.webRegister(adminName, verificationCode, password, validCode,inviteCode, session);
 		return ResultUtil.getSlefSRSuccessList(list);
 
 	}
