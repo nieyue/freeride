@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
     <meta name="viewport"
           content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
     <title>我的</title>
@@ -90,6 +94,19 @@
 <script src="resources/js/jquery1.12.2.js"></script>
 <script src="resources/js/base.js"></script>
 <script>
+    business.ajax({
+        url:'/account/load',
+        async:false,
+        data:{
+            accountId:JSON.parse(localStorage.getItem("account")).accountId,
+        },
+        success:function(data){
+            localStorage.setItem("account",JSON.stringify(data.data[0]));
+            localStorage.setItem("role",JSON.stringify(data.data[0].role));
+        },
+        fail:function(data){
+        }
+    })
     //初始化
     var account=JSON.parse(localStorage.getItem("account"));
     if(!account){
