@@ -116,9 +116,11 @@
                             var endAddress=trip.endAddress;
                             var phone=trip.account.phone;
                             var resultstatus= '<a style="width:10%;display: inline-block;margin-top:1rem;background-color:red;color:#fff;line-height:2rem;vertical-align: top;text-align:center;" onClick="business.carPhone(\''+phone+'\')">'
-                                +'接单'
+                                +'联系乘客'
                                 +'</a>';
-                            if(new Date(trip.startDate).getTime()<=new Date().getTime()){
+                            var sdarr = trip.startDate.split(/[- : \/]/);
+                                var sd = new Date(sdarr[0], sdarr[1]-1, sdarr[2], sdarr[3], sdarr[4], sdarr[5]);
+                            if(sd.getTime()<=new Date().getTime()){
                                 resultstatus='<a style="width:10%;display: inline-block;font-size:0.6rem;margin-top:1rem;background-color:#3c3c3c;color:#fff;line-height:2rem;vertical-align: top;text-align:center;">'
                                     +'已出发'
                                     +'</a>';
