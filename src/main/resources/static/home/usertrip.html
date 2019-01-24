@@ -113,7 +113,8 @@
      if(shis.length<=0){
      	$("#formwrap").html('<div style="padding-top:200px;text-align: center;background-color: #f2f3f4;">每天6-21时发布</div>');
 	 }
-	 var fens=[0,5,10,15,20,25,30,35,40,45,50,55];
+	 var fens=[0];
+	 //var fens=[0,5,10,15,20,25,30,35,40,45,50,55];
 	//时间
 	mobiletime({
 	trigger:'#startTime',
@@ -126,8 +127,8 @@
 	var xiaoshi=shis[indexArr[0]];
 	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
 	var fen=fens[indexArr[1]];
-	fen=fen>=10?fen:"0"+fen;
-	$("#startTime").val(xiaoshi+":"+fen+":00")
+	//fen=fen>=10?fen:"0"+fen;
+	$("#startTime").val(xiaoshi+":00:00")
 	}
 	})
 

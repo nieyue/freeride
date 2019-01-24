@@ -26,8 +26,8 @@ public class AddressTask {
     List<Address> addressList=new ArrayList<>();
 
 
-    //每天早上6点到晚上9点，每隔5分钟执行一次
-   @Scheduled(cron="0 0/5 6-21 * * ?")
+    //每天早上6点到晚上9点，每隔10分钟执行一次
+   @Scheduled(cron="0 0/10 6-21 * * ?")
     public void perSeconds(){
         addressList=addressService.simplelist(null);
         if(addressList.size()<=0){
@@ -78,7 +78,7 @@ public class AddressTask {
         }
     }
     //每天早上6点执行一次
-    @Scheduled(cron="0 0 6 * * ?")
+    //@Scheduled(cron="0 0 6 * * ?")
     public void predayStart(){
         addressList=addressService.simplelist(null);
         if(addressList.size()<=0){

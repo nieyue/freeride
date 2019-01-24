@@ -121,7 +121,7 @@
 	mobiletime({
 	trigger:'#startTime',
 	shi:shis,
-	fen:[0,30],
+	fen:[0],
 	miao:[0],
 	callback:function(indexArr,data){
 	console.log(indexArr)
@@ -129,8 +129,8 @@
 	var xiaoshi=shis[indexArr[0]];
 	 xiaoshi=xiaoshi>=10?xiaoshi:"0"+xiaoshi;
 	var fen=indexArr[1];
-	 fen=fen==1?30:"00";
-	$("#startTime").val(xiaoshi+":"+fen+":00")
+	// fen=fen==1?30:"00";
+	$("#startTime").val(xiaoshi+":00:00")
 	}
 	})
 
