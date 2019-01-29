@@ -74,7 +74,7 @@ $("#getValidCode").on("click",function(){
         data:{
             adminName:adminName,
         },
-        success:function(){
+        success:function(data){
             var setinterval=setInterval(function(){
                 number--;
                 $("#getValidCode").text(number+"s");
@@ -83,6 +83,9 @@ $("#getValidCode").on("click",function(){
                     clearInterval(setinterval);
                 }
             },1000)
+        },
+        fail:function(d){
+            business.myLoadingToast(d.msg)
         }
     })
 })
