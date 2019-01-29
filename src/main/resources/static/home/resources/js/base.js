@@ -4,7 +4,7 @@ var business={
 
     //domainurl:'',
 	//domainurl:'http://119.27.177.29:8080',
-	domainurl:'http://eyri.yxsvip.cn',
+	domainurl:'http://www.ctdc.xyz',
     /**
      * 验证规则
      */
