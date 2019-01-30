@@ -75,14 +75,14 @@ public class AddressTask {
                 //7天
                // trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(7*24-1)+1)));
                 //今天
-                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()))));
+                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()+1))));
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
                 trip.setStartAddress(al.get(i).getAddress());
                 trip.setEndAddress(al2.get(i).getAddress());
                 //途径地放市
-                trip.setMiddleAddress(al.get(i).getAddress());
+                trip.setMiddleAddress(al.get(i).getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);
@@ -140,14 +140,14 @@ public class AddressTask {
                 trip.setType(2);
                 //7天
                // trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(7*24-1)+1)));
-                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()))));
+                trip.setStartDate(new Date(new Date().getTime()+1000*60*60*(new Random().nextInt(21-new Date().getHours()+1))));
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
                 trip.setStartAddress(al.get(i).getAddress());
                 trip.setEndAddress(al2.get(i).getAddress());
                 //途径地放市
-                trip.setMiddleAddress(al.get(i).getAddress());
+                trip.setMiddleAddress(al.get(i).getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);
