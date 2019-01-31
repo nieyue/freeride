@@ -64,8 +64,10 @@ public class AddressTask {
                 Address alca = alc.get(new Random().nextInt(alc.size()));
                 trip.setStartAddress(alca.getAddress());
                 Address alma = alm.get(new Random().nextInt(alm.size()));
-                while(alma.getAddress().equals(alca.getAddress())){
-                    alma = alm.get(new Random().nextInt(alm.size()));
+                while(alma.getAddress().equals(alca.getAddress())
+                        ||!alca.getCity().equals(alma.getCity())){
+                    int almrandom = new Random().nextInt(alm.size());
+                    alma = alm.get(almrandom);
                 }
                 trip.setEndAddress(alma.getAddress());
                 //途径地放市
