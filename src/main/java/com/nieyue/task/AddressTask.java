@@ -51,7 +51,7 @@ public class AddressTask {
             }else{
                 start=new Random().nextInt(count-number)+1;
             }
-            List<Address> al = addressService.list(start, number, null, null, wrapper);
+
 
             Wrapper<Address> wrapper2=new EntityWrapper<>();
             Map<String,Object> map2=new HashMap<String,Object>();
@@ -68,7 +68,6 @@ public class AddressTask {
             }else if(count2>number){
                 start2=new Random().nextInt(count2-number)+1;
             }
-            List<Address> al2 = addressService.list(start2, number, null, null, wrapper2);
             for(int i = 0; i < number; i++) {
                 Trip trip=new Trip();
                 trip.setType(2);
@@ -79,10 +78,12 @@ public class AddressTask {
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
-                trip.setStartAddress(al.get(i).getAddress());
-                trip.setEndAddress(al2.get(i).getAddress());
+                List<Address> al = addressService.list(new Random().nextInt(count)+1, 1, null, null, wrapper);
+                trip.setStartAddress(al.get(0).getAddress());
+                List<Address> al2 = addressService.list(new Random().nextInt(count2)+1, 1, null, null, wrapper2);
+                trip.setEndAddress(al2.get(0).getAddress());
                 //途径地放市
-                trip.setMiddleAddress(al.get(i).getCity());
+                trip.setMiddleAddress(al.get(0).getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);
@@ -115,7 +116,6 @@ public class AddressTask {
             }else{
                 start=new Random().nextInt(count-number)+1;
             }
-            List<Address> al = addressService.list(start, number, null, null, wrapper);
 
             Wrapper<Address> wrapper2=new EntityWrapper<>();
             Map<String,Object> map2=new HashMap<String,Object>();
@@ -132,7 +132,6 @@ public class AddressTask {
             }else if(count2>number){
                     start2=new Random().nextInt(count2-number)+1;
             }
-            List<Address> al2 = addressService.list(start2, number, null, null, wrapper2);
 
 
             for(int i = 0; i < number; i++) {
@@ -144,10 +143,12 @@ public class AddressTask {
                 trip.setUpdateDate(new Date());
                 trip.setCreateDate(new Date());
                 trip.setAccountId(1000l);
-                trip.setStartAddress(al.get(i).getAddress());
-                trip.setEndAddress(al2.get(i).getAddress());
+                List<Address> al = addressService.list(new Random().nextInt(count)+1, 1, null, null, wrapper);
+                trip.setStartAddress(al.get(0).getAddress());
+                List<Address> al2 = addressService.list(new Random().nextInt(count2)+1, 1, null, null, wrapper2);
+                trip.setEndAddress(al2.get(0).getAddress());
                 //途径地放市
-                trip.setMiddleAddress(al.get(i).getCity());
+                trip.setMiddleAddress(al.get(0).getCity());
                 int persionnumber=new Random().nextInt(3)+1;
                 trip.setPersonNumber(persionnumber);
                 tripService.add(trip);
