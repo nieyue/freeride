@@ -220,7 +220,7 @@
             success:function(data){
                 business.myLoadingToast(data.msg)
                 console.log(data)
-                localStorage.setItem("account",JSON.stringify(data.data[0].account))
+                localStorage.setItem("account",JSON.stringify(data.data[0]))
                 setTimeout(function(){
                     business.gonav('user',true);
                 },500)
