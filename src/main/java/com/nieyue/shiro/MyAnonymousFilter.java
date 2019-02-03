@@ -1,15 +1,14 @@
 package com.nieyue.shiro;
 
-import java.io.IOException;
+import com.nieyue.exception.CommonRollbackException;
+import org.apache.shiro.web.filter.authc.AnonymousFilter;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.web.filter.authc.AnonymousFilter;
-
-import com.nieyue.exception.CommonRollbackException;
+import java.io.IOException;
 /**
  * 自定义匿名访问
  * @author 聂跃
@@ -25,7 +24,15 @@ public class MyAnonymousFilter extends AnonymousFilter {
 		if(request.getRequestURI().equals("/")){
 			//重定向, (请求转发不行)
 			try {
-				response.sendRedirect("/home/index.html");
+				//StringBuffer url =request.getRequestURL();
+				//String tempContextUrl =url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+				if(StringUtils.isEmpty(request.getHeader("X-Forwarded-Proto"))){
+					response.sendRedirect("/home/index.html");
+				}else{
+					//ssl
+					String tempContextUrl =request.getHeader("X-Forwarded-Proto") + "://" + request.getServerName();
+					response.sendRedirect(tempContextUrl+"/home/index.html");
+				}
 			} catch (IOException e) {
 				throw new CommonRollbackException("跳转错误");
 			}
